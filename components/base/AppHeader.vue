@@ -7,7 +7,7 @@ const toast = useToast();
 // const stringHandler = useStringHandler();
 const colorMode = useColorMode();
 const colorModes = ["system", "light", "dark"];
-const colorModeIcon = ref("i-heroicons-computer-desktop");
+const colorModeIcon = ref("mdi:sun-moon-stars");
 
 onMounted(() => {
   colorModeIcon.value = getColorModeIcon();
@@ -16,11 +16,11 @@ onMounted(() => {
 const getColorModeIcon = () => {
   switch (colorMode.preference) {
     case "light":
-      return "i-heroicons-sun";
+      return "mdi:white-balance-sunny";
     case "dark":
-      return "i-heroicons-moon";
+      return "mdi:moon-and-stars";
     default:
-      return "i-heroicons-computer-desktop";
+      return "mdi:sun-moon-stars";
   }
 };
 
@@ -30,23 +30,20 @@ const toggleColorMode = () => {
   colorMode.preference = colorModes[nextIndex];
   colorModeIcon.value = getColorModeIcon();
 
-  let toastSettings = {};
+  let toastSettings = {
+    id: `color-mode-${colorMode.preference}`,
+    // title: `Color mode: ${stringHandler.capitalizeWord(colorMode.preference)}`,
+    title: `Color mode: ${colorMode.preference}`,
+    description: "",
+    timeout: 2000,
+  };
 
-  // let toastSettings = {
-  //   id: `color-mode-${colorMode.preference}`,
-  //   title: `Color mode: ${stringHandler.capitalizeWord(colorMode.preference)}`,
-  //   description: "",
-  //   timeout: 2000,
-  // };
-
-  // if (colorMode.preference === "system") {
-  //   toastSettings = {
-  //     ...toastSettings,
-  //     description: `${stringHandler.capitalizeWord(
-  //       colorMode.value
-  //     )} mode detected`,
-  //   };
-  // }
+  if (colorMode.preference === "system") {
+    toastSettings = {
+      ...toastSettings,
+      description: `${colorMode.value} mode detected`,
+    };
+  }
 
   toast.add(toastSettings);
 };
@@ -105,22 +102,11 @@ const userMenuItems = [
         />
 
         <!-- Theme Toggle -->
-        <!-- <UButton
+        <UButton
           variant="ghost"
           :icon="colorModeIcon"
           class="text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800"
           @click="toggleColorMode"
-        /> -->
-        <!-- <UButton
-          variant="ghost"
-          icon="mdi:white-balance-sunny"
-          class="text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800"
-        /> -->
-        <UButton
-          variant="ghost"
-          icon="mdi:sun-moon-stars"
-          class="text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800"
-          size="xl"
         />
 
         <!-- User Menu -->
