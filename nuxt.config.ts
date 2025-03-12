@@ -8,6 +8,10 @@ export default defineNuxtConfig({
       charset: "utf-8",
       viewport: "width=device-width, initial-scale=1",
       meta: [{ name: "author", content: "Krenjer Jan J. Sapitola" }],
+      link: [{ rel: "icon", href: "/favicon.ico" }],
+      htmlAttrs: {
+        lang: "en",
+      },
     },
   },
   devServer: {
