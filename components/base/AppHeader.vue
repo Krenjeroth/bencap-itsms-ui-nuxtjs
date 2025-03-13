@@ -4,7 +4,7 @@ const logout = async () => {
   await logoutAction();
 };
 const toast = useToast();
-// const stringHandler = useStringHandler();
+const stringHandler = useStringHandler();
 const colorMode = useColorMode();
 const colorModes = ["system", "light", "dark"];
 const colorModeIcon = ref("mdi:sun-moon-stars");
@@ -32,8 +32,7 @@ const toggleColorMode = () => {
 
   let toastSettings = {
     id: `color-mode-${colorMode.preference}`,
-    // title: `Color mode: ${stringHandler.capitalizeWord(colorMode.preference)}`,
-    title: `Color mode: ${colorMode.preference}`,
+    title: `Color mode: ${stringHandler.capitalizeWord(colorMode.preference)}`,
     description: "",
     timeout: 2000,
   };
