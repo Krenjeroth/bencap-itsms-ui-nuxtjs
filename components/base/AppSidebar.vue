@@ -1,22 +1,3 @@
-<template>
-  <div
-    class="h-auto dark:bg-gray-900 transition-all duration-300 w-16 lg:w-64 border-r border-s border-gray-200 dark:border-gray-700"
-  >
-    <!-- Navigation -->
-    <UVerticalNavigation
-      :links="links"
-      :ui="{
-        wrapper: 'lg:block',
-        base: 'flex items-center rounded-lg transition-colors px-2 py-2 lg:px-4 justify-center lg:justify-start lg:gap-3',
-        label: 'hidden lg:block',
-        icon: {
-          base: 'flex-shrink-0 w-6 h-6 items-center block hover:text-primary dark:text-gray-400',
-        },
-      }"
-    />
-  </div>
-</template>
-
 <script setup lang="ts">
 const links = [
   {
@@ -46,6 +27,23 @@ const links = [
   },
 ];
 </script>
+<template>
+  <aside
+    class="hidden overflow-y-auto lg:block lg:w-[--sidebar-width] lg:max-h[calc(100vh-var(--header-height))] lg:top-[--header-height] py-2 lg:px-1 lg:mx-1 border-r border-gray-200 dark:border-gray-800"
+  >
+    <UVerticalNavigation
+      :links="links"
+      :ui="{
+        wrapper: 'lg:block',
+        base: 'flex items-center rounded-lg transition-colors px-2 py-2 lg:px-4 justify-center lg:justify-start lg:gap-3',
+        label: 'hidden lg:block',
+        icon: {
+          base: 'flex-shrink-0 w-6 h-6 items-center block hover:text-primary dark:text-gray-400',
+        },
+      }"
+    />
+  </aside>
+</template>
 
 <style scoped>
 /* .u-vertical-navigation {
