@@ -1,0 +1,36 @@
+@import url("https://fonts.googleapis.com/css2?family=Khand:wght@300;400;500;600;700&display=swap");
+
+/** 
+* ?? TODO
+* ?? Separate variables
+**/
+
+$header-height: 4rem;
+$sidebar-width: 16rem;
+
+$tw-bg-opacity: 1;
+$tw-text-opacity: 1;
+
+// $font-family: "Khand", sans-serif;
+$font-family: "DM Sans", "DM Sans Fallback: Arial", ui-sans-serif, system-ui,
+  sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol,
+  Noto Color Emoji;
+
+:root {
+  --header-height: #{$header-height};
+  --sidebar-width: #{$sidebar-width};
+}
+
+body {
+  --tw-bg-opacity: #{$tw-bg-opacity};
+  --tw-text-opacity: #{$tw-text-opacity};
+  font-family: $font-family;
+  background-color: rgb(var(--ui-background) / var(--tw-bg-opacity, 1));
+  color: rgb(var(--ui-foreground) / var(--tw-text-opacity, 1));
+  -webkit-font-smoothing: antialiased;
+}
+
+.dark {
+  --ui-background: var(--color-gray-900);
+  --ui-foreground: var(--color-gray-200);
+}
