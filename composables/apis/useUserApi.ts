@@ -6,8 +6,7 @@ export const useUserApi = () => {
   });
 
   const fetchUsersApi = async (queryParams: URLSearchParams) => {
-    console.log("fetch User");
-    // return await sanctumFetch(`${usersUrl.value}?${queryParams.toString()}`);
+    return await sanctumFetch(`${usersUrl.value}?${queryParams.toString()}`);
   };
 
   // const addUserApi = async (form: ICreateUserForm) => {
