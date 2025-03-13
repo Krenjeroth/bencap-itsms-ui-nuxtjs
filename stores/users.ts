@@ -26,6 +26,9 @@ export const useUserStore = defineStore("userStore", () => {
 
       const response = await fetchUsersApi(queryParams);
 
+      // users.value = response.data;
+      console.log(response.data);
+
       // users.value = response.data.map((user: any) => ({
       //   ...user,
       //   created_at: transformUtcDatetime(
