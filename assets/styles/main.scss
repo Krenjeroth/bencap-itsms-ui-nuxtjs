@@ -1,0 +1,21 @@
+@use "sass:meta";
+@use "./utils/variables" as vars;
+
+:root {
+  --header-height: #{vars.$header-height};
+  --sidebar-width: #{vars.$sidebar-width};
+}
+
+body {
+  --tw-bg-opacity: #{vars.$tw-bg-opacity};
+  --tw-text-opacity: #{vars.$tw-text-opacity};
+  font-family: #{meta.inspect(vars.$font-family)};
+  background-color: rgb(var(--ui-background) / var(--tw-bg-opacity, 1));
+  color: rgb(var(--ui-foreground) / var(--tw-text-opacity, 1));
+  -webkit-font-smoothing: antialiased;
+}
+
+.dark {
+  --ui-background: #{vars.$ui-background};
+  --ui-foreground: #{vars.$ui-foreground};
+}
