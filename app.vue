@@ -1,8 +1,6 @@
 <script setup>
-const title =
-  "Benguet Capitol Information Technology Services Management System";
-const description =
-  "Benguet Capitol Information Technology Services Management System Description.";
+const title = "ITSMS";
+const description = "Information Technology Services Management System.";
 
 useHead({
   titleTemplate: (titleChunk) => {
