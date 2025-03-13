@@ -5,26 +5,26 @@ const links = [
     icon: "i-heroicons-home",
     to: "/",
   },
-  {
-    label: "Analytics",
-    icon: "i-heroicons-chart-bar",
-    to: "/",
-  },
-  {
-    label: "Settings",
-    icon: "i-heroicons-cog-6-tooth",
-    to: "/",
-  },
+  // {
+  //   label: "Analytics",
+  //   icon: "i-heroicons-chart-bar",
+  //   to: "/",
+  // },
+  // {
+  //   label: "Settings",
+  //   icon: "i-heroicons-cog-6-tooth",
+  //   to: "/",
+  // },
   {
     label: "Users",
     icon: "i-heroicons-users",
     to: "/users",
   },
-  {
-    label: "Members",
-    icon: "i-heroicons-user-group",
-    to: "/members",
-  },
+  // {
+  //   label: "Members",
+  //   icon: "i-heroicons-user-group",
+  //   to: "/members",
+  // },
 ];
 </script>
 <template>
