@@ -73,20 +73,64 @@ const userMenuItems = [
 
 <template>
   <header
-    class="h-16 border-b border-gray-200 dark:border-gray-80 dark:bg-gray-900"
+    class="bg-background/75 backdrop-blur border-b -mb-px sticky top-0 z-50 border-gray-200 dark:border-gray-800"
   >
-    <div class="h-full px-4 flex items-center justify-between">
+    <div
+      class="px-4 sm:px-6 lg:px-8 max-w-full flex items-center justify-between gap-3 h-[--header-height]"
+    >
       <!-- Left side -->
-      <div class="flex items-center gap-2 px-2 py-4 lg:px-4">
+      <div class="lg:flex-1 flex items-center gap-1.5 min-w-0">
         <UAvatar src="/favicon.ico" alt="Logo" size="sm" />
         <span
-          class="font-semibold text-gray-900 dark:text-white hidden lg:block"
+          class="font-semibold text-gray-900 dark:text-white hidden lg:block text-3xl"
           >ITSMS</span
         >
       </div>
 
+      <!-- Center -->
+      <ul class="items-center gap-x-8 hidden lg:flex">
+        <li class="relative">
+          <ULink
+            class="text-sm/6 font-semibold flex items-center gap-1"
+            active-class="text-primary"
+            inactive-class="hover:text-primary"
+            :to="{
+              name: 'index',
+            }"
+            >Dashboard</ULink
+          >
+        </li>
+        <li class="relative">
+          <ULink
+            class="text-sm/6 font-semibold flex items-center gap-1 hover:text-primary"
+            active-class="text-primary"
+            inactive-class="hover:text-primary"
+            to="https://ui2.nuxt.com/"
+            >Settings</ULink
+          >
+        </li>
+        <li class="relative">
+          <ULink
+            class="text-sm/6 font-semibold flex items-center gap-1 hover:text-primary"
+            active-class="text-primary"
+            inactive-class="hover:text-primary"
+            to="https://nuxt.com/docs/guide"
+            >Link</ULink
+          >
+        </li>
+        <li class="relative">
+          <ULink
+            class="text-sm/6 font-semibold flex items-center gap-1 hover:text-primary"
+            active-class="text-primary"
+            inactive-class="hover:text-primary"
+            to="https://nuxt.com/docs/guide"
+            >Docs</ULink
+          >
+        </li>
+      </ul>
+
       <!-- Right side -->
-      <div class="flex items-center gap-4">
+      <div class="flex items-center justify-end lg:flex-1 gap-1.5">
         <!-- Search -->
         <UButton
           variant="ghost"
