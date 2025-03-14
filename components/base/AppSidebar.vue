@@ -25,6 +25,11 @@ const links = [
   //   icon: "i-heroicons-user-group",
   //   to: "/members",
   // },
+  {
+    label: "---LOGIN (DEV/DEB)---",
+    icon: "i-heroicons-bug-ant",
+    to: "/auth/login",
+  },
 ];
 </script>
 <template>
