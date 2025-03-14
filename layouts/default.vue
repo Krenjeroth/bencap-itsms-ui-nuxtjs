@@ -15,7 +15,10 @@ const isAuthPage = computed(() => authPages.includes(route.name as string));
         <!-- Sidebar -->
         <BaseAppSidebar v-if="!isAuthPage" />
         <!-- Page Content -->
-        <div class="flex-1 mx-auto p-2 lg:p-6">
+        <div
+          class="flex-1 mx-auto p-2 lg:p-6"
+          :class="!isAuthPage ? 'mx-auto' : 'm-auto'"
+        >
           <slot />
         </div>
       </main>
@@ -38,7 +41,7 @@ const isAuthPage = computed(() => authPages.includes(route.name as string));
           ></path>
         </svg>
       </UDivider>
-      <BaseAppFooter v-if="!isAuthPage" />
+      <BaseAppFooter />
     </div>
   </div>
 </template>
