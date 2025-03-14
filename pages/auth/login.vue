@@ -3,6 +3,10 @@ useHead({
   title: "Login",
 });
 
+definePageMeta({
+  middleware: ["sanctum:guest"],
+});
+
 const { login: loginAction } = useSanctumAuth();
 
 const formState = ref<ILoginForm>({
