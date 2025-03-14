@@ -4,7 +4,7 @@
   <footer class="relative">
     <div>
       <div
-        class="mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl py-8 lg:py-4 lg:flex lg:items-center lg:justify-between lg:gap-x-3"
+        class="mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl py-8 lg:py-4 lg:flex lg:items-center lg:justify-between lg:gap-x-3 h-[--footer-height]"
       >
         <div
           class="lg:flex-1 flex items-center justify-center lg:justify-end gap-x-1.5 lg:order-3"
