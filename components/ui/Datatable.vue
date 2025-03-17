@@ -32,11 +32,11 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
-  addUserModal: {
+  addDataModal: {
     type: Function as PropType<() => void>,
     default: () => {},
   },
-  editUserModal: {
+  editDataModal: {
     type: Function as PropType<(row: any) => void>,
     default: () => {},
   },
@@ -148,7 +148,7 @@ const expand = ref({
         </h2>
         <UButton
           :label="`Add ${moduleTitle}`"
-          @click="addUserModal"
+          @click="addDataModal"
           color="primary"
           variant="solid"
         />
@@ -244,7 +244,7 @@ const expand = ref({
       </template>
 
       <template #actions-data="{ row }">
-        <UDropdown :items="actionItems(row, editUserModal)">
+        <UDropdown :items="actionItems(row, editDataModal)">
           <UButton
             color="gray"
             variant="ghost"
@@ -288,7 +288,7 @@ const expand = ref({
       </template>
 
       <template #actions-data="{ row }">
-        <UDropdown :items="actionItems(row, editUserModal)">
+        <UDropdown :items="actionItems(row, editDataModal)">
           <UButton
             color="gray"
             variant="ghost"
