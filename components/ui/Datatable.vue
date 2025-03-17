@@ -126,15 +126,15 @@ const expand = ref({
 
 <template>
   <UCard
-    class="w-full"
+    class="w-full border border-gray-200 dark:border-gray-800"
     :ui="{
       base: '',
       ring: '',
-      divide: 'divide-y divide-gray-200 dark:divide-gray-700',
+      divide: 'divide-y divide-gray-200 dark:divide-gray-800',
       header: { padding: 'px-4 py-5' },
       body: {
         padding: '',
-        base: 'divide-y divide-gray-200 dark:divide-gray-700',
+        base: 'divide-y divide-gray-200 dark:divide-gray-800',
       },
       footer: { padding: 'p-4' },
     }"
@@ -142,7 +142,7 @@ const expand = ref({
     <template #header>
       <div class="flex items-center justify-between">
         <h2
-          class="font-semibold text-xl text-gray-900 dark:text-white leading-tight"
+          class="font-semibold text-xl text-gray-800 dark:text-white leading-tight"
         >
           {{ moduleTitle }}
         </h2>
@@ -155,7 +155,7 @@ const expand = ref({
       </div>
     </template>
     <div
-      class="flex gap-16 px-3 py-3.5 justify-between border-b border-gray-200 dark:border-gray-700"
+      class="flex gap-16 px-3 py-3.5 justify-between border-b border-gray-200 dark:border-gray-800"
     >
       <!-- Filters -->
       <div class="flex flex-1 items-center gap-4">
@@ -299,7 +299,7 @@ const expand = ref({
     </UTable>
 
     <div
-      class="flex items-center justify-between px-3 py-3.5 border-t border-gray-200 dark:border-gray-700"
+      class="flex items-center justify-between px-3 py-3.5 border-t border-gray-200 dark:border-gray-800"
     >
       <p class="text-sm text-gray-500">
         Showing
