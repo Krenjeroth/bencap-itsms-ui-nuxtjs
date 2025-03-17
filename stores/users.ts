@@ -26,7 +26,7 @@ export const useUserStore = defineStore("userStore", () => {
 
       const response = await fetchUsersApi(queryParams);
 
-      // users.value = response.data;
+      users.value = response.data;
       console.log(response.data);
 
       // users.value = response.data.map((user: any) => ({
@@ -45,5 +45,14 @@ export const useUserStore = defineStore("userStore", () => {
     }
   };
 
-  return { fetchUsers };
+  return {
+    users,
+    loading,
+    page,
+    pageCount,
+    search,
+    selectedStatus,
+    totalUsers,
+    fetchUsers,
+  };
 });
