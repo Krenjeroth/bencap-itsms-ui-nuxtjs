@@ -1,5 +1,9 @@
 export const useUserStore = defineStore("userStore", () => {
-  const { fetchUsersApi } = useUserApi();
+  const { fetchUsersApi, addUserApi } = useUserApi();
+  const { hasError, errorBag, transformValidationErrors, resetErrorBag } =
+    useErrorHandler();
+  const { capitalizeWords } = useStringHandler();
+  // const { transformUtcDatetime } = useDateHandler();
   const users = ref([]);
   const loading = ref(false);
   const page = ref(1);
@@ -37,7 +41,7 @@ export const useUserStore = defineStore("userStore", () => {
       //   ),
       // }));
 
-      // totalUsers.value = Number(response.meta.total) || 0;
+      totalUsers.value = Number(response.meta.total) || 0;
     } catch (err: any) {
       throw err;
     } finally {
@@ -45,14 +49,29 @@ export const useUserStore = defineStore("userStore", () => {
     }
   };
 
+  const addUser = async (form: ICreateUserForm) => {
+    loading.value = true;
+    resetErrorBag();
+    await addUserApi(form)
+      .catch((err) => {
+        transformValidationErrors(err);
+      })
+      .finally(() => {
+        loading.value = false;
+      });
+  };
+
   return {
     users,
     loading,
+    errorBag,
+    hasError,
     page,
     pageCount,
     search,
     selectedStatus,
     totalUsers,
     fetchUsers,
+    addUser,
   };
 });
