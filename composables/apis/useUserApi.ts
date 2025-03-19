@@ -9,12 +9,12 @@ export const useUserApi = () => {
     return await sanctumFetch(`${usersUrl.value}?${queryParams.toString()}`);
   };
 
-  // const addUserApi = async (form: ICreateUserForm) => {
-  //   return await sanctumFetch(`${usersUrl.value}`, {
-  //     method: "POST",
-  //     body: form,
-  //   });
-  // };
+  const addUserApi = async (form: ICreateUserForm) => {
+    return await sanctumFetch(`${usersUrl.value}`, {
+      method: "POST",
+      body: form,
+    });
+  };
 
   // const updateUserApi = async (id: string, form: IUpdateUserForm) => {
   //   return await sanctumFetch(`${usersUrl.value}/${id}`, {
@@ -23,5 +23,5 @@ export const useUserApi = () => {
   //   });
   // };
 
-  return { fetchUsersApi };
+  return { fetchUsersApi, addUserApi };
 };
