@@ -1,6 +1,15 @@
+<script setup lang="ts">
+const props = defineProps({
+  class: {
+    type: String,
+    default: "text-gray-900 dark:text-white",
+  },
+});
+</script>
+
 <template>
   <svg
-    class="w-12 h-12 lg:w-10 lg:h-10 text-gray-900 dark:text-white"
+    :class="props.class"
     width="264"
     height="264"
     fill="currentColor"
