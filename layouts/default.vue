@@ -44,7 +44,7 @@ const closeSidebar = () => {
         class="h-px bg-gray-200 dark:bg-gray-800"
         :ui="{ container: { base: 'bg-white dark:bg-gray-900 px-4' } }"
       >
-        <SvgsLogo />
+        <SvgsLogo class="w-12 h-12 lg:w-10 lg:h-10" />
       </UDivider>
       <BaseAppFooter />
     </div>
