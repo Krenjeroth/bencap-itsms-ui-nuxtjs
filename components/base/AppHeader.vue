@@ -87,11 +87,7 @@ const userMenuItems = [
           @click="$emit('toggle-sidebar')"
           aria-label="Open sidebar"
         />
-        <UAvatar src="/favicon.ico" alt="Logo" size="sm" />
-        <span
-          class="font-semibold text-gray-900 dark:text-white hidden lg:block text-3xl"
-          >ITSMS</span
-        >
+        <SvgsLogoWord />
       </div>
 
       <!-- Center -->
