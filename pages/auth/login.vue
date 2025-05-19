@@ -38,11 +38,8 @@ const onLogin = async () => {
   >
     <UCard class="flex-col justify-center px-6 py-12 lg:px-8">
       <div class="sm:mx-auto sm:w-full sm:max-w-sm text-center">
-        <UAvatar
-          img-class="mx-auto h-10 w-auto"
-          src="https://nuxt.com/assets/design-kit/icon-green.svg"
-          alt="1CHOSFITESSGYM Logo"
-          size="xl"
+        <SvgsLogo
+          class="w-16 h-16 lg:w-40 lg:h-40 mx-auto text-blue-800 dark:text-blue-400"
         />
         <h2
           class="mt-10 text-center text-2xl/9 font-bold tracking-tight text-gray-900 dark:text-gray-300"
