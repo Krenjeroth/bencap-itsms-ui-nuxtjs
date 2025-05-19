@@ -27,6 +27,7 @@ export default defineNuxtConfig({
     "@nuxt/ui",
     "dayjs-nuxt",
     "@nuxtjs/color-mode",
+    "@nuxt/image",
   ],
   sanctum: {
     baseUrl: "http://itsms:80", // Laravel API
