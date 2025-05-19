@@ -1,4 +1,12 @@
 <script setup lang="ts">
+const props = defineProps({
+  isOpen: {
+    type: Boolean,
+    default: false,
+  },
+});
+const emit = defineEmits(["close-sidebar"]);
+
 const links = [
   {
     label: "Dashboard",
@@ -31,8 +39,48 @@ const links = [
     to: "/auth/login",
   },
 ];
+
+function handleOverlayClick(e: MouseEvent) {
+  if (e.target === e.currentTarget) emit("close-sidebar");
+}
 </script>
 <template>
+  <!-- Mobile overlay -->
+  <transition name="fade">
+    <div
+      v-if="props.isOpen"
+      class="fixed inset-0 z-[1300] bg-black bg-opacity-40 lg:hidden"
+      @click="handleOverlayClick"
+      style="backdrop-filter: none"
+    >
+      <aside
+        class="fixed left-0 top-0 h-full w-64 bg-white dark:bg-gray-900 shadow-2xl z-[1400] flex flex-col"
+        style="backdrop-filter: none"
+      >
+        <UButton
+          variant="ghost"
+          icon="i-heroicons-x-mark"
+          class="self-end m-2 p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-800"
+          @click="$emit('close-sidebar')"
+          aria-label="Close sidebar"
+        />
+
+        <UVerticalNavigation
+          :links="links"
+          :ui="{
+            wrapper: '',
+            base: 'flex items-center rounded-lg transition-colors px-2 py-2 justify-start text-left w-full',
+            label: 'block w-full text-left',
+            icon: {
+              base: 'flex-shrink-0 w-6 h-6 items-center block hover:text-primary dark:text-gray-400',
+            },
+          }"
+        />
+      </aside>
+    </div>
+  </transition>
+
+  <!-- Desktop sidebar -->
   <aside
     class="hidden overflow-y-auto lg:block lg:w-[--sidebar-width] lg:max-h[calc(100vh-var(--header-height))] lg:top-[--header-height] py-2 lg:px-1 lg:mx-1 border-r border-gray-200 dark:border-gray-800"
   >

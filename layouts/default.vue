@@ -3,17 +3,34 @@ const route = useRoute();
 
 const authPages = ["auth-login"];
 const isAuthPage = computed(() => authPages.includes(route.name as string));
+
+// Sidebar state for mobile
+const isSidebarOpen = ref(false);
+const toggleSidebar = () => {
+  isSidebarOpen.value = !isSidebarOpen.value;
+};
+const closeSidebar = () => {
+  isSidebarOpen.value = false;
+};
 </script>
 
 <template>
   <div class="min-h-screen flex">
     <div class="flex-1 flex flex-col">
       <!-- Header -->
-      <BaseAppHeader v-if="!isAuthPage" />
+      <BaseAppHeader
+        v-if="!isAuthPage"
+        :is-sidebar-open="isSidebarOpen"
+        @toggle-sidebar="toggleSidebar"
+      />
 
       <main class="flex-1 flex min-h-[calc(50vh-var(--header-height))]">
         <!-- Sidebar -->
-        <BaseAppSidebar v-if="!isAuthPage" />
+        <BaseAppSidebar
+          v-if="!isAuthPage"
+          :is-open="isSidebarOpen"
+          @close-sidebar="closeSidebar"
+        />
         <!-- Page Content -->
         <div
           class="flex-1 mx-auto p-2 lg:p-6"

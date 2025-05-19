@@ -72,13 +72,21 @@ const userMenuItems = [
 
 <template>
   <header
-    class="bg-background/75 backdrop-blur border-b -mb-px sticky top-0 z-50 border-gray-200 dark:border-gray-800"
+    class="h-16 content-center bg-background/75 backdrop-blur border-b -mb-px sticky top-0 z-50 border-gray-200 dark:border-gray-800"
   >
     <div
       class="px-4 sm:px-6 lg:px-8 max-w-full flex items-center justify-between gap-3 h-[--header-height]"
     >
       <!-- Left side -->
       <div class="lg:flex-1 flex items-center gap-1.5 min-w-0">
+        <!-- Hamburger for mobile -->
+        <UButton
+          class="lg:hidden"
+          icon="i-heroicons-bars-3"
+          variant="ghost"
+          @click="$emit('toggle-sidebar')"
+          aria-label="Open sidebar"
+        />
         <UAvatar src="/favicon.ico" alt="Logo" size="sm" />
         <span
           class="font-semibold text-gray-900 dark:text-white hidden lg:block text-3xl"
