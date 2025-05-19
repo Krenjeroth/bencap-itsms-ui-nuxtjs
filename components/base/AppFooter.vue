@@ -20,7 +20,7 @@
             />
           </ULink>
         </div>
-        <div class="mt-3 lg:mt-0 lg:order-2 flex items-center justify-center">
+        <!-- <div class="mt-3 lg:mt-0 lg:order-2 flex items-center justify-center">
           <ul
             class="flex flex-col md:flex-row items-center justify-center gap-4 lg:gap-6"
           >
@@ -37,7 +37,7 @@
               </ULink>
             </li>
           </ul>
-        </div>
+        </div> -->
         <div
           class="flex items-center justify-center lg:justify-start lg:flex-1 gap-x-1.5 mt-3 lg:mt-0 lg:order-1"
         >
