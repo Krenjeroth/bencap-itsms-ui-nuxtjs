@@ -16,7 +16,16 @@ const modal = useModal();
 // const {actionToastResult} = useToastHandler();
 
 const userStore = useUserStore();
-const { users: data, loading } = storeToRefs(userStore);
+const {
+  users: data,
+  loading,
+  page,
+  pageCount,
+  search,
+  sort,
+  totalUsers,
+  selectedStatus,
+} = storeToRefs(userStore);
 const { columns, items, statusOptions } = model;
 userStore.fetchUsers();
 
@@ -49,6 +58,28 @@ const addUserModal = () => {
     },
   });
 };
+
+// Watch search changes and fetch when updated
+watch(search, () => {
+  page.value = 1; // Reset page
+  userStore.fetchUsers();
+});
+
+// ✅ Reset page to 1 when rows per page (`pageCount`) changes
+watch(pageCount, () => {
+  page.value = 1;
+  userStore.fetchUsers();
+});
+
+// ✅ Ensure pagination updates correctly
+watch([page, pageCount], () => {
+  userStore.fetchUsers();
+});
+
+watch(selectedStatus, () => {
+  page.value = 1;
+  userStore.fetchUsers();
+});
 </script>
 
 <template>
@@ -56,9 +87,26 @@ const addUserModal = () => {
     <UiDatatable
       :module-title="'Users'"
       :columns="columns"
+      :action-items="items"
       :table-data="data"
-      :loading="loading"
       :add-data-modal="addUserModal"
+      :loading="loading"
+      :action-handlers="{
+        create: addUserModal,
+        // edit: editUserModal,
+        // delete: deleteUserModal,
+      }"
+      :pagination="{ page, pageCount, total: totalUsers }"
+      :sorting="sort"
+      :search="search"
+      :selected-dropdown-filter="selectedStatus"
+      :enable-dropdown-filter="true"
+      :dropdown-filter-options="statusOptions"
+      @update:page="(value) => (page = value)"
+      @update:pageCount="(value) => (pageCount = value)"
+      @update:sort="userStore.fetchUsers"
+      @update:search="(value) => (search = value)"
+      @update:selected-dropdown-filter="(value) => (selectedStatus = value)"
     />
   </div>
 </template>
