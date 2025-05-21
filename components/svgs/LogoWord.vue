@@ -1,10 +1,8 @@
 <template>
   <svg
-    width="164"
-    height="44"
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 162.72 44"
-    class="w-32 h-32 lg:w-44 lg:h-44 text-gray-900 dark:text-white"
+    class="w-28 h-16 lg:w-44 lg:h-16 text-gray-900 dark:text-white"
     fill="currentColor"
   >
     <title>ITSMS-logo-word</title>
