@@ -16,6 +16,10 @@ const props = defineProps({
     type: Function as PropType<ITableActions>,
     default: () => [],
   },
+  actionHandlers: {
+    type: Object as PropType<{ [key: string]: (...args: any[]) => void }>,
+    default: () => ({}),
+  },
   pagination: {
     type: Object,
     default: () => ({
@@ -36,10 +40,6 @@ const props = defineProps({
     type: Function as PropType<() => void>,
     default: () => {},
   },
-  editDataModal: {
-    type: Function as PropType<(row: any) => void>,
-    default: () => {},
-  },
   dropdownFilterBy: {
     type: Array,
     default: () => [],
@@ -53,6 +53,10 @@ const props = defineProps({
   isExpandable: {
     type: Boolean,
     default: false,
+  },
+  expandableDetails: {
+    type: Function as PropType<ITableExpandableDetails>,
+    default: () => [],
   },
 });
 
@@ -244,7 +248,7 @@ const expand = ref({
       </template>
 
       <template #actions-data="{ row }">
-        <UDropdown :items="actionItems(row, editDataModal)">
+        <UDropdown :items="actionItems(row, props.actionHandlers)">
           <UButton
             color="gray"
             variant="ghost"
@@ -288,7 +292,7 @@ const expand = ref({
       </template>
 
       <template #actions-data="{ row }">
-        <UDropdown :items="actionItems(row, editDataModal)">
+        <UDropdown :items="actionItems(row, props.actionHandlers)">
           <UButton
             color="gray"
             variant="ghost"
