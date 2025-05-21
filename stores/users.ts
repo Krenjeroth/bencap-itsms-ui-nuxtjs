@@ -4,15 +4,19 @@ export const useUserStore = defineStore("userStore", () => {
     useErrorHandler();
   const { capitalizeWords } = useStringHandler();
   // const { transformUtcDatetime } = useDateHandler();
+  enum SortDirection {
+    ASC = "asc",
+    DESC = "desc",
+  }
   const users = ref([]);
   const loading = ref(false);
   const page = ref(1);
   const pageCount = ref(5);
   const search = ref("");
-  // const sort = ref<{ column: string; direction: SortDirection }>({
-  //   column: "created_at",
-  //   direction: SortDirection.DESC,
-  // });
+  const sort = ref<{ column: string; direction: SortDirection }>({
+    column: "created_at",
+    direction: SortDirection.DESC,
+  });
   const totalUsers = ref(0);
   const selectedStatus = ref("");
 
@@ -22,8 +26,8 @@ export const useUserStore = defineStore("userStore", () => {
       const queryParams = new URLSearchParams({
         page: page.value.toString(),
         per_page: pageCount.value.toString(),
-        // sort: sort.value.column,
-        // order: sort.value.direction,
+        sort: sort.value.column,
+        order: sort.value.direction,
         search: search.value,
         ...(selectedStatus.value ? { status: selectedStatus.value } : {}),
       });
@@ -69,9 +73,12 @@ export const useUserStore = defineStore("userStore", () => {
     page,
     pageCount,
     search,
-    selectedStatus,
+    sort,
     totalUsers,
+    selectedStatus,
     fetchUsers,
     addUser,
+    // updateUser,
+    // deleteUser,
   };
 });
