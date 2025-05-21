@@ -13,8 +13,17 @@ declare global {
     rowClass?: string;
   }
 
+  interface IHandlers {
+    create?: (row: any) => void;
+    edit?: (row: any) => void;
+    delete?: (row: any) => void;
+    // Add other handler functions here if needed in the future
+  }
+
   interface ITableActions {
-    (row: ITableRow, editUserModal: (target: any) => void): Array;
+    (row: ITableRow, handlers: Handlers): Array<
+      Array<{ label: string; icon: string; click: () => any }>
+    >;
   }
 
   interface ITableStatusOptions {
@@ -22,6 +31,17 @@ declare global {
     label: string;
     value: any;
   }
+
+  interface ITableExpandableDetails {
+    (row: ITableRow): Array<{ key: string; label: string; value: any }>;
+  }
 }
 
-export { ITableRow, ITableColumns, TTableActions };
+export {
+  ITableRow,
+  ITableColumns,
+  ITableActions,
+  IHandlers,
+  ITableStatusOptions,
+  ITableExpandableDetails,
+};
