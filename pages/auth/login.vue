@@ -24,9 +24,9 @@ const validate = (formState: ILoginForm) => {
   return errors;
 };
 
-const onLogin = async () => {
+const onLogin = async (event: any) => {
   isLoading.value = true;
-  await loginAction(formState.value).finally(() => {
+  await loginAction(event.data).finally(() => {
     isLoading.value = false;
   });
 };
@@ -49,9 +49,9 @@ const onLogin = async () => {
       </div>
       <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
         <UForm
-          :validate="validate"
           :state="formState"
           class="space-y-6"
+          :validate="validate"
           @submit.prevent="onLogin"
         >
           <UFormGroup label="Email" name="email">
