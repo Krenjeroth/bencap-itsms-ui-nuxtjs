@@ -8,36 +8,43 @@ const props = defineProps({
 const emit = defineEmits(["close-sidebar"]);
 
 const links = [
-  {
-    label: "Dashboard",
-    icon: "i-heroicons-home",
-    to: "/",
-  },
-  // {
-  //   label: "Analytics",
-  //   icon: "i-heroicons-chart-bar",
-  //   to: "/",
-  // },
-  // {
-  //   label: "Settings",
-  //   icon: "i-heroicons-cog-6-tooth",
-  //   to: "/",
-  // },
-  {
-    label: "Users",
-    icon: "i-heroicons-users",
-    to: "/users",
-  },
-  // {
-  //   label: "Members",
-  //   icon: "i-heroicons-user-group",
-  //   to: "/members",
-  // },
-  {
-    label: "---LOGIN (DEV/DEB)---",
-    icon: "i-heroicons-bug-ant",
-    to: "/auth/login",
-  },
+  [
+    {
+      label: "Control Panel",
+    },
+    {
+      label: "Users",
+      icon: "i-heroicons-users",
+      to: "/users",
+    },
+    {
+      label: "Departments",
+      icon: "i-heroicons-book-open",
+      to: "/departments",
+    },
+  ],
+  [
+    {
+      label: "Dashboard",
+      icon: "i-heroicons-home",
+      to: "/",
+    },
+    // {
+    //   label: "Analytics",
+    //   icon: "i-heroicons-chart-bar",
+    //   to: "/",
+    // },
+    // {
+    //   label: "Settings",
+    //   icon: "i-heroicons-cog-6-tooth",
+    //   to: "/",
+    // },
+    {
+      label: "---LOGIN (DEV/DEB)---",
+      icon: "i-heroicons-bug-ant",
+      to: "/auth/login",
+    },
+  ],
 ];
 
 function handleOverlayClick(e: MouseEvent) {
