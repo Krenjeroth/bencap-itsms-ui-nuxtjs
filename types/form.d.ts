@@ -17,24 +17,14 @@ declare global {
     email?: string;
   }
 
-  interface ICreateMemberForm {
-    prefix?: string | null;
-    firstname?: string;
-    middlename?: string;
-    lastname?: string;
-    suffix?: string | null;
-    email?: string;
-    phone?: string;
-    gender?: string;
-    date_of_birth?: TDatePickerDate;
-    join_date?: TDatePickerDate;
-    address?: string;
-    emergency_contact_name?: string;
-    emergency_contact_phone?: string;
-    photo_id?: File | null;
+  interface ICreateDepartmentForm {
+    name?: string;
+    full_name?: string;
+    division?: string;
+    abbreviation?: string;
   }
 
   type IFormSubmitEvent<T> = FormSubmitEvent<T>;
 }
 
-export { LoginForm, CreateUserForm, CreateMemberForm, IFormSubmitEvent };
+export { LoginForm, CreateUserForm, ICreateDepartmentForm, IFormSubmitEvent };
