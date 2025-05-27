@@ -27,6 +27,11 @@ const links = [
       icon: "i-heroicons-book-open",
       to: "/permissions",
     },
+    {
+      label: "Roles",
+      icon: "i-heroicons-book-open",
+      to: "/roles",
+    },
   ],
   [
     {

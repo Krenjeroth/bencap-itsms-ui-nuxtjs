@@ -39,6 +39,14 @@ declare global {
     title?: string;
   }
 
+  interface ICreateRoleForm {
+    title?: string;
+  }
+
+  interface IUpdateRoleForm {
+    title?: string;
+  }
+
   type IFormSubmitEvent<T> = FormSubmitEvent<T>;
 }
 
@@ -49,5 +57,7 @@ export {
   IUpdateDepartmentForm,
   ICreatePermissionForm,
   IUpdatePermissionForm,
+  ICreateRoleForm,
+  IUpdateRoleForm,
   IFormSubmitEvent,
 };
