@@ -22,6 +22,11 @@ const links = [
       icon: "i-heroicons-book-open",
       to: "/departments",
     },
+    {
+      label: "Permissions",
+      icon: "i-heroicons-book-open",
+      to: "/permissions",
+    },
   ],
   [
     {
