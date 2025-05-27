@@ -3,6 +3,8 @@ const departmentStore = useDepartmentStore();
 const { loading, errorBag, hasError } = storeToRefs(departmentStore);
 const emit = defineEmits(["reloadTable", "success", "error", "close"]);
 
+const { capitalizeAll } = useStringHandler();
+
 const onClose = () => emit("close");
 
 const onSuccess = () => {
@@ -20,6 +22,13 @@ const formState = ref<ICreateDepartmentForm>({
   full_name: undefined,
   division: undefined,
   abbreviation: undefined,
+});
+
+const abbreviationComputed = computed({
+  get: () => formState.value.abbreviation,
+  set: (value) => {
+    formState.value.abbreviation = capitalizeAll(value);
+  },
 });
 
 const handleSubmit = async (
@@ -66,7 +75,7 @@ const handleSubmit = async (
         name="abbreviation"
         :error="errorBag.abbreviation"
       >
-        <UInput v-model="formState.abbreviation" />
+        <UInput v-model="abbreviationComputed" />
       </UFormGroup>
 
       <UButton type="submit" :loading="loading"> Add </UButton>
