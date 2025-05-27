@@ -10,7 +10,11 @@ useHead({
   title: "Departments",
 });
 
-import { DepartmentsCreateModal, DepartmentsUpdateModal } from "#components";
+import {
+  DepartmentsCreateModal,
+  DepartmentsUpdateModal,
+  DepartmentsDeleteModal,
+} from "#components";
 import * as model from "./model/index";
 const modal = useModal();
 // const {actionToastResult} = useToastHandler();
@@ -97,6 +101,36 @@ const editDepartmentModal = (department: any) => {
   });
 };
 
+const deleteDepartmentModal = (department: any) => {
+  modal.open(DepartmentsDeleteModal, {
+    department,
+    onReloadTable() {
+      departmentStore.fetchDepartments();
+    },
+    onSuccess() {
+      // actionToastResult({
+      //   icon: "i-heroicons-check-circle",
+      //   // title: "Success !",
+      //   description: "User deleted.",
+      //   id: "modal-success",
+      //   color: "green",
+      // });
+    },
+    onError() {
+      // actionToastResult({
+      //   icon: "i-heroicons-x-circle",
+      //   // title: "Error !",
+      //   description: "Something went wrong.",
+      //   id: "modal-error",
+      //   color: "red",
+      // });
+    },
+    onClose() {
+      modal.close();
+    },
+  });
+};
+
 // Watch search changes and fetch when updated
 watch(search, () => {
   page.value = 1; // Reset page
@@ -131,7 +165,7 @@ watch(selectedStatus, () => {
       :loading="loading"
       :action-handlers="{
         edit: editDepartmentModal,
-        // delete: deleteUserModal,
+        delete: deleteDepartmentModal,
       }"
       :pagination="{ page, pageCount, total: totalDepartments }"
       :sorting="sort"

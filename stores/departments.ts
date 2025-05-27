@@ -1,6 +1,10 @@
 export const useDepartmentStore = defineStore("departmentStore", () => {
-  const { fetchDepartmentsApi, addDepartmentApi, updateDepartmentApi } =
-    useDepartmentApi();
+  const {
+    fetchDepartmentsApi,
+    addDepartmentApi,
+    updateDepartmentApi,
+    deleteDepartmentApi,
+  } = useDepartmentApi();
   const { hasError, errorBag, transformValidationErrors, resetErrorBag } =
     useErrorHandler();
   const { capitalizeWords, capitalizeAll } = useStringHandler();
@@ -82,6 +86,18 @@ export const useDepartmentStore = defineStore("departmentStore", () => {
       });
   };
 
+  const deleteDepartment = async (id: string) => {
+    loading.value = true;
+    resetErrorBag();
+    await deleteDepartmentApi(id)
+      .catch((err: any) => {
+        transformValidationErrors(err);
+      })
+      .finally(() => {
+        loading.value = false;
+      });
+  };
+
   return {
     departments,
     loading,
@@ -96,6 +112,6 @@ export const useDepartmentStore = defineStore("departmentStore", () => {
     fetchDepartments,
     addDepartment,
     updateDepartment,
-    // deleteUser,
+    deleteDepartment,
   };
 });

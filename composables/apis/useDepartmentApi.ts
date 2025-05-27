@@ -28,5 +28,19 @@ export const useDepartmentApi = () => {
     });
   };
 
-  return { fetchDepartmentsApi, addDepartmentApi, updateDepartmentApi };
+  const deleteDepartmentApi = async (id: string) => {
+    return await sanctumFetch(`${departmentsUrl.value}/${id}`, {
+      method: "DELETE",
+      headers: {
+        Accept: "application/json",
+      },
+    });
+  };
+
+  return {
+    fetchDepartmentsApi,
+    addDepartmentApi,
+    updateDepartmentApi,
+    deleteDepartmentApi,
+  };
 };
