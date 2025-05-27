@@ -3,6 +3,10 @@ export const useStringHandler = () => {
     return str?.replace(/\s+/g, " ").trim().toLowerCase() || "";
   };
 
+  const strDeepSanitize = (str: string | undefined | null) => {
+    return str?.replace(/[^a-zA-Z]/g, "").trim();
+  };
+
   const capitalizeWord = (str: string | undefined | null) => {
     str = strSanitize(str);
     return str?.replace(/^\w/, (c) => c.toUpperCase()) || "";
@@ -20,5 +24,11 @@ export const useStringHandler = () => {
     return str?.toUpperCase() || "";
   };
 
-  return { capitalizeWord, capitalizeWords, capitalizeAll };
+  return {
+    capitalizeWord,
+    capitalizeWords,
+    capitalizeAll,
+    strSanitize,
+    strDeepSanitize,
+  };
 };
