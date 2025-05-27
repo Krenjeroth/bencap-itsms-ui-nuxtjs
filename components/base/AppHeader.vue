@@ -91,7 +91,7 @@ const userMenuItems = [
       </div>
 
       <!-- Center -->
-      <ul class="items-center gap-x-8 hidden lg:flex">
+      <!-- <ul class="items-center gap-x-8 hidden lg:flex">
         <li class="relative">
           <ULink
             class="text-sm/6 font-semibold flex items-center gap-1"
@@ -130,7 +130,7 @@ const userMenuItems = [
             >Docs</ULink
           >
         </li>
-      </ul>
+      </ul> -->
 
       <!-- Right side -->
       <div class="flex items-center justify-end lg:flex-1 gap-1.5">
