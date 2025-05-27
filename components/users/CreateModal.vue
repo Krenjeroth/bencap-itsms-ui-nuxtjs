@@ -38,7 +38,7 @@ const handleSubmit = async (
 
 <template>
   <BaseModal :on-close="onClose" :title="'Create User'">
-    <!-- <UForm
+    <UForm
       :schema="CreateUserValidationSchema"
       :state="formState"
       @submit.prevent="handleSubmit"
@@ -57,7 +57,6 @@ const handleSubmit = async (
       </UFormGroup>
 
       <UButton type="submit" :loading="loading"> Add </UButton>
-    </UForm> -->
-    Create User Modal
+    </UForm>
   </BaseModal>
 </template>

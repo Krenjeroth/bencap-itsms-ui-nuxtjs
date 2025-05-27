@@ -1,5 +1,6 @@
 export const useUserStore = defineStore("userStore", () => {
-  const { fetchUsersApi, addUserApi } = useUserApi();
+  const { fetchUsersApi, addUserApi, updateUserApi, deleteUserApi } =
+    useUserApi();
   const { hasError, errorBag, transformValidationErrors, resetErrorBag } =
     useErrorHandler();
   const { capitalizeWords } = useStringHandler();
@@ -35,7 +36,6 @@ export const useUserStore = defineStore("userStore", () => {
       const response = await fetchUsersApi(queryParams);
 
       users.value = response.data;
-      console.log(response.data);
 
       // users.value = response.data.map((user: any) => ({
       //   ...user,
@@ -65,6 +65,35 @@ export const useUserStore = defineStore("userStore", () => {
       });
   };
 
+  const updateUser = async (id: string, form: IUpdateUserForm) => {
+    loading.value = true;
+    resetErrorBag();
+    const name = capitalizeWords(form.name);
+    const formattedForm = {
+      ...form,
+      name,
+    };
+    await updateUserApi(id, formattedForm)
+      .catch((err) => {
+        transformValidationErrors(err);
+      })
+      .finally(() => {
+        loading.value = false;
+      });
+  };
+
+  const deleteUser = async (id: string) => {
+    loading.value = true;
+    resetErrorBag();
+    await deleteUserApi(id)
+      .catch((err) => {
+        transformValidationErrors(err);
+      })
+      .finally(() => {
+        loading.value = false;
+      });
+  };
+
   return {
     users,
     loading,
@@ -78,7 +107,7 @@ export const useUserStore = defineStore("userStore", () => {
     selectedStatus,
     fetchUsers,
     addUser,
-    // updateUser,
-    // deleteUser,
+    updateUser,
+    deleteUser,
   };
 });

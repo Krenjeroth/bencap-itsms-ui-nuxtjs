@@ -9,7 +9,11 @@ useHead({
   title: "Users",
 });
 
-import { UsersCreateModal } from "#components";
+import {
+  UsersCreateModal,
+  UsersUpdateModal,
+  UsersDeleteModal,
+} from "#components";
 import * as model from "./model/index";
 const modal = useModal();
 // const {actionToastResult} = useToastHandler();
@@ -39,6 +43,75 @@ const addUserModal = () => {
       //   icon: "i-heroicons-check-circle",
       //   // title: "Success !",
       //   description: "User created successfully.",
+      //   id: "modal-success",
+      //   color: "green",
+      // });
+    },
+    onError() {
+      // actionToastResult({
+      //   icon: "i-heroicons-x-circle",
+      //   // title: "Error !",
+      //   description: "Something went wrong.",
+      //   id: "modal-error",
+      //   color: "red",
+      // });
+    },
+    onClose() {
+      modal.close();
+    },
+  });
+};
+
+const editUserModal = (user: any) => {
+  modal.open(UsersUpdateModal, {
+    user,
+    onReloadTable() {
+      userStore.fetchUsers();
+    },
+    onSuccess() {
+      // actionToastResult({
+      //   icon: "i-heroicons-check-circle",
+      //   // title: "Success !",
+      //   description: "User updated successfully.",
+      //   id: "modal-success",
+      //   color: "green",
+      // });
+    },
+    onError() {
+      // actionToastResult({
+      //   icon: "i-heroicons-x-circle",
+      //   // title: "Error !",
+      //   description: "Something went wrong.",
+      //   id: "modal-error",
+      //   color: "red",
+      // });
+    },
+    onNoDataChange() {
+      // actionToastResult({
+      //   icon: "i-heroicons-exclamation-circle",
+      //   // title: "Error !",
+      //   description: "No data changes detected.",
+      //   id: "modal-warning",
+      //   color: "yellow",
+      // });
+    },
+    onClose() {
+      modal.close();
+    },
+  });
+};
+
+const deleteUserModal = (user: any) => {
+  modal.open(UsersDeleteModal, {
+    user,
+    onReloadTable() {
+      userStore.fetchUsers();
+    },
+    onSuccess() {
+      // actionToastResult({
+      //   icon: "i-heroicons-check-circle",
+      //   // title: "Success !",
+      //   description: "User deleted.",
       //   id: "modal-success",
       //   color: "green",
       // });
@@ -91,9 +164,8 @@ watch(selectedStatus, () => {
       :add-data-modal="addUserModal"
       :loading="loading"
       :action-handlers="{
-        create: addUserModal,
-        // edit: editUserModal,
-        // delete: deleteUserModal,
+        edit: editUserModal,
+        delete: deleteUserModal,
       }"
       :pagination="{ page, pageCount, total: totalUsers }"
       :sorting="sort"

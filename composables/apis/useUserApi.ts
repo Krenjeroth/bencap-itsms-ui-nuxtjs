@@ -16,12 +16,21 @@ export const useUserApi = () => {
     });
   };
 
-  // const updateUserApi = async (id: string, form: IUpdateUserForm) => {
-  //   return await sanctumFetch(`${usersUrl.value}/${id}`, {
-  //     method: "PUT",
-  //     body: form,
-  //   });
-  // };
+  const updateUserApi = async (id: string, form: IUpdateUserForm) => {
+    return await sanctumFetch(`${usersUrl.value}/${id}`, {
+      method: "PUT",
+      body: form,
+    });
+  };
 
-  return { fetchUsersApi, addUserApi };
+  const deleteUserApi = async (id: string) => {
+    return await sanctumFetch(`${usersUrl.value}/${id}`, {
+      method: "DELETE",
+      headers: {
+        Accept: "application/json",
+      },
+    });
+  };
+
+  return { fetchUsersApi, addUserApi, updateUserApi, deleteUserApi };
 };
