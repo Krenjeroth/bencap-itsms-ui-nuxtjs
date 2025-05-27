@@ -10,7 +10,7 @@ useHead({
   title: "Departments",
 });
 
-import { DepartmentsCreateModal } from "#components";
+import { DepartmentsCreateModal, DepartmentsUpdateModal } from "#components";
 import * as model from "./model/index";
 const modal = useModal();
 // const {actionToastResult} = useToastHandler();
@@ -58,6 +58,45 @@ const addDepartmentModal = () => {
   });
 };
 
+const editDepartmentModal = (department: any) => {
+  modal.open(DepartmentsUpdateModal, {
+    department,
+    onReloadTable() {
+      departmentStore.fetchDepartments();
+    },
+    onSuccess() {
+      // actionToastResult({
+      //   icon: "i-heroicons-check-circle",
+      //   // title: "Success !",
+      //   description: "User updated successfully.",
+      //   id: "modal-success",
+      //   color: "green",
+      // });
+    },
+    onError() {
+      // actionToastResult({
+      //   icon: "i-heroicons-x-circle",
+      //   // title: "Error !",
+      //   description: "Something went wrong.",
+      //   id: "modal-error",
+      //   color: "red",
+      // });
+    },
+    onNoDataChange() {
+      // actionToastResult({
+      //   icon: "i-heroicons-exclamation-circle",
+      //   // title: "Error !",
+      //   description: "No data changes detected.",
+      //   id: "modal-warning",
+      //   color: "yellow",
+      // });
+    },
+    onClose() {
+      modal.close();
+    },
+  });
+};
+
 // Watch search changes and fetch when updated
 watch(search, () => {
   page.value = 1; // Reset page
@@ -91,7 +130,7 @@ watch(selectedStatus, () => {
       :add-data-modal="addDepartmentModal"
       :loading="loading"
       :action-handlers="{
-        // edit: editUserModal,
+        edit: editDepartmentModal,
         // delete: deleteUserModal,
       }"
       :pagination="{ page, pageCount, total: totalDepartments }"

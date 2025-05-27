@@ -24,7 +24,20 @@ declare global {
     abbreviation?: string;
   }
 
+  interface IUpdateDepartmentForm {
+    name?: string;
+    full_name?: string;
+    division?: string;
+    abbreviation?: string;
+  }
+
   type IFormSubmitEvent<T> = FormSubmitEvent<T>;
 }
 
-export { LoginForm, CreateUserForm, ICreateDepartmentForm, IFormSubmitEvent };
+export {
+  LoginForm,
+  CreateUserForm,
+  ICreateDepartmentForm,
+  IUpdateDepartmentForm,
+  IFormSubmitEvent,
+};

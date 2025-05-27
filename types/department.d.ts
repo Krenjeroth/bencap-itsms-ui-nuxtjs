@@ -12,9 +12,13 @@ declare global {
   type TCreateDepartmentValidationSchema = z.output<
     typeof CreateDepartmentValidationSchema
   >;
-  // type TUpdateUserValidationSchema = z.output<
-  //   typeof UpdateUserValidationSchema
-  // >;
+  type TUpdateDepartmentValidationSchema = z.output<
+    typeof UpdateDepartmentValidationSchema
+  >;
 }
 
-export { IDepartment, TCreateDepartmentValidationSchema };
+export {
+  IDepartment,
+  TCreateDepartmentValidationSchema,
+  TUpdateDepartmentValidationSchema,
+};

@@ -27,6 +27,7 @@ export default defineNuxtConfig({
     "@nuxt/ui",
     "dayjs-nuxt",
     "@nuxtjs/color-mode",
+    "nuxt-lodash",
     "@nuxt/image",
   ],
   sanctum: {

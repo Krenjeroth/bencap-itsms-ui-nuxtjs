@@ -18,12 +18,15 @@ export const useDepartmentApi = () => {
     });
   };
 
-  // const updateUserApi = async (id: string, form: IUpdateUserForm) => {
-  //   return await sanctumFetch(`${usersUrl.value}/${id}`, {
-  //     method: "PUT",
-  //     body: form,
-  //   });
-  // };
+  const updateDepartmentApi = async (
+    id: string,
+    form: IUpdateDepartmentForm
+  ) => {
+    return await sanctumFetch(`${departmentsUrl.value}/${id}`, {
+      method: "PUT",
+      body: form,
+    });
+  };
 
-  return { fetchDepartmentsApi, addDepartmentApi };
+  return { fetchDepartmentsApi, addDepartmentApi, updateDepartmentApi };
 };
