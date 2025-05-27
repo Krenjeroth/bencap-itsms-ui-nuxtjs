@@ -2,7 +2,7 @@ export const useDepartmentStore = defineStore("departmentStore", () => {
   const { fetchDepartmentsApi, addDepartmentApi } = useDepartmentApi();
   const { hasError, errorBag, transformValidationErrors, resetErrorBag } =
     useErrorHandler();
-  const { capitalizeWords } = useStringHandler();
+  const { capitalizeWords, capitalizeAll } = useStringHandler();
   // const { transformUtcDatetime } = useDateHandler();
   enum SortDirection {
     ASC = "asc",
@@ -52,7 +52,7 @@ export const useDepartmentStore = defineStore("departmentStore", () => {
       name: capitalizeWords(form.name),
       full_name: capitalizeWords(form.full_name),
       division: capitalizeWords(form.division),
-      abbreviation: capitalizeWords(form.abbreviation),
+      abbreviation: capitalizeAll(form.abbreviation),
     };
 
     await addDepartmentApi(formattedForm)
