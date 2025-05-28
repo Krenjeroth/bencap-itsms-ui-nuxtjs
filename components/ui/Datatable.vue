@@ -291,6 +291,17 @@ const expand = ref({
         />
       </template>
 
+      <template #roles-data="{ row }">
+        <UBadge
+          v-for="role in row.roles"
+          :key="role.id"
+          color="primary"
+          variant="solid"
+          class="mr-2"
+          >{{ role.title }}</UBadge
+        >
+      </template>
+
       <template #actions-data="{ row }">
         <UDropdown :items="actionItems(row, props.actionHandlers)">
           <UButton

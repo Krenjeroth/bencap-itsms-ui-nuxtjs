@@ -16,6 +16,9 @@ export const CreateUserValidationSchema = z.object({
       invalid_type_error: "Password is required",
     })
     .min(8, "Password must be at least 8 characters long"),
+  role: z.string({
+    required_error: "Role is required",
+  }),
 });
 //   .refine((data) => data.password === data.password_confirmation, {
 //   message: "Passwords do not match",

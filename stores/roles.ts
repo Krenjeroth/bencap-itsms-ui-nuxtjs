@@ -1,6 +1,11 @@
 export const useRoleStore = defineStore("roleStore", () => {
-  const { fetchRolesApi, addRoleApi, updateRoleApi, deleteRoleApi } =
-    useRoleApi();
+  const {
+    fetchRolesApi,
+    addRoleApi,
+    updateRoleApi,
+    deleteRoleApi,
+    getRoleSelectApi,
+  } = useRoleApi();
   const { hasError, errorBag, transformValidationErrors, resetErrorBag } =
     useErrorHandler();
   const { capitalizeWords } = useStringHandler();
@@ -10,6 +15,7 @@ export const useRoleStore = defineStore("roleStore", () => {
     DESC = "desc",
   }
   const roles = ref([]);
+  const roleSelect = ref([]);
   const loading = ref(false);
   const page = ref(1);
   const pageCount = ref(5);
@@ -90,8 +96,18 @@ export const useRoleStore = defineStore("roleStore", () => {
       });
   };
 
+  const getRoleSelect = async () => {
+    try {
+      const response = await getRoleSelectApi();
+      roleSelect.value = response.data;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return {
     roles,
+    roleSelect,
     loading,
     errorBag,
     hasError,
@@ -105,5 +121,6 @@ export const useRoleStore = defineStore("roleStore", () => {
     addRole,
     updateRole,
     deleteRole,
+    getRoleSelect,
   };
 });

@@ -12,6 +12,10 @@ const columns: ITableColumns[] = [
     label: "Email",
   },
   {
+    key: "roles",
+    label: "Roles",
+  },
+  {
     key: "actions",
   },
 ];

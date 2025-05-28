@@ -1,6 +1,9 @@
 <script setup lang="ts">
 const userStore = useUserStore();
 const { loading, errorBag, hasError } = storeToRefs(userStore);
+const roleStore = useRoleStore();
+const { roleSelect } = storeToRefs(roleStore);
+roleStore.getRoleSelect();
 const emit = defineEmits(["reloadTable", "success", "error", "close"]);
 
 const onClose = () => emit("close");
@@ -19,6 +22,7 @@ const formState = ref<ICreateUserForm>({
   name: undefined,
   email: undefined,
   password: undefined,
+  role: undefined,
 });
 
 const handleSubmit = async (
@@ -54,6 +58,16 @@ const handleSubmit = async (
 
       <UFormGroup label="Password" name="password" :error="errorBag.password">
         <UInput v-model="formState.password" type="password" />
+      </UFormGroup>
+
+      <UFormGroup label="Role" name="role" :error="errorBag.role">
+        <USelect
+          v-model="formState.role"
+          :options="roleSelect"
+          value-attribute="id"
+          option-attribute="title"
+          placeholder="Select"
+        />
       </UFormGroup>
 
       <UButton type="submit" :loading="loading"> Add </UButton>

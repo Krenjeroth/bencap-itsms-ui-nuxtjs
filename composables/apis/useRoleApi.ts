@@ -5,6 +5,11 @@ export const useRoleApi = () => {
     return url;
   });
 
+  const roleSelectUrl = computed(() => {
+    const url = new URL("http://itsms/api/roles-select");
+    return url;
+  });
+
   const fetchRolesApi = async (queryParams: URLSearchParams) => {
     return await sanctumFetch(`${rolesUrl.value}?${queryParams.toString()}`);
   };
@@ -32,10 +37,15 @@ export const useRoleApi = () => {
     });
   };
 
+  const getRoleSelectApi = async () => {
+    return await sanctumFetch(`${roleSelectUrl.value}`);
+  };
+
   return {
     fetchRolesApi,
     addRoleApi,
     updateRoleApi,
     deleteRoleApi,
+    getRoleSelectApi,
   };
 };

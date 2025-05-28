@@ -37,13 +37,7 @@ export const useUserStore = defineStore("userStore", () => {
 
       users.value = response.data;
 
-      // users.value = response.data.map((user: any) => ({
-      //   ...user,
-      //   created_at: transformUtcDatetime(
-      //     user.created_at,
-      //     "MMMM DD, YYYY hh:mm A"
-      //   ),
-      // }));
+      console.log(users.value);
 
       totalUsers.value = Number(response.meta.total) || 0;
     } catch (err: any) {
