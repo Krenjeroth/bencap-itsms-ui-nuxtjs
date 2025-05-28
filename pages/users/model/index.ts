@@ -6,17 +6,21 @@ const columns: ITableColumns[] = [
     label: "Name",
     sortable: true,
     direction: "desc",
+    rowClass: "whitespace-pre-line max-w-fit",
   },
   {
     key: "email",
     label: "Email",
+    rowClass: "whitespace-pre-line max-w-fit",
   },
   {
     key: "roles",
     label: "Roles",
+    rowClass: "whitespace-pre-line max-w-auto overflow-x-auto",
   },
   {
     key: "actions",
+    rowClass: "whitespace-pre-line max-w-fit text-center",
   },
 ];
 

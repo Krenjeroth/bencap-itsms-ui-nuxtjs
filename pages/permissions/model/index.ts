@@ -6,9 +6,11 @@ const columns: ITableColumns[] = [
     label: "Permission",
     sortable: true,
     direction: "desc",
+    rowClass: "whitespace-pre-line max-w-fit",
   },
   {
     key: "actions",
+    rowClass: "whitespace-pre-line max-w-fit text-center",
   },
 ];
 

@@ -6,17 +6,21 @@ const columns: ITableColumns[] = [
     label: "Dept. Name",
     sortable: true,
     direction: "desc",
+    rowClass: "whitespace-pre-line max-w-fit",
   },
   {
     key: "division",
     label: "Division",
+    rowClass: "whitespace-pre-line max-w-fit",
   },
   {
     key: "abbreviation",
     label: "Abbreviation",
+    rowClass: "whitespace-pre-line max-w-fit",
   },
   {
     key: "actions",
+    rowClass: "whitespace-pre-line max-w-fit text-center",
   },
 ];
 

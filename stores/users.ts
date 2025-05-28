@@ -37,8 +37,6 @@ export const useUserStore = defineStore("userStore", () => {
 
       users.value = response.data;
 
-      console.log(users.value);
-
       totalUsers.value = Number(response.meta.total) || 0;
     } catch (err: any) {
       throw err;
