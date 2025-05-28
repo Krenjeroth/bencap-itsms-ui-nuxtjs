@@ -42,7 +42,6 @@ export const useRoleStore = defineStore("roleStore", () => {
       const response = await fetchRolesApi(queryParams);
 
       roles.value = response.data;
-      console.log(roles.value);
       totalRoles.value = Number(response.meta.total) || 0;
     } catch (err: any) {
       throw err;
@@ -72,6 +71,7 @@ export const useRoleStore = defineStore("roleStore", () => {
     loading.value = true;
     resetErrorBag();
     const formattedForm = {
+      ...form,
       title: capitalizeWords(form.title),
     };
 

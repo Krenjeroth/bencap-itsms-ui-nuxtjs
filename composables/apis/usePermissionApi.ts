@@ -5,6 +5,11 @@ export const usePermissionApi = () => {
     return url;
   });
 
+  const permissionsAllUrl = computed(() => {
+    const url = new URL("http://itsms/api/permissions-all");
+    return url;
+  });
+
   const fetchPermissionsApi = async (queryParams: URLSearchParams) => {
     return await sanctumFetch(
       `${permissionsUrl.value}?${queryParams.toString()}`
@@ -37,10 +42,15 @@ export const usePermissionApi = () => {
     });
   };
 
+  const fetchPermissionsAllApi = async () => {
+    return await sanctumFetch(`${permissionsAllUrl.value}`);
+  };
+
   return {
     fetchPermissionsApi,
     addPermissionApi,
     updatePermissionApi,
     deletePermissionApi,
+    fetchPermissionsAllApi,
   };
 };

@@ -6,13 +6,16 @@ const columns: ITableColumns[] = [
     label: "Role",
     sortable: true,
     direction: "desc",
+    rowClass: "whitespace-pre-line max-w-fit",
   },
   {
     key: "permissions",
     label: "Permissions",
+    rowClass: "whitespace-pre-line max-w-auto overflow-x-auto",
   },
   {
     key: "actions",
+    rowClass: "whitespace-pre-line max-w-fit text-center",
   },
 ];
 

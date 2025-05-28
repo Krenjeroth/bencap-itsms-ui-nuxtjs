@@ -47,6 +47,7 @@ declare global {
 
   interface IUpdateRoleForm {
     title?: string;
+    permission_ids?: number[];
   }
 
   type IFormSubmitEvent<T> = FormSubmitEvent<T>;

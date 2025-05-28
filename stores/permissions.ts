@@ -4,6 +4,7 @@ export const usePermissionStore = defineStore("permissionStore", () => {
     addPermissionApi,
     updatePermissionApi,
     deletePermissionApi,
+    fetchPermissionsAllApi,
   } = usePermissionApi();
   const { hasError, errorBag, transformValidationErrors, resetErrorBag } =
     useErrorHandler();
@@ -14,6 +15,7 @@ export const usePermissionStore = defineStore("permissionStore", () => {
     DESC = "desc",
   }
   const permissions = ref([]);
+  const permissionsAll = ref<IPermission[]>([]);
   const loading = ref(false);
   const page = ref(1);
   const pageCount = ref(5);
@@ -93,8 +95,22 @@ export const usePermissionStore = defineStore("permissionStore", () => {
       });
   };
 
+  const fetchPermissionsAll = async () => {
+    loading.value = true;
+    try {
+      const response = await fetchPermissionsAllApi();
+
+      permissionsAll.value = response.data;
+    } catch (err: any) {
+      throw err;
+    } finally {
+      loading.value = false;
+    }
+  };
+
   return {
     permissions,
+    permissionsAll,
     loading,
     errorBag,
     hasError,
@@ -108,5 +124,6 @@ export const usePermissionStore = defineStore("permissionStore", () => {
     addPermission,
     updatePermission,
     deletePermission,
+    fetchPermissionsAll,
   };
 });

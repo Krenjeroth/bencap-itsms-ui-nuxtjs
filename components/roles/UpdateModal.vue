@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { cloneDeep } from "lodash";
 const roleStore = useRoleStore();
+const permissionStore = usePermissionStore();
+const { permissionsAll } = storeToRefs(permissionStore);
+permissionStore.fetchPermissionsAll();
 const { loading, errorBag, hasError } = storeToRefs(roleStore);
 const emit = defineEmits([
   "reloadTable",
@@ -32,15 +35,17 @@ const onNoDataChange = () => {
 
 const formState = ref<IUpdateRoleForm>({
   title: props.role?.title || undefined,
+  permission_ids: props.role?.permissions.map((p: any) => p.id) || [],
 });
 
 const originalState = ref<IUpdateRoleForm>({
   ...cloneDeep({
     title: props.role?.title || undefined,
+    permission_ids: props.role?.permissions.map((p: any) => p.id) || [],
   }),
 });
 
-const fieldsToCompare: (keyof IUpdateRoleForm)[] = ["title"];
+const fieldsToCompare: (keyof IUpdateRoleForm)[] = ["title", "permission_ids"];
 
 const isChangedComputed = computed(() => {
   return fieldsToCompare.some((key) => {
@@ -58,6 +63,8 @@ const handleSubmit = async (
     onNoDataChange();
     return;
   }
+
+  console.log(event.data);
 
   await roleStore.updateRole(props.role?.id, event.data);
 
@@ -81,6 +88,23 @@ const handleSubmit = async (
     >
       <UFormGroup label="Role Title" name="title" :error="errorBag.title">
         <UInput v-model="formState.title" />
+      </UFormGroup>
+
+      <UFormGroup
+        label="Permissions"
+        name="permission_ids"
+        :error="errorBag.permission_ids"
+      >
+        <div class="grid grid-cols-2 gap-1">
+          <UCheckbox
+            v-for="permission in permissionsAll"
+            :key="permission.id"
+            v-model="formState.permission_ids"
+            :value="permission.id"
+            :id="permission.title"
+            :label="permission.title"
+          />
+        </div>
       </UFormGroup>
 
       <UButton type="submit" :loading="loading" :disabled="!isChangedComputed">
