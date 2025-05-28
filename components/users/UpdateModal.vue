@@ -2,6 +2,9 @@
 import { cloneDeep } from "lodash";
 const userStore = useUserStore();
 const { loading, errorBag, hasError } = storeToRefs(userStore);
+const roleStore = useRoleStore();
+const { roleSelect } = storeToRefs(roleStore);
+roleStore.getRoleSelect();
 const props = defineProps({
   user: Object,
 });
@@ -32,16 +35,18 @@ const onNoDataChange = () => {
 const formState = ref<IUpdateUserForm>({
   name: props.user?.name ?? undefined,
   email: props.user?.email ?? undefined,
+  role: props.user?.roles[0].id ?? undefined,
 });
 
 const originalState = ref<IUpdateUserForm>(
   cloneDeep({
     name: props.user?.name ?? undefined,
     email: props.user?.email ?? undefined,
+    role: props.user?.roles[0].id ?? undefined,
   })
 );
 
-const fieldsToCompare: (keyof IUpdateUserForm)[] = ["name", "email"];
+const fieldsToCompare: (keyof IUpdateUserForm)[] = ["name", "email", "role"];
 
 const isChangedComputed = computed(() => {
   return fieldsToCompare.some((key) => {
@@ -86,6 +91,16 @@ const handleSubmit = async (
 
       <UFormGroup label="Email" name="email" :error="errorBag.email">
         <UInput v-model="formState.email" />
+      </UFormGroup>
+
+      <UFormGroup label="Role" name="role" :error="errorBag.role">
+        <USelect
+          v-model="formState.role"
+          :options="roleSelect"
+          value-attribute="id"
+          option-attribute="title"
+          placeholder="Select"
+        />
       </UFormGroup>
 
       <UButton type="submit" :loading="loading" :disabled="!isChangedComputed">
