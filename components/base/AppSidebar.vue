@@ -24,17 +24,17 @@ const links = [
     },
     {
       label: "Permissions",
-      icon: "i-heroicons-book-open",
+      icon: "i-heroicons-lock-closed",
       to: "/permissions",
     },
     {
       label: "Positions",
-      icon: "i-heroicons-book-open",
+      icon: "i-heroicons-briefcase",
       to: "/positions",
     },
     {
       label: "Roles",
-      icon: "i-heroicons-book-open",
+      icon: "i-heroicons-user-group",
       to: "/roles",
     },
   ],
