@@ -92,7 +92,9 @@ const handleSubmit = async (
         <UInput v-model="titleComputed" />
       </UFormGroup>
 
-      <UButton type="submit" :loading="loading"> Update </UButton>
+      <UButton type="submit" :loading="loading" :disabled="!isChangedComputed">
+        Update
+      </UButton>
     </UForm>
   </BaseModal>
 </template>
