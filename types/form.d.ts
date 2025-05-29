@@ -34,6 +34,18 @@ declare global {
     abbreviation?: string;
   }
 
+  interface ICreatePositionForm {
+    name?: string;
+    abbreviation?: string;
+    salary_grade?: string;
+  }
+
+  interface IUpdatePositionForm {
+    name?: string;
+    abbreviation?: string;
+    salary_grade?: string;
+  }
+
   interface ICreatePermissionForm {
     title?: string;
   }
@@ -59,6 +71,8 @@ export {
   CreateUserForm,
   ICreateDepartmentForm,
   IUpdateDepartmentForm,
+  ICreatePositionForm,
+  IUpdatePositionForm,
   ICreatePermissionForm,
   IUpdatePermissionForm,
   ICreateRoleForm,
