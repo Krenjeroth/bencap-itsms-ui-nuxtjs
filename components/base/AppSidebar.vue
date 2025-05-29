@@ -19,7 +19,7 @@ const links = [
     },
     {
       label: "Departments",
-      icon: "i-heroicons-book-open",
+      icon: "i-heroicons-building-office-2",
       to: "/departments",
     },
     {
