@@ -41,7 +41,7 @@ const addUserModal = () => {
       actionToastResult({
         icon: "i-heroicons-check-circle",
         // title: "Success !",
-        description: "User created successfully.",
+        description: "User created.",
         id: "modal-success",
         color: "green",
       });
@@ -71,7 +71,7 @@ const editUserModal = (user: any) => {
       actionToastResult({
         icon: "i-heroicons-check-circle",
         // title: "Success !",
-        description: "User updated successfully.",
+        description: "User updated.",
         id: "modal-success",
         color: "green",
       });

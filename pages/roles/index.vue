@@ -42,7 +42,7 @@ const addRoleModal = () => {
       actionToastResult({
         icon: "i-heroicons-check-circle",
         // title: "Success !",
-        description: "Role created successfully.",
+        description: "Role created.",
         id: "modal-success",
         color: "green",
       });
@@ -72,7 +72,7 @@ const editRoleModal = (role: any) => {
       actionToastResult({
         icon: "i-heroicons-check-circle",
         // title: "Success !",
-        description: "Role updated successfully.",
+        description: "Role updated.",
         id: "modal-success",
         color: "green",
       });

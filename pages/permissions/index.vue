@@ -39,22 +39,22 @@ const addPermissionModal = () => {
       permissionStore.fetchPermissions();
     },
     onSuccess() {
-      // actionToastResult({
-      //   icon: "i-heroicons-check-circle",
-      //   // title: "Success !",
-      //   description: "User created successfully.",
-      //   id: "modal-success",
-      //   color: "green",
-      // });
+      actionToastResult({
+        icon: "i-heroicons-check-circle",
+        // title: "Success !",
+        description: "Permission created.",
+        id: "modal-success",
+        color: "green",
+      });
     },
     onError() {
-      // actionToastResult({
-      //   icon: "i-heroicons-x-circle",
-      //   // title: "Error !",
-      //   description: "Something went wrong.",
-      //   id: "modal-error",
-      //   color: "red",
-      // });
+      actionToastResult({
+        icon: "i-heroicons-x-circle",
+        // title: "Error !",
+        description: "Something went wrong.",
+        id: "modal-error",
+        color: "red",
+      });
     },
     onClose() {
       modal.close();
@@ -69,31 +69,31 @@ const editPermissionModal = (permission: any) => {
       permissionStore.fetchPermissions();
     },
     onSuccess() {
-      // actionToastResult({
-      //   icon: "i-heroicons-check-circle",
-      //   // title: "Success !",
-      //   description: "User updated successfully.",
-      //   id: "modal-success",
-      //   color: "green",
-      // });
+      actionToastResult({
+        icon: "i-heroicons-check-circle",
+        // title: "Success !",
+        description: "Permission updated.",
+        id: "modal-success",
+        color: "green",
+      });
     },
     onError() {
-      // actionToastResult({
-      //   icon: "i-heroicons-x-circle",
-      //   // title: "Error !",
-      //   description: "Something went wrong.",
-      //   id: "modal-error",
-      //   color: "red",
-      // });
+      actionToastResult({
+        icon: "i-heroicons-x-circle",
+        // title: "Error !",
+        description: "Something went wrong.",
+        id: "modal-error",
+        color: "red",
+      });
     },
     onNoDataChange() {
-      // actionToastResult({
-      //   icon: "i-heroicons-exclamation-circle",
-      //   // title: "Error !",
-      //   description: "No data changes detected.",
-      //   id: "modal-warning",
-      //   color: "yellow",
-      // });
+      actionToastResult({
+        icon: "i-heroicons-exclamation-circle",
+        // title: "Error !",
+        description: "No data changes detected.",
+        id: "modal-warning",
+        color: "yellow",
+      });
     },
     onClose() {
       modal.close();
@@ -108,22 +108,22 @@ const deletePermissionModal = (permission: any) => {
       permissionStore.fetchPermissions();
     },
     onSuccess() {
-      // actionToastResult({
-      //   icon: "i-heroicons-check-circle",
-      //   // title: "Success !",
-      //   description: "User deleted.",
-      //   id: "modal-success",
-      //   color: "green",
-      // });
+      actionToastResult({
+        icon: "i-heroicons-check-circle",
+        // title: "Success !",
+        description: "Permission deleted.",
+        id: "modal-success",
+        color: "green",
+      });
     },
     onError() {
-      // actionToastResult({
-      //   icon: "i-heroicons-x-circle",
-      //   // title: "Error !",
-      //   description: "Something went wrong.",
-      //   id: "modal-error",
-      //   color: "red",
-      // });
+      actionToastResult({
+        icon: "i-heroicons-x-circle",
+        // title: "Error !",
+        description: "Something went wrong.",
+        id: "modal-error",
+        color: "red",
+      });
     },
     onClose() {
       modal.close();
