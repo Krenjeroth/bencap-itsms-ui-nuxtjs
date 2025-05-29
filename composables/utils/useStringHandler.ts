@@ -14,7 +14,7 @@ export const useStringHandler = () => {
   const strConvertSpaceToUnderscore = (str: string | undefined | null) => {
     return (
       str
-        ?.replace(/[^a-zA-Z0-9 ]+/g, "") // remove non-alphanumeric except space
+        ?.replace(/[^a-zA-Z0-9 _]+/g, "") // remove non-alphanumeric except space and underscore
         .trim() // remove leading/trailing spaces
         .replace(/\s+/g, "_") // replace spaces with hyphens
         .toLowerCase() || ""
