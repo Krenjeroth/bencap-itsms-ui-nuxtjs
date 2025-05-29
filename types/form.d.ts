@@ -16,7 +16,8 @@ declare global {
   interface IUpdateUserForm {
     name?: string;
     email?: string;
-    role?: string;
+    role_id?: number;
+    role?: number | string;
   }
 
   interface ICreateDepartmentForm {

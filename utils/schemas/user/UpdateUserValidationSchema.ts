@@ -11,9 +11,7 @@ export const UpdateUserValidationSchema = z.object({
       invalid_type_error: "Email is required",
     })
     .email("Email is not valid"),
-  role: z.string({
-    required_error: "Role is required",
-  }),
+  role: z.union([z.number(), z.string()]),
   // password: z
   //   .string({
   //     invalid_type_error: "Password is required",

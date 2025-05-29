@@ -35,7 +35,15 @@ export const useUserStore = defineStore("userStore", () => {
 
       const response = await fetchUsersApi(queryParams);
 
-      users.value = response.data;
+      // users.value = response.data;
+
+      users.value = response.data.map((user: any) => ({
+        ...user,
+        role_id: user.roles.map((role: any) => role.id)[0], // might change if enable multiple roles for a user
+        role: user.roles.map((role: any) => role.title)[0], // might change if enable multiple roles for a user
+      }));
+
+      console.log(users.value);
 
       totalUsers.value = Number(response.meta.total) || 0;
     } catch (err: any) {
