@@ -3,11 +3,11 @@ import type { z } from "zod";
 declare global {
   interface IEmployee {
     id: string;
-    uid: string | number;
+    uid: string | null;
     firstname: string;
     middlename: string;
     lastname: string;
-    suffix: string;
+    suffix: string | null;
     full_name: string;
     img_path: string;
   }

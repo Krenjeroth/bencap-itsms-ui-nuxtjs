@@ -64,21 +64,21 @@ declare global {
   }
 
   interface ICreateEmployeeForm {
-    uid?: string | number;
+    uid?: string | null;
     firstname?: string;
     middlename?: string;
     lastname?: string;
-    suffix?: string;
+    suffix?: string | null;
     position?: number;
     department?: number;
   }
 
   interface IUpdateEmployeeForm {
-    uid?: string | number;
+    uid?: string | null;
     firstname?: string;
     middlename?: string;
     lastname?: string;
-    suffix?: string;
+    suffix?: string | null;
     position_id?: number;
     position?: number | string;
     department_id?: number;

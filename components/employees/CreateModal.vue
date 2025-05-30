@@ -38,11 +38,21 @@ const formState = ref<ICreateEmployeeForm>({
   department: undefined,
 });
 
+const uidComputed = computed({
+  get: () => formState.value.uid ?? undefined,
+  set: (value) => (formState.value.uid = value || undefined),
+});
+
+const suffixComputed = computed({
+  get: () => formState.value.suffix ?? undefined,
+  set: (value) => (formState.value.suffix = value || undefined),
+});
+
 const handleSubmit = async (
   event: IFormSubmitEvent<TCreateEmployeeValidationSchema>
 ) => {
   console.log(event.data);
-  // await employeeStore.addEmployee(event.data);
+  await employeeStore.addEmployee(event.data);
 
   if (hasError.value) {
     onError();
@@ -87,7 +97,7 @@ const searchDepartments = async (q: string) => {
       class="space-y-6"
     >
       <UFormGroup label="UID" name="uid" :error="errorBag.uid">
-        <UInput v-model="formState.uid" />
+        <UInput v-model="uidComputed" />
       </UFormGroup>
 
       <div
@@ -126,7 +136,7 @@ const searchDepartments = async (q: string) => {
           :error="errorBag.suffix"
           :ui="{ wrapper: 'md:w-full md:max-w-20' }"
         >
-          <UInput v-model="formState.suffix" />
+          <UInput v-model="suffixComputed" />
         </UFormGroup>
       </div>
 

@@ -54,12 +54,22 @@ export const useEmployeeStore = defineStore("employeeStore", () => {
     loading.value = true;
     resetErrorBag();
 
+    const firstname = capitalizeAll(form.firstname);
+    const suffix = capitalizeAll(form.suffix).concat(".");
+    const middlename = capitalizeAll(form.middlename).concat(".");
+    const lastname = capitalizeAll(form.lastname);
+
     const formattedForm = {
       ...form,
-      firstname: capitalizeAll(form.firstname),
-      middlename: capitalizeAll(form.middlename) + ".",
-      lastname: capitalizeAll(form.lastname),
-      suffix: capitalizeAll(form.suffix) + ".",
+      department_id: form.department,
+      position_id: form.position,
+      firstname,
+      middlename,
+      lastname,
+      suffix,
+      full_name: `${firstname} ${middlename} ${lastname}${
+        suffix ? " " + suffix : ""
+      }`,
     };
 
     await addEmployeeApi(formattedForm)
