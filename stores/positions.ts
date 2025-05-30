@@ -4,6 +4,7 @@ export const usePositionStore = defineStore("positionStore", () => {
     addPositionApi,
     updatePositionApi,
     deletePositionApi,
+    fetchPositionSelectApi,
   } = usePositionApi();
   const { hasError, errorBag, transformValidationErrors, resetErrorBag } =
     useErrorHandler();
@@ -14,6 +15,7 @@ export const usePositionStore = defineStore("positionStore", () => {
     DESC = "desc",
   }
   const positions = ref([]);
+  const positionSelect = ref<TPositionSelectOption[]>([]);
   const loading = ref(false);
   const page = ref(1);
   const pageCount = ref(5);
@@ -96,8 +98,18 @@ export const usePositionStore = defineStore("positionStore", () => {
       });
   };
 
+  const fetchPositionSelect = async () => {
+    try {
+      const response = await fetchPositionSelectApi();
+      positionSelect.value = response.data;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return {
     positions,
+    positionSelect,
     loading,
     errorBag,
     hasError,
@@ -111,5 +123,6 @@ export const usePositionStore = defineStore("positionStore", () => {
     addPosition,
     updatePosition,
     deletePosition,
+    fetchPositionSelect,
   };
 });

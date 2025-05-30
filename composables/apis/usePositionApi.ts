@@ -5,6 +5,11 @@ export const usePositionApi = () => {
     return url;
   });
 
+  const positionsSelectUrl = computed(() => {
+    const url = new URL("http://itsms/api/positions-select");
+    return url;
+  });
+
   const fetchPositionsApi = async (queryParams: URLSearchParams) => {
     return await sanctumFetch(
       `${positionsUrl.value}?${queryParams.toString()}`
@@ -34,10 +39,15 @@ export const usePositionApi = () => {
     });
   };
 
+  const fetchPositionSelectApi = async () => {
+    return await sanctumFetch(`${positionsSelectUrl.value}`);
+  };
+
   return {
     fetchPositionsApi,
     addPositionApi,
     updatePositionApi,
     deletePositionApi,
+    fetchPositionSelectApi,
   };
 };

@@ -8,6 +8,13 @@ declare global {
     salary_grade: string;
   }
 
+  type TPositionSelectOption = {
+    id: number | string;
+    name: string;
+    abbreviation: string;
+    salary_grade: string;
+  };
+
   type TCreatePositionValidationSchema = z.output<
     typeof CreatePositionValidationSchema
   >;
@@ -18,6 +25,7 @@ declare global {
 
 export {
   IPosition,
+  TPositionSelectOption,
   TCreatePositionValidationSchema,
   TUpdatePositionValidationSchema,
 };

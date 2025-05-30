@@ -18,6 +18,11 @@ const links = [
       to: "/users",
     },
     {
+      label: "Employees",
+      icon: "i-heroicons-x-mark",
+      to: "/employees",
+    },
+    {
       label: "Departments",
       icon: "i-heroicons-building-office-2",
       to: "/departments",

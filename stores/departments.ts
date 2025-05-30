@@ -4,6 +4,7 @@ export const useDepartmentStore = defineStore("departmentStore", () => {
     addDepartmentApi,
     updateDepartmentApi,
     deleteDepartmentApi,
+    fetchDepartmentSelectApi,
   } = useDepartmentApi();
   const { hasError, errorBag, transformValidationErrors, resetErrorBag } =
     useErrorHandler();
@@ -14,6 +15,8 @@ export const useDepartmentStore = defineStore("departmentStore", () => {
     DESC = "desc",
   }
   const departments = ref([]);
+
+  const departmentSelect = ref<TDepartmentSelectOption[]>([]);
   const loading = ref(false);
   const page = ref(1);
   const pageCount = ref(5);
@@ -98,8 +101,18 @@ export const useDepartmentStore = defineStore("departmentStore", () => {
       });
   };
 
+  const fetchDepartmentSelect = async () => {
+    try {
+      const response = await fetchDepartmentSelectApi();
+      departmentSelect.value = response.data;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return {
     departments,
+    departmentSelect,
     loading,
     errorBag,
     hasError,
@@ -113,5 +126,6 @@ export const useDepartmentStore = defineStore("departmentStore", () => {
     addDepartment,
     updateDepartment,
     deleteDepartment,
+    fetchDepartmentSelect,
   };
 });

@@ -9,6 +9,13 @@ declare global {
     abbreviation: string;
   }
 
+  type TDepartmentSelectOption = {
+    id: number | string;
+    abbreviation: string;
+    title: string;
+    full_name: string;
+  };
+
   type TCreateDepartmentValidationSchema = z.output<
     typeof CreateDepartmentValidationSchema
   >;
@@ -19,6 +26,7 @@ declare global {
 
 export {
   IDepartment,
+  TDepartmentSelectOption,
   TCreateDepartmentValidationSchema,
   TUpdateDepartmentValidationSchema,
 };

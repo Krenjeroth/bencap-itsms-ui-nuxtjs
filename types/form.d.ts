@@ -63,6 +63,28 @@ declare global {
     permission_ids?: number[];
   }
 
+  interface ICreateEmployeeForm {
+    uid?: string | number;
+    firstname?: string;
+    middlename?: string;
+    lastname?: string;
+    suffix?: string;
+    position?: number;
+    department?: number;
+  }
+
+  interface IUpdateEmployeeForm {
+    uid?: string | number;
+    firstname?: string;
+    middlename?: string;
+    lastname?: string;
+    suffix?: string;
+    position_id?: number;
+    position?: number | string;
+    department_id?: number;
+    department?: number | string;
+  }
+
   type IFormSubmitEvent<T> = FormSubmitEvent<T>;
 }
 
@@ -77,5 +99,7 @@ export {
   IUpdatePermissionForm,
   ICreateRoleForm,
   IUpdateRoleForm,
+  ICreateEmployeeForm,
+  IUpdateEmployeeForm,
   IFormSubmitEvent,
 };

@@ -5,6 +5,11 @@ export const useDepartmentApi = () => {
     return url;
   });
 
+  const departmentSelectUrl = computed(() => {
+    const url = new URL("http://itsms/api/departments-select");
+    return url;
+  });
+
   const fetchDepartmentsApi = async (queryParams: URLSearchParams) => {
     return await sanctumFetch(
       `${departmentsUrl.value}?${queryParams.toString()}`
@@ -37,10 +42,15 @@ export const useDepartmentApi = () => {
     });
   };
 
+  const fetchDepartmentSelectApi = async () => {
+    return await sanctumFetch(`${departmentSelectUrl.value}`);
+  };
+
   return {
     fetchDepartmentsApi,
     addDepartmentApi,
     updateDepartmentApi,
     deleteDepartmentApi,
+    fetchDepartmentSelectApi,
   };
 };
