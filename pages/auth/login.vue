@@ -7,14 +7,13 @@ definePageMeta({
   middleware: ["sanctum:guest"],
 });
 
-const { login: loginAction } = useSanctumAuth();
+const authStore = useAuthStore();
+const { loading, errorBag, hasError } = storeToRefs(authStore);
 
 const formState = ref<ILoginForm>({
   email: undefined,
   password: undefined,
 });
-
-const isLoading = ref(false);
 
 const validate = (formState: ILoginForm) => {
   const errors = [];
@@ -25,10 +24,9 @@ const validate = (formState: ILoginForm) => {
 };
 
 const onLogin = async (event: any) => {
-  isLoading.value = true;
-  await loginAction(event.data).finally(() => {
-    isLoading.value = false;
-  });
+  await authStore.authLogin(event.data);
+
+  console.log(errorBag.value);
 };
 </script>
 
@@ -50,6 +48,7 @@ const onLogin = async (event: any) => {
       <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
         <UForm
           :state="formState"
+          :errors="errorBag"
           class="space-y-6"
           :validate="validate"
           @submit.prevent="onLogin"
@@ -62,7 +61,12 @@ const onLogin = async (event: any) => {
             <UInput v-model="formState.password" type="password" />
           </UFormGroup>
 
-          <UButton type="submit" :loading="isLoading"> Login </UButton>
+          <UButton type="submit" :loading="loading"> Login </UButton>
+
+          <!-- !! Fix error display soon -->
+          <div v-if="hasError" class="text-red-500 text-sm text-center mt-4">
+            {{ errorBag }}
+          </div>
         </UForm>
       </div>
     </UCard>

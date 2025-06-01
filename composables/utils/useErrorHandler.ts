@@ -3,12 +3,17 @@ export const useErrorHandler = () => {
   const hasError = ref(false);
 
   const transformValidationErrors = (response: any, handlerType = "axios") => {
+    resetErrorBag();
+    const data = response?.response?.data || response?.data;
     if (handlerType === "axios") {
-      if (response.data.errors) {
+      if (data?.errors) {
         hasError.value = true;
-        for (let key in response.data.errors) {
-          errorBag.value[key] = response.data.errors[key][0];
+        for (let key in data.errors) {
+          errorBag.value[key] = data.errors[key][0];
         }
+      } else if (data?.message) {
+        hasError.value = true;
+        errorBag.value.general = data.message;
       }
     }
   };
