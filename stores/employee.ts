@@ -46,7 +46,7 @@ export const useEmployeeStore = defineStore("employeeStore", () => {
         department_id: employee.department.id,
         department_full: `${employee.department.full_name} (${employee.department.abbreviation})`,
         position_id: employee.position.id,
-        position_name: employee.position.name,
+        position_name: `${employee.position.name} (${employee.position.abbreviation})`,
       }));
 
       totalEmployees.value = Number(response.meta.total) || 0;
