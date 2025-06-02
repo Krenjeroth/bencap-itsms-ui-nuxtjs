@@ -1,8 +1,9 @@
 export const useEmployeeStore = defineStore("employeeStore", () => {
-  const { fetchEmployeesApi, addEmployeeApi } = useEmployeeApi();
+  const { fetchEmployeesApi, addEmployeeApi, updateEmployeeApi } =
+    useEmployeeApi();
   const { hasError, errorBag, transformValidationErrors, resetErrorBag } =
     useErrorHandler();
-  const { capitalizeAll } = useStringHandler();
+  const { capitalizeAll, strDeepSanitize } = useStringHandler();
   // const { transformUtcDatetime } = useDateHandler();
   enum SortDirection {
     ASC = "asc",
@@ -36,6 +37,8 @@ export const useEmployeeStore = defineStore("employeeStore", () => {
 
       employees.value = response.data.map((employee: any) => ({
         ...employee,
+        middlename: strDeepSanitize(employee.middlename),
+        suffix: strDeepSanitize(employee.suffix),
         department_id: employee.department.id,
         department_full: `${employee.department.full_name} (${employee.department.abbreviation})`,
         position_id: employee.position.id,
@@ -55,8 +58,10 @@ export const useEmployeeStore = defineStore("employeeStore", () => {
     resetErrorBag();
 
     const firstname = capitalizeAll(form.firstname);
-    const suffix = capitalizeAll(form.suffix).concat(".");
-    const middlename = capitalizeAll(form.middlename).concat(".");
+    const suffix = form.suffix ? capitalizeAll(form.suffix).concat(".") : "";
+    const middlename = form.middlename
+      ? capitalizeAll(form.middlename).concat(".")
+      : "";
     const lastname = capitalizeAll(form.lastname);
 
     const formattedForm = {
@@ -81,22 +86,38 @@ export const useEmployeeStore = defineStore("employeeStore", () => {
       });
   };
 
-  // const updatePosition = async (id: string, form: IUpdatePositionForm) => {
-  //   loading.value = true;
-  //   resetErrorBag();
-  //   const formattedForm = {
-  //     ...form,
-  //     name: capitalizeAll(form.name),
-  //     abbreviation: capitalizeAll(form.abbreviation),
-  //   };
-  //   await updatePositionApi(id, formattedForm)
-  //     .catch((err: any) => {
-  //       transformValidationErrors(err);
-  //     })
-  //     .finally(() => {
-  //       loading.value = false;
-  //     });
-  // };
+  const updateEmployee = async (id: string, form: IUpdateEmployeeForm) => {
+    loading.value = true;
+    resetErrorBag();
+
+    const firstname = capitalizeAll(form.firstname);
+    const suffix = form.suffix ? capitalizeAll(form.suffix).concat(".") : "";
+    const middlename = form.middlename
+      ? capitalizeAll(form.middlename).concat(".")
+      : "";
+    const lastname = capitalizeAll(form.lastname);
+
+    const formattedForm = {
+      ...form,
+      department_id: form.department ? Number(form.department) : undefined,
+      position_id: form.position ? Number(form.position) : undefined,
+      firstname,
+      middlename,
+      lastname,
+      suffix,
+      full_name: `${firstname} ${middlename} ${lastname}${
+        suffix ? " " + suffix : ""
+      }`,
+    };
+
+    await updateEmployeeApi(id, formattedForm)
+      .catch((err: any) => {
+        transformValidationErrors(err);
+      })
+      .finally(() => {
+        loading.value = false;
+      });
+  };
 
   // const deletePosition = async (id: string) => {
   //   loading.value = true;
@@ -123,7 +144,7 @@ export const useEmployeeStore = defineStore("employeeStore", () => {
     selectedStatus,
     fetchEmployees,
     addEmployee,
-    // updatePosition,
+    updateEmployee,
     // deletePosition,
   };
 });

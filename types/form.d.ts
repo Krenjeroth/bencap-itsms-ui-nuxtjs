@@ -79,7 +79,7 @@ declare global {
     middlename?: string;
     lastname?: string;
     suffix?: string | null;
-    position_id?: number;
+    position_id?: number | string;
     position?: number | string;
     department_id?: number;
     department?: number | string;

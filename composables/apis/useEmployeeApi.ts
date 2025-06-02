@@ -18,12 +18,12 @@ export const useEmployeeApi = () => {
     });
   };
 
-  // const updateEmployeeApi = async (id: string, form: IUpdateEmployeeForm) => {
-  //   return await sanctumFetch(`${employeesUrl.value}/${id}`, {
-  //     method: "PUT",
-  //     body: form,
-  //   });
-  // };
+  const updateEmployeeApi = async (id: string, form: IUpdateEmployeeForm) => {
+    return await sanctumFetch(`${employeesUrl.value}/${id}`, {
+      method: "PUT",
+      body: form,
+    });
+  };
 
   // const deleteEmployeeApi = async (id: string) => {
   //   return await sanctumFetch(`${employeesUrl.value}/${id}`, {
@@ -37,7 +37,7 @@ export const useEmployeeApi = () => {
   return {
     fetchEmployeesApi,
     addEmployeeApi,
-    // updateEmployeeApi,
+    updateEmployeeApi,
     // deleteEmployeeApi,
   };
 };

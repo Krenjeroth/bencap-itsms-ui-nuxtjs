@@ -1,11 +1,11 @@
 import { z } from "zod";
 
-export const UpdateEmployeeValidationSchema = z.object({
+export const CreateEmployeeValidationSchema = z.object({
   uid: z
-    .string({
-      invalid_type_error: "UID is required",
-    })
-    .min(3, "UID must be at least 3 characters long"),
+    .string()
+    .regex(/^[0-9]+$/, "UID must be numbers only.")
+    .nullable()
+    .optional(),
   firstname: z
     .string({
       invalid_type_error: "First name is required",
@@ -22,8 +22,10 @@ export const UpdateEmployeeValidationSchema = z.object({
     })
     .min(3, "Last name must be at least 3 characters long"),
   suffix: z
-    .string({
-      invalid_type_error: "Suffix is required",
-    })
-    .min(3, "Suffix must be at least 3 characters long"),
+    .string()
+    .regex(/^[A-Za-z]+$/, "Suffix must be alphabets only.")
+    .nullable()
+    .optional(),
+  position: z.number(),
+  department: z.number(),
 });

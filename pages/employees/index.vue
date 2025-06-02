@@ -12,7 +12,7 @@ useHead({
 
 import {
   EmployeesCreateModal,
-  PermissionsUpdateModal,
+  EmployeesUpdateModal,
   PermissionsDeleteModal,
 } from "#components";
 import * as model from "./model/index";
@@ -62,44 +62,44 @@ const addEmployeeModal = () => {
   });
 };
 
-// const editPermissionModal = (permission: any) => {
-//   modal.open(PermissionsUpdateModal, {
-//     permission,
-//     onReloadTable() {
-//       permissionStore.fetchPermissions();
-//     },
-//     onSuccess() {
-//       actionToastResult({
-//         icon: "i-heroicons-check-circle",
-//         // title: "Success !",
-//         description: "Permission updated.",
-//         id: "modal-success",
-//         color: "green",
-//       });
-//     },
-//     onError() {
-//       actionToastResult({
-//         icon: "i-heroicons-x-circle",
-//         // title: "Error !",
-//         description: "Something went wrong.",
-//         id: "modal-error",
-//         color: "red",
-//       });
-//     },
-//     onNoDataChange() {
-//       actionToastResult({
-//         icon: "i-heroicons-exclamation-circle",
-//         // title: "Error !",
-//         description: "No data changes detected.",
-//         id: "modal-warning",
-//         color: "yellow",
-//       });
-//     },
-//     onClose() {
-//       modal.close();
-//     },
-//   });
-// };
+const editEmployeeModal = (employee: any) => {
+  modal.open(EmployeesUpdateModal, {
+    employee,
+    onReloadTable() {
+      employeeStore.fetchEmployees();
+    },
+    onSuccess() {
+      actionToastResult({
+        icon: "i-heroicons-check-circle",
+        // title: "Success !",
+        description: "Employee updated.",
+        id: "modal-success",
+        color: "green",
+      });
+    },
+    onError() {
+      actionToastResult({
+        icon: "i-heroicons-x-circle",
+        // title: "Error !",
+        description: "Something went wrong.",
+        id: "modal-error",
+        color: "red",
+      });
+    },
+    onNoDataChange() {
+      actionToastResult({
+        icon: "i-heroicons-exclamation-circle",
+        // title: "Error !",
+        description: "No data changes detected.",
+        id: "modal-warning",
+        color: "yellow",
+      });
+    },
+    onClose() {
+      modal.close();
+    },
+  });
+};
 
 // const deletePermissionModal = (permission: any) => {
 //   modal.open(PermissionsDeleteModal, {
@@ -164,7 +164,7 @@ watch(selectedStatus, () => {
       :add-data-modal="addEmployeeModal"
       :loading="loading"
       :action-handlers="{
-        // edit: editEmployeeModal,
+        edit: editEmployeeModal,
         // delete: deleteEmployeeModal,
       }"
       :pagination="{ page, pageCount, total: totalEmployees }"
