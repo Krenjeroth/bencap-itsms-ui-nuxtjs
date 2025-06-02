@@ -42,6 +42,10 @@ export const useStringHandler = () => {
     return str?.toLowerCase() || "";
   };
 
+  const strSingular = (str: string | undefined | null) => {
+    return str?.replace(/(.)$/, "");
+  };
+
   return {
     capitalizeWord,
     capitalizeWords,
@@ -51,5 +55,6 @@ export const useStringHandler = () => {
     strConvertSpaceToUnderscore,
     strAlphabetOnly,
     lowerCaseAll,
+    strSingular,
   };
 };

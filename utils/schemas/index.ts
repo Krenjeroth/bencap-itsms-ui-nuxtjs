@@ -4,3 +4,4 @@ export * from "./permission";
 export * from "./role";
 export * from "./position";
 export * from "./employee";
+export * from "./brand";

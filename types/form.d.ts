@@ -85,6 +85,14 @@ declare global {
     department?: number | string;
   }
 
+  interface ICreateBrandForm {
+    name?: string;
+  }
+
+  interface IUpdateBrandForm {
+    name?: string;
+  }
+
   type IFormSubmitEvent<T> = FormSubmitEvent<T>;
 }
 

@@ -5,3 +5,4 @@ export * from "./usePermissionApi";
 export * from "./useRoleApi";
 export * from "./usePositionApi";
 export * from "./useEmployeeApi";
+export * from "./useBrandApi";

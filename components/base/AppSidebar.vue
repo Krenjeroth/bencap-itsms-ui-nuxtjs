@@ -12,14 +12,15 @@ const links = [
     {
       label: "Control Panel",
     },
+
     {
-      label: "Users",
-      icon: "i-heroicons-users",
-      to: "/users",
+      label: "Brands",
+      icon: "i-heroicons-building-storefront",
+      to: "/brands",
     },
     {
       label: "Employees",
-      icon: "i-heroicons-x-mark",
+      icon: "i-heroicons-identification",
       to: "/employees",
     },
     {
@@ -41,6 +42,11 @@ const links = [
       label: "Roles",
       icon: "i-heroicons-user-group",
       to: "/roles",
+    },
+    {
+      label: "Users",
+      icon: "i-heroicons-users",
+      to: "/users",
     },
   ],
   [
