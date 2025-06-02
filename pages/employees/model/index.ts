@@ -9,6 +9,11 @@ const columns: ITableColumns[] = [
     rowClass: "whitespace-pre-line max-w-fit",
   },
   {
+    key: "uid",
+    label: "ID",
+    rowClass: "whitespace-pre-line max-w-fit",
+  },
+  {
     key: "department_full",
     label: "Department",
     rowClass: "whitespace-pre-line max-w-fit",
