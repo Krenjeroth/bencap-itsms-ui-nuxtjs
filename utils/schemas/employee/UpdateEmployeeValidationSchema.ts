@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const CreateEmployeeValidationSchema = z.object({
+export const UpdateEmployeeValidationSchema = z.object({
   uid: z
     .string()
     .regex(/^[0-9]+$/, "UID must be numbers only.")
