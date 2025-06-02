@@ -25,8 +25,6 @@ const validate = (formState: ILoginForm) => {
 
 const onLogin = async (event: any) => {
   await authStore.authLogin(event.data);
-
-  console.log(errorBag.value);
 };
 </script>
 
@@ -63,10 +61,19 @@ const onLogin = async (event: any) => {
 
           <UButton type="submit" :loading="loading"> Login </UButton>
 
-          <!-- !! Fix error display soon -->
-          <div v-if="hasError" class="text-red-500 text-sm text-center mt-4">
-            {{ errorBag }}
-          </div>
+          <UAlert
+            v-if="hasError"
+            variant="subtle"
+            color="red"
+            title="Invalid Credentials"
+            :description="errorBag.email"
+          >
+            <template #actions>
+              <UButton color="gray" variant="link" :padded="false">
+                Forgot Password
+              </UButton>
+            </template>
+          </UAlert>
         </UForm>
       </div>
     </UCard>
