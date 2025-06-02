@@ -51,7 +51,6 @@ const suffixComputed = computed({
 const handleSubmit = async (
   event: IFormSubmitEvent<TCreateEmployeeValidationSchema>
 ) => {
-  console.log(event.data);
   await employeeStore.addEmployee(event.data);
 
   if (hasError.value) {

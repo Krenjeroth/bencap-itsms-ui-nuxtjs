@@ -25,19 +25,19 @@ export const useEmployeeApi = () => {
     });
   };
 
-  // const deleteEmployeeApi = async (id: string) => {
-  //   return await sanctumFetch(`${employeesUrl.value}/${id}`, {
-  //     method: "DELETE",
-  //     headers: {
-  //       Accept: "application/json",
-  //     },
-  //   });
-  // };
+  const deleteEmployeeApi = async (id: string) => {
+    return await sanctumFetch(`${employeesUrl.value}/${id}`, {
+      method: "DELETE",
+      headers: {
+        Accept: "application/json",
+      },
+    });
+  };
 
   return {
     fetchEmployeesApi,
     addEmployeeApi,
     updateEmployeeApi,
-    // deleteEmployeeApi,
+    deleteEmployeeApi,
   };
 };

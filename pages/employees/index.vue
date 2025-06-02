@@ -13,7 +13,7 @@ useHead({
 import {
   EmployeesCreateModal,
   EmployeesUpdateModal,
-  PermissionsDeleteModal,
+  EmployeesDeleteModal,
 } from "#components";
 import * as model from "./model/index";
 const modal = useModal();
@@ -101,35 +101,35 @@ const editEmployeeModal = (employee: any) => {
   });
 };
 
-// const deletePermissionModal = (permission: any) => {
-//   modal.open(PermissionsDeleteModal, {
-//     permission,
-//     onReloadTable() {
-//       permissionStore.fetchPermissions();
-//     },
-//     onSuccess() {
-//       actionToastResult({
-//         icon: "i-heroicons-check-circle",
-//         // title: "Success !",
-//         description: "Permission deleted.",
-//         id: "modal-success",
-//         color: "green",
-//       });
-//     },
-//     onError() {
-//       actionToastResult({
-//         icon: "i-heroicons-x-circle",
-//         // title: "Error !",
-//         description: "Something went wrong.",
-//         id: "modal-error",
-//         color: "red",
-//       });
-//     },
-//     onClose() {
-//       modal.close();
-//     },
-//   });
-// };
+const deleteEmployeeModal = (employee: any) => {
+  modal.open(EmployeesDeleteModal, {
+    employee,
+    onReloadTable() {
+      employeeStore.fetchEmployees();
+    },
+    onSuccess() {
+      actionToastResult({
+        icon: "i-heroicons-check-circle",
+        // title: "Success !",
+        description: "Employee deleted.",
+        id: "modal-success",
+        color: "green",
+      });
+    },
+    onError() {
+      actionToastResult({
+        icon: "i-heroicons-x-circle",
+        // title: "Error !",
+        description: "Something went wrong.",
+        id: "modal-error",
+        color: "red",
+      });
+    },
+    onClose() {
+      modal.close();
+    },
+  });
+};
 
 // Watch search changes and fetch when updated
 watch(search, () => {
@@ -157,7 +157,7 @@ watch(selectedStatus, () => {
 <template>
   <div>
     <UiDatatable
-      :module-title="'Permissions'"
+      :module-title="'Employees'"
       :columns="columns"
       :action-items="items"
       :table-data="data"
@@ -165,7 +165,7 @@ watch(selectedStatus, () => {
       :loading="loading"
       :action-handlers="{
         edit: editEmployeeModal,
-        // delete: deleteEmployeeModal,
+        delete: deleteEmployeeModal,
       }"
       :pagination="{ page, pageCount, total: totalEmployees }"
       :sorting="sort"

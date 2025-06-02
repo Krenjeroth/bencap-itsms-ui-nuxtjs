@@ -1,6 +1,10 @@
 export const useEmployeeStore = defineStore("employeeStore", () => {
-  const { fetchEmployeesApi, addEmployeeApi, updateEmployeeApi } =
-    useEmployeeApi();
+  const {
+    fetchEmployeesApi,
+    addEmployeeApi,
+    updateEmployeeApi,
+    deleteEmployeeApi,
+  } = useEmployeeApi();
   const { hasError, errorBag, transformValidationErrors, resetErrorBag } =
     useErrorHandler();
   const { capitalizeAll, strDeepSanitize } = useStringHandler();
@@ -119,17 +123,17 @@ export const useEmployeeStore = defineStore("employeeStore", () => {
       });
   };
 
-  // const deletePosition = async (id: string) => {
-  //   loading.value = true;
-  //   resetErrorBag();
-  //   await deletePositionApi(id)
-  //     .catch((err: any) => {
-  //       transformValidationErrors(err);
-  //     })
-  //     .finally(() => {
-  //       loading.value = false;
-  //     });
-  // };
+  const deleteEmployee = async (id: string) => {
+    loading.value = true;
+    resetErrorBag();
+    await deleteEmployeeApi(id)
+      .catch((err: any) => {
+        transformValidationErrors(err);
+      })
+      .finally(() => {
+        loading.value = false;
+      });
+  };
 
   return {
     employees,
@@ -145,6 +149,6 @@ export const useEmployeeStore = defineStore("employeeStore", () => {
     fetchEmployees,
     addEmployee,
     updateEmployee,
-    // deletePosition,
+    deleteEmployee,
   };
 });
