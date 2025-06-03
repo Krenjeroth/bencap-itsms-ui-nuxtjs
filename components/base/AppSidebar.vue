@@ -14,23 +14,28 @@ const links = [
     },
     {
       label: "Brands",
-      icon: "i-heroicons-building-storefront",
+      icon: "material-symbols:shoppingmode-outline",
       to: "/brands",
     },
     {
       label: "Brand Models",
-      icon: "material-symbols:two-pager-store-outline-sharp",
+      icon: "material-symbols:memory-outline-rounded",
       to: "/brand-models",
-    },
-    {
-      label: "Employees",
-      icon: "i-heroicons-identification",
-      to: "/employees",
     },
     {
       label: "Departments",
       icon: "i-heroicons-building-office-2",
       to: "/departments",
+    },
+    {
+      label: "Employees",
+      icon: "material-symbols:badge-outline",
+      to: "/employees",
+    },
+    {
+      label: "Item Types",
+      icon: "material-symbols:trolley-outline-rounded",
+      to: "/item-types",
     },
     {
       label: "Permissions",

@@ -107,6 +107,18 @@ declare global {
     year_released?: string;
   }
 
+  interface ICreateItemTypeForm {
+    type?: string;
+    classification?: string;
+    purpose?: string;
+  }
+
+  interface IUpdateItemTypeForm {
+    type?: string;
+    classification?: string;
+    purpose?: string;
+  }
+
   type IFormSubmitEvent<T> = FormSubmitEvent<T>;
 }
 

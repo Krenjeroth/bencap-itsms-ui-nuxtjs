@@ -6,3 +6,4 @@ export * from "./position";
 export * from "./employee";
 export * from "./brand";
 export * from "./brand-models";
+export * from "./item-types";

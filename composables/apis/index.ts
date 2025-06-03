@@ -7,3 +7,4 @@ export * from "./usePositionApi";
 export * from "./useEmployeeApi";
 export * from "./useBrandApi";
 export * from "./useBrandModelApi";
+export * from "./useItemTypeApi";
