@@ -93,6 +93,20 @@ declare global {
     name?: string;
   }
 
+  interface ICreateBrandModelForm {
+    name?: string;
+    brand?: number;
+    image?: string;
+    year_released?: string;
+  }
+
+  interface IUpdateBrandModelForm {
+    name?: string;
+    brand?: number;
+    image?: string;
+    year_released?: string;
+  }
+
   type IFormSubmitEvent<T> = FormSubmitEvent<T>;
 }
 

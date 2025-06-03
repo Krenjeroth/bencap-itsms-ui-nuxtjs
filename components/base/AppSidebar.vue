@@ -12,11 +12,15 @@ const links = [
     {
       label: "Control Panel",
     },
-
     {
       label: "Brands",
       icon: "i-heroicons-building-storefront",
       to: "/brands",
+    },
+    {
+      label: "Brand Models",
+      icon: "material-symbols:two-pager-store-outline-sharp",
+      to: "/brand-models",
     },
     {
       label: "Employees",

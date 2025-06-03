@@ -1,11 +1,11 @@
-export const useBrandStore = defineStore("brandStore", () => {
+export const useBrandModelStore = defineStore("brandModelStore", () => {
   const {
-    fetchBrandsApi,
-    addBrandApi,
-    updateBrandApi,
-    deleteBrandApi,
-    fetchBrandSelectApi,
-  } = useBrandApi();
+    fetchBrandModelsApi,
+    addBrandModelApi,
+    updateBrandModelApi,
+    deleteBrandModelApi,
+    fetchBrandModelSelectApi,
+  } = useBrandModelApi();
   const { hasError, errorBag, transformValidationErrors, resetErrorBag } =
     useErrorHandler();
   const { capitalizeAll } = useStringHandler();
@@ -14,9 +14,9 @@ export const useBrandStore = defineStore("brandStore", () => {
     ASC = "asc",
     DESC = "desc",
   }
-  const brands = ref([]);
+  const brandModels = ref([]);
 
-  const brandSelect = ref<TBrandSelectOption[]>([]);
+  const brandModelSelect = ref<TBrandModelSelectOption[]>([]);
   const loading = ref(false);
   const page = ref(1);
   const pageCount = ref(5);
@@ -25,10 +25,10 @@ export const useBrandStore = defineStore("brandStore", () => {
     column: "created_at",
     direction: SortDirection.DESC,
   });
-  const totalBrands = ref(0);
+  const totalBrandModels = ref(0);
   const selectedStatus = ref("");
 
-  const fetchBrands = async () => {
+  const fetchBrandModels = async () => {
     loading.value = true;
     try {
       const queryParams = new URLSearchParams({
@@ -40,10 +40,10 @@ export const useBrandStore = defineStore("brandStore", () => {
         ...(selectedStatus.value ? { status: selectedStatus.value } : {}),
       });
 
-      const response = await fetchBrandsApi(queryParams);
+      const response = await fetchBrandModelsApi(queryParams);
 
-      brands.value = response.data;
-      totalBrands.value = Number(response.meta.total) || 0;
+      brandModels.value = response.data;
+      totalBrandModels.value = Number(response.meta.total) || 0;
     } catch (err: any) {
       throw err;
     } finally {
@@ -51,16 +51,19 @@ export const useBrandStore = defineStore("brandStore", () => {
     }
   };
 
-  const addBrand = async (form: ICreateBrandForm) => {
+  const addBrandModel = async (form: ICreateBrandModelForm) => {
     loading.value = true;
     resetErrorBag();
 
     const formattedForm = {
       ...form,
       name: capitalizeAll(form.name),
+      brand_id: form.brand,
+      // image: form.image,
+      status: "active",
     };
 
-    await addBrandApi(formattedForm)
+    await addBrandModelApi(formattedForm)
       .catch((err: any) => {
         transformValidationErrors(err);
       })
@@ -69,15 +72,18 @@ export const useBrandStore = defineStore("brandStore", () => {
       });
   };
 
-  const updateBrand = async (id: string, form: IUpdateBrandForm) => {
+  const updateBrandModel = async (id: string, form: IUpdateBrandModelForm) => {
     loading.value = true;
     resetErrorBag();
-    const name = capitalizeAll(form.name);
+
     const formattedForm = {
       ...form,
-      name,
+      name: capitalizeAll(form.name),
+      brand_id: form.brand,
+      // image: form.image,
+      status: "active",
     };
-    await updateBrandApi(id, formattedForm)
+    await updateBrandModelApi(id, formattedForm)
       .catch((err: any) => {
         transformValidationErrors(err);
       })
@@ -86,10 +92,10 @@ export const useBrandStore = defineStore("brandStore", () => {
       });
   };
 
-  const deleteBrand = async (id: string) => {
+  const deleteBrandModel = async (id: string) => {
     loading.value = true;
     resetErrorBag();
-    await deleteBrandApi(id)
+    await deleteBrandModelApi(id)
       .catch((err: any) => {
         transformValidationErrors(err);
       })
@@ -98,18 +104,18 @@ export const useBrandStore = defineStore("brandStore", () => {
       });
   };
 
-  const fetchBrandSelect = async () => {
+  const fetchBrandModelSelect = async () => {
     try {
-      const response = await fetchBrandSelectApi();
-      brandSelect.value = response.data;
+      const response = await fetchBrandModelSelectApi();
+      brandModelSelect.value = response.data;
     } catch (error) {
       console.log(error);
     }
   };
 
   return {
-    brands,
-    brandSelect,
+    brandModels,
+    brandModelSelect,
     loading,
     errorBag,
     hasError,
@@ -117,12 +123,12 @@ export const useBrandStore = defineStore("brandStore", () => {
     pageCount,
     search,
     sort,
-    totalBrands,
+    totalBrandModels,
     selectedStatus,
-    fetchBrands,
-    addBrand,
-    updateBrand,
-    deleteBrand,
-    fetchBrandSelect,
+    fetchBrandModels,
+    addBrandModel,
+    updateBrandModel,
+    deleteBrandModel,
+    fetchBrandModelSelect,
   };
 });

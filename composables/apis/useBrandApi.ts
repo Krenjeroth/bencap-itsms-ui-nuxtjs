@@ -5,6 +5,11 @@ export const useBrandApi = () => {
     return url;
   });
 
+  const brandSelectUrl = computed(() => {
+    const url = new URL("http://itsms/api/brands-select");
+    return url;
+  });
+
   const fetchBrandsApi = async (queryParams: URLSearchParams) => {
     return await sanctumFetch(`${brandsUrl.value}?${queryParams.toString()}`);
   };
@@ -32,10 +37,15 @@ export const useBrandApi = () => {
     });
   };
 
+  const fetchBrandSelectApi = async () => {
+    return await sanctumFetch(`${brandSelectUrl.value}`);
+  };
+
   return {
     fetchBrandsApi,
     addBrandApi,
     updateBrandApi,
     deleteBrandApi,
+    fetchBrandSelectApi,
   };
 };
