@@ -23,6 +23,11 @@ const links = [
       to: "/brand-models",
     },
     {
+      label: "Common Problems",
+      icon: "material-symbols:sync-problem-outline-rounded",
+      to: "/common-problems",
+    },
+    {
       label: "Departments",
       icon: "i-heroicons-building-office-2",
       to: "/departments",

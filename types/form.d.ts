@@ -119,6 +119,20 @@ declare global {
     purpose?: string;
   }
 
+  interface ICreateCommonProblemForm {
+    code?: string;
+    general_term?: string;
+    information?: string;
+    item_type?: number;
+  }
+
+  interface IUpdateCommonProblemForm {
+    code?: string;
+    general_term?: string;
+    information?: string;
+    item_type?: number;
+  }
+
   type IFormSubmitEvent<T> = FormSubmitEvent<T>;
 }
 
@@ -135,5 +149,13 @@ export {
   IUpdateRoleForm,
   ICreateEmployeeForm,
   IUpdateEmployeeForm,
+  ICreateBrandForm,
+  IUpdateBrandForm,
+  ICreateBrandModelForm,
+  IUpdateBrandModelForm,
+  ICreateItemTypeForm,
+  IUpdateItemTypeForm,
+  ICreateCommonProblemForm,
+  IUpdateCommonProblemForm,
   IFormSubmitEvent,
 };

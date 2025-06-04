@@ -8,3 +8,4 @@ export * from "./useEmployeeApi";
 export * from "./useBrandApi";
 export * from "./useBrandModelApi";
 export * from "./useItemTypeApi";
+export * from "./useCommonProblemApi";
