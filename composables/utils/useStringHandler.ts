@@ -1,4 +1,9 @@
 export const useStringHandler = () => {
+  interface CapitalizeOptions {
+    exceptions?: string[];
+    lowercaseWords?: string[];
+  }
+
   const strSanitize = (str: string | undefined | null) => {
     return str?.replace(/\s+/g, " ").trim().toLowerCase() || ""; // Sanitize string, remove extra white space, to lower
   };
@@ -46,6 +51,43 @@ export const useStringHandler = () => {
     return str?.replace(/(.)$/, "");
   };
 
+  const capitalizeSentences = (
+    str: string | undefined | null,
+    options: CapitalizeOptions = {}
+  ): string => {
+    const sanitized = strSanitize(str);
+    const exceptions = options.exceptions || ["e.g.", "i.e.", "etc."];
+    const lowercaseWords = options.lowercaseWords || [
+      "and",
+      "or",
+      "but",
+      "in",
+      "on",
+      "at",
+      "with",
+      "of",
+      "to",
+      "for",
+    ];
+
+    return sanitized.replace(/(^\w+|[.!?]\s+\w+|,\s+\w+)/g, (match) => {
+      const word = match.trim();
+      const lowerWord = word.toLowerCase();
+
+      if (
+        exceptions.some((abbr) => lowerWord.startsWith(abbr)) ||
+        lowercaseWords.includes(lowerWord)
+      )
+        return match.toLowerCase();
+
+      return (
+        match.slice(0, -word.length) +
+        word.charAt(0).toUpperCase() +
+        word.slice(1)
+      );
+    });
+  };
+
   return {
     capitalizeWord,
     capitalizeWords,
@@ -56,5 +98,6 @@ export const useStringHandler = () => {
     strAlphabetOnly,
     lowerCaseAll,
     strSingular,
+    capitalizeSentences,
   };
 };
