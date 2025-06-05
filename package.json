@@ -16,11 +16,13 @@
     "@nuxtjs/color-mode": "^3.5.2",
     "@nuxtjs/google-fonts": "^3.2.0",
     "@pinia/nuxt": "^0.10.1",
+    "date-fns": "^4.1.0",
     "dayjs-nuxt": "^2.1.11",
     "nuxt": "^3.16.0",
     "nuxt-auth-sanctum": "^0.5.8",
     "pinia": "^3.0.2",
     "pinia-plugin-persistedstate": "^4.2.0",
+    "v-calendar": "^3.1.2",
     "vue": "^3.5.13",
     "vue-router": "^4.5.0",
     "zod": "^3.25.28"

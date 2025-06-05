@@ -38,6 +38,11 @@ const links = [
       to: "/employees",
     },
     {
+      label: "Items",
+      icon: "i-heroicons-archive-box",
+      to: "/items",
+    },
+    {
       label: "Item Types",
       icon: "material-symbols:trolley-outline-rounded",
       to: "/item-types",

@@ -133,6 +133,38 @@ declare global {
     item_type?: number;
   }
 
+  interface ICreateItemForm {
+    item_type?: number;
+    brand_model?: number;
+    parent_component?: string | null;
+    code?: string | null;
+    barcode?: string | null;
+    description?: string | null;
+    serial_number?: string | null;
+    property_number?: string;
+    ics_number?: string | null;
+    date_acquired?: TDatePickerDate;
+    ip_address?: string | null;
+    mac_address?: string | null;
+    inventory_type?: string | null;
+  }
+
+  interface IUpdateItemForm {
+    item_type?: number;
+    brand_model?: number;
+    parent_component?: string | null;
+    code?: string | null;
+    barcode?: string | null;
+    description?: string | null;
+    serial_number?: string | null;
+    property_number?: string;
+    ics_number?: string | null;
+    date_acquired?: TDatePickerDate;
+    ip_address?: string | null;
+    mac_address?: string | null;
+    inventory_type?: string | null;
+  }
+
   type IFormSubmitEvent<T> = FormSubmitEvent<T>;
 }
 

@@ -40,8 +40,9 @@ export const useBrandModelApi = () => {
     });
   };
 
-  const fetchBrandModelSelectApi = async () => {
-    return await sanctumFetch(`${brandModelSelectUrl.value}`);
+  const fetchBrandModelSelectApi = async (queryParams?: URLSearchParams) => {
+    const queryString = queryParams?.toString() || "";
+    return await sanctumFetch(`${brandModelSelectUrl.value}?${queryString}`);
   };
 
   return {

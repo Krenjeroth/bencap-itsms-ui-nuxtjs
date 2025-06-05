@@ -28,6 +28,16 @@ export const useBrandModelStore = defineStore("brandModelStore", () => {
   const totalBrandModels = ref(0);
   const selectedStatus = ref("");
 
+  const brandModelSelectPage = ref(1);
+  const brandModelSelectHasMore = ref(true);
+  const brandModelSelectLimit = 20;
+
+  const resetBrandModelSelect = () => {
+    brandModelSelect.value = [];
+    brandModelSelectPage.value = 1;
+    brandModelSelectHasMore.value = true;
+  };
+
   const fetchBrandModels = async () => {
     loading.value = true;
     try {
@@ -104,18 +114,43 @@ export const useBrandModelStore = defineStore("brandModelStore", () => {
       });
   };
 
-  const fetchBrandModelSelect = async () => {
+  const fetchBrandModelSelect = async (q: string, isLoadMore = false) => {
     try {
-      const response = await fetchBrandModelSelectApi();
-      brandModelSelect.value = response.data;
-    } catch (error) {
-      console.log(error);
+      if (!isLoadMore) {
+        resetBrandModelSelect();
+      }
+
+      const queryParams = new URLSearchParams({
+        q,
+        limit: brandModelSelectLimit.toString(),
+        page: brandModelSelectPage.value.toString(),
+      });
+
+      const response = await fetchBrandModelSelectApi(queryParams);
+      const result = response.data;
+
+      if (result.length < brandModelSelectLimit) {
+        brandModelSelectHasMore.value = false;
+      }
+
+      if (isLoadMore) {
+        brandModelSelect.value = [...brandModelSelect.value, ...result];
+        brandModelSelectPage.value += 1;
+      } else {
+        brandModelSelect.value = result;
+      }
+
+      return result;
+    } catch (err) {
+      console.error(err);
+      return [];
     }
   };
 
   return {
     brandModels,
     brandModelSelect,
+    brandModelSelectHasMore,
     loading,
     errorBag,
     hasError,
