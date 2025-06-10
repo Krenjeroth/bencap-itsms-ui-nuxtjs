@@ -114,35 +114,16 @@ export const useBrandModelStore = defineStore("brandModelStore", () => {
       });
   };
 
-  const fetchBrandModelSelect = async (q: string, isLoadMore = false) => {
+  const fetchBrandModelSelect = async (q: string) => {
     try {
-      if (!isLoadMore) {
-        resetBrandModelSelect();
-      }
-
       const queryParams = new URLSearchParams({
         q,
-        limit: brandModelSelectLimit.toString(),
-        page: brandModelSelectPage.value.toString(),
+        limit: "50",
       });
-
       const response = await fetchBrandModelSelectApi(queryParams);
-      const result = response.data;
-
-      if (result.length < brandModelSelectLimit) {
-        brandModelSelectHasMore.value = false;
-      }
-
-      if (isLoadMore) {
-        brandModelSelect.value = [...brandModelSelect.value, ...result];
-        brandModelSelectPage.value += 1;
-      } else {
-        brandModelSelect.value = result;
-      }
-
-      return result;
+      return response.data; // ✅ MUST return data!
     } catch (err) {
-      console.error(err);
+      console.error("API Error:", err);
       return [];
     }
   };

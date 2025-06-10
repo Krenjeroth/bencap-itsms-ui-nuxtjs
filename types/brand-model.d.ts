@@ -5,7 +5,7 @@ declare global {
     id: string;
     name: string;
     brand: string;
-    image: string;
+    image: string | null;
     year_released: string;
     status: string;
   }

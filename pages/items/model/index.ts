@@ -2,10 +2,46 @@ export { columns, items, classificationOptions };
 
 const columns: ITableColumns[] = [
   {
-    key: "id",
-    label: "ID",
+    key: "parent_component",
+    label: "Parent Component",
     rowClass: "whitespace-pre-line max-w-fit",
   },
+  {
+    key: "property_number",
+    label: "Property Number",
+    rowClass: "whitespace-pre-line max-w-fit",
+  },
+  {
+    key: "ip_address",
+    label: "IP Address",
+    rowClass: "whitespace-pre-line max-w-fit",
+  },
+  {
+    key: "mac_address",
+    label: "MAC Address",
+    rowClass: "whitespace-pre-line max-w-fit",
+  },
+  {
+    key: "item_type.type",
+    label: "Item Type",
+    rowClass: "whitespace-pre-line max-w-fit",
+  },
+  {
+    key: "item_type.classification",
+    label: "Classification",
+    rowClass: "whitespace-pre-line max-w-fit",
+  },
+  {
+    key: "item_type.purpose",
+    label: "Purpose",
+    rowClass: "whitespace-pre-line max-w-fit",
+  },
+  {
+    key: "brand_model",
+    label: "Brand Model",
+    rowClass: "whitespace-pre-line max-w-fit",
+  },
+
   // {
   //   key: "code",
   //   label: "Code",

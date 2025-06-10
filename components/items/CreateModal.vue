@@ -122,7 +122,6 @@ const inventoryTypeValue = computed({
 const handleSubmit = async (
   event: IFormSubmitEvent<TCreateItemValidationSchema>
 ) => {
-  console.log(event.data);
   await itemStore.addItem(event.data);
 
   if (hasError.value) {
@@ -144,18 +143,15 @@ const searchItemTypes = async (q: string) => {
   );
 };
 
-const brandModelQuery = ref("");
+const brandModelOptions = ref<TBrandModelSelectOption[]>([]);
+const searchQuery = ref("");
 
 const searchBrandModels = async (q: string) => {
-  brandModelQuery.value = q;
-  if (!q || q.length < 2) return [];
-  return await brandModelStore.fetchBrandModelSelect(q, false);
-};
-
-const loadMoreBrandModels = async () => {
-  if (!brandModelStore.brandModelSelectHasMore || !brandModelQuery.value)
-    return;
-  await brandModelStore.fetchBrandModelSelect(brandModelQuery.value, true);
+  searchQuery.value = q;
+  if (!searchQuery.value || searchQuery.value.length < 2) return [];
+  const result = await brandModelStore.fetchBrandModelSelect(searchQuery.value);
+  brandModelOptions.value = result;
+  return result;
 };
 </script>
 
@@ -202,35 +198,29 @@ const loadMoreBrandModels = async () => {
           :error="errorBag.brand_model"
           :ui="{ wrapper: 'md:w-full' }"
         >
-          <USelectMenu
+          <UInputMenu
             v-model="formState.brand_model"
-            :options="brandModelSelect"
-            :searchable="true"
             :search="searchBrandModels"
             :loading="loadingBrandModels"
             placeholder="Type to search..."
-            value-attribute="id"
             option-attribute="name"
           >
-            <template #option-empty="{ query }">
-              <q>{{ query }}</q> not found
+            <template #option="{ option }">
+              <span class="truncate">{{ option.name }}</span>
             </template>
 
-            <template #empty> No Brand Model found </template>
-          </USelectMenu>
+            <template #empty>
+              <span v-if="searchQuery.length < 2" class="text-gray-400"
+                >Type at least 2 characters...</span
+              >
+              <span v-else class="text-gray-400">No Brand Model found</span>
+            </template>
+          </UInputMenu>
         </UFormGroup>
 
-        <USelectMenu
-          v-model="formState.brand_model"
-          :options="brandModelSelect"
-          :searchable="true"
-          :search="searchBrandModels"
-          :loading="loadingBrandModels"
-          placeholder="Type to search..."
-          value-attribute="id"
-          option-attribute="name"
-          @scroll-bottom="loadMoreBrandModels"
-        />
+        <pre class="text-xs bg-gray-600 mt-2 p-2">
+          {{ JSON.stringify(formState.brand_model, null, 2) }}
+        </pre>
       </div>
 
       <div class="space-y-6 md:space-y-0 md:flex md:space-x-6">

@@ -167,6 +167,7 @@ watch(selectedStatus, () => {
   <div>
     <UiDatatable
       :module-title="route.meta.title as string"
+      :is-expandable="true"
       :columns="columns"
       :action-items="items"
       :table-data="data"

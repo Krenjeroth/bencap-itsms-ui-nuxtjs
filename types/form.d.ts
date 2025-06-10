@@ -135,7 +135,18 @@ declare global {
 
   interface ICreateItemForm {
     item_type?: number;
-    brand_model?: number;
+    // brand_model?: object | string | number;
+    brand_model?: {
+      id?: number;
+      name?: string;
+      brand?: {
+        id?: number;
+        name?: string;
+      };
+      image?: string | null;
+      year_released?: string | null;
+      status?: string;
+    };
     parent_component?: string | null;
     code?: string | null;
     barcode?: string | null;

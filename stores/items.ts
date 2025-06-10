@@ -42,7 +42,12 @@ export const useItemStore = defineStore("itemStore", () => {
 
       const response = await fetchItemsApi(queryParams);
 
-      items.value = response.data;
+      items.value = response.data.map((item: any) => ({
+        ...item,
+        brand_model: `${item.brand_model.brand.name} ${item.brand_model.name}`,
+        // item_type: `${item.item_type.type} (${item.item_type.abbreviation})`,
+      }));
+
       totalItems.value = Number(response.meta.total) || 0;
     } catch (err: any) {
       throw err;
@@ -57,7 +62,8 @@ export const useItemStore = defineStore("itemStore", () => {
 
     const formattedForm = {
       ...form,
-
+      item_type_id: form.item_type,
+      brand_model_id: form.brand_model?.id,
       status: "active",
     };
 
