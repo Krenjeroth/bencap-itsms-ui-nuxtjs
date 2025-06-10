@@ -281,10 +281,10 @@ const expand = ref({
 
       <template v-if="props.isExpandable" #expand="{ row }">
         <div class="px-4 py-4 text-gray-500 dark:text-gray-400 text-sm">
-          <pre><strong>Address</strong>: {{ row.address }}</pre>
-          <pre><strong>Gender</strong>: {{ row.gender }}</pre>
-          <pre><strong>Emergency Contact</strong>: {{ row.emergency_contact_name }} ({{ row.emergency_contact_phone }})</pre>
-          <pre><strong>Joined</strong>: {{ row.join_date }}</pre>
+          <p v-for="detail in expandableDetails(row)" :key="detail.key">
+            <strong>{{ detail.label }}</strong
+            >: <span class="italic">{{ detail.value }}</span>
+          </p>
         </div>
       </template>
     </UTable>
