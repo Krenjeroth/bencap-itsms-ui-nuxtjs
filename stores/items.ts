@@ -65,10 +65,9 @@ export const useItemStore = defineStore("itemStore", () => {
       ...form,
       item_type_id: form.item_type,
       brand_model_id: form.brand_model?.id,
-      date_acquired: transformDatePickerDate(
-        form.date_acquired,
-        "YYYY-MM-DD HH:mm:ss"
-      ),
+      date_acquired: form.date_acquired
+        ? transformDatePickerDate(form.date_acquired, "YYYY-MM-DD HH:mm:ss")
+        : null,
       status: "active",
     };
 
