@@ -27,7 +27,7 @@ const columns: ITableColumns[] = [
   //   rowClass: "whitespace-pre-line max-w-fit",
   // },
   {
-    key: "brand_model",
+    key: "brand_model_formatted",
     label: "Brand Model",
     rowClass: "whitespace-pre-line max-w-fit",
   },

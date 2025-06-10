@@ -18,7 +18,7 @@ const pageTitleSingular = strSingular(route.meta.title as string);
 
 import {
   ItemsCreateModal,
-  CommonProblemsUpdateModal,
+  ItemsUpdateModal,
   CommonProblemsDeleteModal,
 } from "#components";
 import * as model from "./model/index";
@@ -69,9 +69,9 @@ const addItemModal = () => {
   });
 };
 
-const editCommonProblemModal = (commonProblem: any) => {
-  modal.open(CommonProblemsUpdateModal, {
-    commonProblem,
+const editItemModal = (item: any) => {
+  modal.open(ItemsUpdateModal, {
+    item,
     pageTitle: pageTitleSingular,
     onReloadTable() {
       itemStore.fetchItems();
@@ -175,7 +175,7 @@ watch(selectedStatus, () => {
       :add-data-modal="addItemModal"
       :loading="loading"
       :action-handlers="{
-        edit: editCommonProblemModal,
+        edit: editItemModal,
         delete: deleteCommonProblemModal,
       }"
       :pagination="{ page, pageCount, total: totalItems }"

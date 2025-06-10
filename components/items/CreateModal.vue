@@ -12,7 +12,6 @@ itemTypeStore.fetchItemTypeSelect();
 const brandModelStore = useBrandModelStore();
 const { loading: loadingBrandModels, brandModelSelect } =
   storeToRefs(brandModelStore);
-// brandModelStore.fetchBrandModelSelect("");
 
 const emit = defineEmits(["reloadTable", "success", "error", "close"]);
 
