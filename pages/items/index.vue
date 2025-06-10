@@ -36,7 +36,7 @@ const {
   totalItems,
   selectedStatus,
 } = storeToRefs(itemStore);
-const { columns, items } = model;
+const { columns, items, expandableDetails } = model;
 itemStore.fetchItems();
 
 const addItemModal = () => {
@@ -168,6 +168,7 @@ watch(selectedStatus, () => {
     <UiDatatable
       :module-title="route.meta.title as string"
       :is-expandable="true"
+      :expandable-details="expandableDetails"
       :columns="columns"
       :action-items="items"
       :table-data="data"

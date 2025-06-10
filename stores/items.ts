@@ -9,7 +9,7 @@ export const useItemStore = defineStore("itemStore", () => {
   const { hasError, errorBag, transformValidationErrors, resetErrorBag } =
     useErrorHandler();
   const { capitalizeAll } = useStringHandler();
-  // const { transformUtcDatetime } = useDateHandler();
+  const { transformDatePickerDate } = useDateHandler();
   enum SortDirection {
     ASC = "asc",
     DESC = "desc",
@@ -45,7 +45,7 @@ export const useItemStore = defineStore("itemStore", () => {
       items.value = response.data.map((item: any) => ({
         ...item,
         brand_model: `${item.brand_model.brand.name} ${item.brand_model.name}`,
-        // item_type: `${item.item_type.type} (${item.item_type.abbreviation})`,
+        // item_type_formatted: `TYPE: ${item.item_type.type}\r\nClassification: ${item.item_type.classification}\r\nPurpose: ${item.item_type.purpose}`,
       }));
 
       totalItems.value = Number(response.meta.total) || 0;
@@ -64,6 +64,10 @@ export const useItemStore = defineStore("itemStore", () => {
       ...form,
       item_type_id: form.item_type,
       brand_model_id: form.brand_model?.id,
+      date_acquired: transformDatePickerDate(
+        form.date_acquired,
+        "YYYY-MM-DD HH:mm:ss"
+      ),
       status: "active",
     };
 

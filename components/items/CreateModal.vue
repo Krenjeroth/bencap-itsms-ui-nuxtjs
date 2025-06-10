@@ -217,10 +217,6 @@ const searchBrandModels = async (q: string) => {
             </template>
           </UInputMenu>
         </UFormGroup>
-
-        <pre class="text-xs bg-gray-600 mt-2 p-2">
-          {{ JSON.stringify(formState.brand_model, null, 2) }}
-        </pre>
       </div>
 
       <div class="space-y-6 md:space-y-0 md:flex md:space-x-6">

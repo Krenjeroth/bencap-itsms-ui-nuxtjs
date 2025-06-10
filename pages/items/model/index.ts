@@ -1,14 +1,14 @@
-export { columns, items, classificationOptions };
+export { columns, items, classificationOptions, expandableDetails };
 
 const columns: ITableColumns[] = [
   {
-    key: "parent_component",
-    label: "Parent Component",
+    key: "property_number",
+    label: "Property Number",
     rowClass: "whitespace-pre-line max-w-fit",
   },
   {
-    key: "property_number",
-    label: "Property Number",
+    key: "parent_component",
+    label: "Parent Component",
     rowClass: "whitespace-pre-line max-w-fit",
   },
   {
@@ -21,37 +21,16 @@ const columns: ITableColumns[] = [
     label: "MAC Address",
     rowClass: "whitespace-pre-line max-w-fit",
   },
-  {
-    key: "item_type.type",
-    label: "Item Type",
-    rowClass: "whitespace-pre-line max-w-fit",
-  },
-  {
-    key: "item_type.classification",
-    label: "Classification",
-    rowClass: "whitespace-pre-line max-w-fit",
-  },
-  {
-    key: "item_type.purpose",
-    label: "Purpose",
-    rowClass: "whitespace-pre-line max-w-fit",
-  },
+  // {
+  //   key: "item_type_formatted",
+  //   label: "Type",
+  //   rowClass: "whitespace-pre-line max-w-fit",
+  // },
   {
     key: "brand_model",
     label: "Brand Model",
     rowClass: "whitespace-pre-line max-w-fit",
   },
-
-  // {
-  //   key: "code",
-  //   label: "Code",
-  //   rowClass: "whitespace-pre-line max-w-fit",
-  // },
-  // {
-  //   key: "barcode",
-  //   label: "Barcode",
-  //   rowClass: "whitespace-pre-line max-w-fit",
-  // },
   {
     key: "actions",
     rowClass: "whitespace-pre-line max-w-fit text-center",
@@ -83,6 +62,49 @@ const items: ITableActions = (row: any, handlers: IHandlers) => [
       click: () => handlers.delete?.(row),
     },
   ],
+];
+
+const expandableDetails: ITableExpandableDetails = (row: any) => [
+  {
+    key: "item_type.type",
+    label: "Type",
+    value: row.item_type.type,
+  },
+  {
+    key: "item_type.classification",
+    label: "Classification",
+    value: row.item_type.classification,
+  },
+  {
+    key: "item_type.purpose",
+    label: "Purpose",
+    value: row.item_type.purpose,
+  },
+  {
+    key: "description",
+    label: "Description",
+    value: row.description,
+  },
+  {
+    key: "serial_number",
+    label: "Serial Number",
+    value: row.serial_number,
+  },
+  {
+    key: "ics_number",
+    label: "ICS Number",
+    value: row.ics_number,
+  },
+  {
+    key: "date_acquired",
+    label: "Date Acquired",
+    value: row.date_acquired,
+  },
+  {
+    key: "inventory_type",
+    label: "Inventory Type",
+    value: row.inventory_type,
+  },
 ];
 
 const classificationOptions: ITableStatusOptions[] = [
