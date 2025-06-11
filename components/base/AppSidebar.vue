@@ -63,6 +63,11 @@ const links = [
       to: "/roles",
     },
     {
+      label: "IT Services",
+      icon: "i-heroicons-wrench-screwdriver",
+      to: "/it-services",
+    },
+    {
       label: "Users",
       icon: "i-heroicons-users",
       to: "/users",

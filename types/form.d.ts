@@ -187,6 +187,18 @@ declare global {
     inventory_type?: string | null;
   }
 
+  interface ICreateItServiceForm {
+    name?: string;
+    description?: string;
+    code?: string;
+  }
+
+  interface IUpdateItServiceForm {
+    name?: string;
+    description?: string;
+    code?: string;
+  }
+
   type IFormSubmitEvent<T> = FormSubmitEvent<T>;
 }
 

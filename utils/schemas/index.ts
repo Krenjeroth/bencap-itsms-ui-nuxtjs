@@ -9,3 +9,4 @@ export * from "./brand-models";
 export * from "./item-types";
 export * from "./common-problems";
 export * from "./item";
+export * from "./it-service";
