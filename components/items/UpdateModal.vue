@@ -44,21 +44,6 @@ const onNoDataChange = () => {
   emit("noDataChange");
 };
 
-// const formState = ref<ICreateItemForm>({
-//   item_type: undefined,
-//   brand_model: undefined,
-//   parent_component: undefined,
-//   code: undefined,
-//   barcode: undefined,
-//   description: undefined,
-//   serial_number: undefined,
-//   property_number: undefined,
-//   ics_number: undefined,
-//   date_acquired: undefined,
-//   ip_address: undefined,
-//   mac_address: undefined,
-// });
-
 const formState = ref<IUpdateItemForm>({
   item_type: props.item?.item_type_id || undefined,
   brand_model: props.item?.brand_model || undefined,
