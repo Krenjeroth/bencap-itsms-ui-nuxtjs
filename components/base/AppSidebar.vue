@@ -32,16 +32,7 @@ const links = [
       icon: "i-heroicons-building-office-2",
       to: "/departments",
     },
-    {
-      label: "Employees",
-      icon: "material-symbols:badge-outline",
-      to: "/employees",
-    },
-    {
-      label: "Items",
-      icon: "i-heroicons-archive-box",
-      to: "/items",
-    },
+
     {
       label: "Item Types",
       icon: "material-symbols:trolley-outline-rounded",
@@ -79,6 +70,21 @@ const links = [
       icon: "i-heroicons-home",
       to: "/",
     },
+    {
+      label: "Employees",
+      icon: "material-symbols:badge-outline",
+      to: "/employees",
+    },
+    {
+      label: "Items",
+      icon: "i-heroicons-archive-box",
+      to: "/items",
+    },
+    // {
+    //   label: "Tickets",
+    //   icon: "i-heroicons-ticket",
+    //   to: "/tickets",
+    // },
     // {
     //   label: "Analytics",
     //   icon: "i-heroicons-chart-bar",
@@ -89,11 +95,11 @@ const links = [
     //   icon: "i-heroicons-cog-6-tooth",
     //   to: "/",
     // },
-    {
-      label: "---LOGIN (DEV/DEB)---",
-      icon: "i-heroicons-bug-ant",
-      to: "/auth/login",
-    },
+    // {
+    //   label: "---LOGIN (DEV/DEB)---",
+    //   icon: "i-heroicons-bug-ant",
+    //   to: "/auth/login",
+    // },
   ],
 ];
 
