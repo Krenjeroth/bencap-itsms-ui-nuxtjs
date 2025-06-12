@@ -6,7 +6,7 @@ export * from "./position";
 export * from "./employee";
 export * from "./brand";
 export * from "./brand-models";
-export * from "./item-types";
+export * from "./item-type";
 export * from "./common-problems";
 export * from "./item";
 export * from "./it-service";
