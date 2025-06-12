@@ -7,6 +7,6 @@ export * from "./employee";
 export * from "./brand";
 export * from "./brand-models";
 export * from "./item-type";
-export * from "./common-problems";
+export * from "./common-problem";
 export * from "./item";
 export * from "./it-service";
