@@ -10,3 +10,4 @@ export * from "./item-type";
 export * from "./common-problem";
 export * from "./item";
 export * from "./it-service";
+export * from "./ticket";

@@ -80,11 +80,11 @@ const links = [
       icon: "i-heroicons-archive-box",
       to: "/items",
     },
-    // {
-    //   label: "Tickets",
-    //   icon: "i-heroicons-ticket",
-    //   to: "/tickets",
-    // },
+    {
+      label: "Tickets",
+      icon: "i-heroicons-ticket",
+      to: "/tickets",
+    },
     // {
     //   label: "Analytics",
     //   icon: "i-heroicons-chart-bar",

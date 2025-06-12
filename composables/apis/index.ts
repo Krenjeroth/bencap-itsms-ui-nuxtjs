@@ -11,3 +11,4 @@ export * from "./useItemTypeApi";
 export * from "./useCommonProblemApi";
 export * from "./useItemApi";
 export * from "./useItServiceApi";
+export * from "./useTicketApi";
