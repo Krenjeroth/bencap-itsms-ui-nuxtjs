@@ -5,7 +5,7 @@ export * from "./role";
 export * from "./position";
 export * from "./employee";
 export * from "./brand";
-export * from "./brand-models";
+export * from "./brand-model";
 export * from "./item-type";
 export * from "./common-problem";
 export * from "./item";
