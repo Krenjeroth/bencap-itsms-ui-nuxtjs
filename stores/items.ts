@@ -4,7 +4,7 @@ export const useItemStore = defineStore("itemStore", () => {
     addItemApi,
     updateItemApi,
     deleteItemApi,
-    fetchItemSelectApi,
+    fetchItemSearchApi,
   } = useItemApi();
   const { hasError, errorBag, transformValidationErrors, resetErrorBag } =
     useErrorHandler();
@@ -115,12 +115,17 @@ export const useItemStore = defineStore("itemStore", () => {
       });
   };
 
-  const fetchItemSelect = async () => {
+  const fetchItemSearch = async (q: string) => {
     try {
-      const response = await fetchItemSelectApi();
-      itemSelect.value = response.data;
-    } catch (error) {
-      console.log(error);
+      const queryParams = new URLSearchParams({
+        q,
+        limit: "50",
+      });
+      const response = await fetchItemSearchApi(queryParams);
+      return response.data;
+    } catch (err) {
+      console.error("API Error:", err);
+      return [];
     }
   };
 
@@ -140,6 +145,6 @@ export const useItemStore = defineStore("itemStore", () => {
     addItem,
     updateItem,
     deleteItem,
-    fetchItemSelect,
+    fetchItemSearch,
   };
 });

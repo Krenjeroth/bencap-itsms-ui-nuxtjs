@@ -201,9 +201,9 @@ declare global {
 
   interface ICreateTicketForm {
     profile_id?: number;
-    employee_id?: number;
-    item_id?: number;
-    it_service_id?: number;
+    employee?: number;
+    item?: number;
+    it_service?: number;
     ticket_number?: string;
     concern?: string;
     query_status?: string;

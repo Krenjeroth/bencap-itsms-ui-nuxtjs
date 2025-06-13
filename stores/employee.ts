@@ -4,6 +4,7 @@ export const useEmployeeStore = defineStore("employeeStore", () => {
     addEmployeeApi,
     updateEmployeeApi,
     deleteEmployeeApi,
+    fetchEmployeeSearchApi,
   } = useEmployeeApi();
   const { hasError, errorBag, transformValidationErrors, resetErrorBag } =
     useErrorHandler();
@@ -135,6 +136,20 @@ export const useEmployeeStore = defineStore("employeeStore", () => {
       });
   };
 
+  const fetchEmployeeSearch = async (q: string) => {
+    try {
+      const queryParams = new URLSearchParams({
+        q,
+        limit: "50",
+      });
+      const response = await fetchEmployeeSearchApi(queryParams);
+      return response.data;
+    } catch (err) {
+      console.error("API Error:", err);
+      return [];
+    }
+  };
+
   return {
     employees,
     loading,
@@ -150,5 +165,6 @@ export const useEmployeeStore = defineStore("employeeStore", () => {
     addEmployee,
     updateEmployee,
     deleteEmployee,
+    fetchEmployeeSearch,
   };
 });

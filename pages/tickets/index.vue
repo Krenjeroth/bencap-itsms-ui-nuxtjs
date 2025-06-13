@@ -17,7 +17,7 @@ const { strSingular } = useStringHandler();
 const pageTitleSingular = strSingular(route.meta.title as string);
 
 import {
-  ItServicesCreateModal,
+  TicketsCreateModal,
   ItServicesUpdateModal,
   ItServicesDeleteModal,
 } from "#components";
@@ -39,8 +39,8 @@ const {
 const { columns, items } = model;
 ticketStore.fetchTickets();
 
-const addItServiceModal = () => {
-  modal.open(ItServicesCreateModal, {
+const addTicketModal = () => {
+  modal.open(TicketsCreateModal, {
     pageTitle: pageTitleSingular,
     onReloadTable() {
       ticketStore.fetchTickets();
@@ -170,7 +170,7 @@ watch(selectedStatus, () => {
       :columns="columns"
       :action-items="items"
       :table-data="data"
-      :add-data-modal="addItServiceModal"
+      :add-data-modal="addTicketModal"
       :loading="loading"
       :action-handlers="{
         edit: editItServiceModal,

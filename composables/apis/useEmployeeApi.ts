@@ -5,6 +5,11 @@ export const useEmployeeApi = () => {
     return url;
   });
 
+  const employeeSearchUrl = computed(() => {
+    const url = new URL("http://itsms/api/employees-search");
+    return url;
+  });
+
   const fetchEmployeesApi = async (queryParams: URLSearchParams) => {
     return await sanctumFetch(
       `${employeesUrl.value}?${queryParams.toString()}`
@@ -34,10 +39,16 @@ export const useEmployeeApi = () => {
     });
   };
 
+  const fetchEmployeeSearchApi = async (queryParams?: URLSearchParams) => {
+    const queryString = queryParams?.toString() || "";
+    return await sanctumFetch(`${employeeSearchUrl.value}?${queryString}`);
+  };
+
   return {
     fetchEmployeesApi,
     addEmployeeApi,
     updateEmployeeApi,
     deleteEmployeeApi,
+    fetchEmployeeSearchApi,
   };
 };

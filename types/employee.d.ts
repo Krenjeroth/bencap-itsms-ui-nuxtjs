@@ -12,6 +12,11 @@ declare global {
     img_path: string;
   }
 
+  type TEmployeeSelectOption = {
+    id: number | string;
+    full_name: string;
+  };
+
   type TCreateEmployeeValidationSchema = z.output<
     typeof CreateEmployeeValidationSchema
   >;
@@ -22,6 +27,7 @@ declare global {
 
 export {
   IEmployee,
+  TEmployeeSelectOption,
   TCreateEmployeeValidationSchema,
   TUpdateEmployeeValidationSchema,
 };

@@ -5,8 +5,8 @@ export const useItemApi = () => {
     return url;
   });
 
-  const itemsSelectUrl = computed(() => {
-    const url = new URL("http://itsms/api/items-select");
+  const itemsSearchUrl = computed(() => {
+    const url = new URL("http://itsms/api/items-search");
     return url;
   });
 
@@ -37,8 +37,9 @@ export const useItemApi = () => {
     });
   };
 
-  const fetchItemSelectApi = async () => {
-    return await sanctumFetch(`${itemsSelectUrl.value}`);
+  const fetchItemSearchApi = async (queryParams?: URLSearchParams) => {
+    const queryString = queryParams?.toString() || "";
+    return await sanctumFetch(`${itemsSearchUrl.value}?${queryString}`);
   };
 
   return {
@@ -46,6 +47,6 @@ export const useItemApi = () => {
     addItemApi,
     updateItemApi,
     deleteItemApi,
-    fetchItemSelectApi,
+    fetchItemSearchApi,
   };
 };
