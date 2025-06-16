@@ -14,7 +14,8 @@ export const useDateHandler = () => {
     dateFormat: string = "YYYY-MM-DD"
   ) => {
     if (dateFormat === "YYYY-MM-DD HH:mm:ss") {
-      const currentDate = dayjs().utc();
+      // const currentDate = dayjs().utc();
+      const currentDate = dayjs();
       return dateParam
         ? dayjs(dateParam)
             .hour(currentDate.hour())
