@@ -5,5 +5,9 @@ export const useAuthApi = () => {
     return await login(form);
   };
 
-  return { authLoginApi };
+  const fetchLoggedInUserApi = async () => {
+    return await useSanctumUser();
+  };
+
+  return { authLoginApi, fetchLoggedInUserApi };
 };
