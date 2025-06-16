@@ -1,8 +1,9 @@
 export const useAuthStore = defineStore("authStore", () => {
-  const { authLoginApi } = useAuthApi();
+  const { authLoginApi, fetchLoggedInUserApi } = useAuthApi();
   const { hasError, errorBag, transformValidationErrors, resetErrorBag } =
     useErrorHandler();
 
+  const loggedInUser = ref<any>(null);
   const loading = ref(false);
 
   const authLogin = async (form: ILoginForm) => {
@@ -17,10 +18,25 @@ export const useAuthStore = defineStore("authStore", () => {
       });
   };
 
+  const fetchLoggedInUser = async () => {
+    loading.value = true;
+    resetErrorBag();
+    try {
+      const response = await fetchLoggedInUserApi();
+      loggedInUser.value = response;
+    } catch (err: any) {
+      throw err;
+    } finally {
+      loading.value = false;
+    }
+  };
+
   return {
     loading,
     errorBag,
     hasError,
     authLogin,
+    fetchLoggedInUser,
+    loggedInUser,
   };
 });
