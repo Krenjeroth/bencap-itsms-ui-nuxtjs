@@ -2,13 +2,38 @@ export { columns, items, classificationOptions };
 
 const columns: ITableColumns[] = [
   {
-    key: "id",
-    label: "ID",
+    key: "ticket_number",
+    label: "Ticket Number",
     rowClass: "whitespace-pre-line max-w-fit",
   },
   {
-    key: "ticket_number",
-    label: "Ticket Number",
+    key: "employee.full_name",
+    label: "Employee",
+    rowClass: "whitespace-pre-line max-w-fit",
+  },
+  {
+    key: "concern",
+    label: "Concern",
+    rowClass: "whitespace-pre-line max-w-fit",
+  },
+  {
+    key: "query_status_formatted",
+    label: "Query Status",
+    rowClass: "whitespace-pre-line max-w-fit",
+  },
+  {
+    key: "request_status_formatted",
+    label: "Request Status",
+    rowClass: "whitespace-pre-line max-w-fit",
+  },
+  {
+    key: "priority_formatted",
+    label: "Priority",
+    rowClass: "whitespace-pre-line max-w-fit",
+  },
+  {
+    key: "date_formatted",
+    label: "Request Date",
     rowClass: "whitespace-pre-line max-w-fit",
   },
   {
