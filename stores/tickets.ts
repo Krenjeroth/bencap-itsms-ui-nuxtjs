@@ -3,7 +3,12 @@ export const useTicketStore = defineStore("ticketStore", () => {
     useTicketApi();
   const { hasError, errorBag, transformValidationErrors, resetErrorBag } =
     useErrorHandler();
-  const { transformDatePickerDate } = useDateHandler();
+  const { user: loggedInUser } = useSanctumAuth<IUser>();
+  const {
+    transformDatePickerDate,
+    transformDbDate,
+    transformDateDurationHumanize,
+  } = useDateHandler();
   const { capitalizeSentences, capitalizeAll, capitalizeWords } =
     useStringHandler();
   enum SortDirection {
@@ -37,8 +42,15 @@ export const useTicketStore = defineStore("ticketStore", () => {
 
       const response = await fetchTicketsApi(queryParams);
 
-      tickets.value = response.data.map((item: any) => ({
-        ...item,
+      tickets.value = response.data.map((ticket: any) => ({
+        ...ticket,
+        query_status_formatted: capitalizeSentences(ticket.query_status),
+        request_status_formatted: capitalizeSentences(ticket.request_status),
+        priority_formatted: capitalizeSentences(ticket.priority),
+        date_formatted: `${transformDatePickerDate(
+          ticket.date,
+          "MMM DD, YYYY"
+        )} (${transformDateDurationHumanize(ticket.date)})`,
       }));
 
       totalTickets.value = Number(response.meta.total) || 0;
@@ -55,7 +67,15 @@ export const useTicketStore = defineStore("ticketStore", () => {
 
     const formattedForm = {
       ...form,
-      status: "active",
+      profile_id: loggedInUser.value?.profile?.id,
+      employee_id: form.employee?.id,
+      item_id: form.item?.id,
+      ticket_number: form.ticket_number,
+      query_status: "queued",
+      request_status: "pending",
+      priority: "normal",
+      date: transformDatePickerDate(new Date(), "YYYY-MM-DD HH:mm:ss"),
+      it_service_id: Number(form.it_service),
     };
 
     await addTicketApi(formattedForm)
