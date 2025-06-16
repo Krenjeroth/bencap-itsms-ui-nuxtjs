@@ -84,10 +84,6 @@ const searchItems = async (q: string) => {
   itemOptions.value = result;
   return result;
 };
-
-const { transformDatePickerDate } = useDateHandler();
-
-console.log(transformDatePickerDate(new Date(), "YYYY-MM-DD HH:mm:ss"));
 </script>
 
 <template>
