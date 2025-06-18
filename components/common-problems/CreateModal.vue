@@ -95,7 +95,7 @@ const searchItemTypes = async (q: string) => {
       </UFormGroup>
 
       <UFormGroup
-        label="Department"
+        label="Item type"
         name="item_type"
         :error="errorBag.item_type"
         :ui="{ wrapper: 'md:w-full' }"
