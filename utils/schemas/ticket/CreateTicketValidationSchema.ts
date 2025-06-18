@@ -15,4 +15,5 @@ export const CreateTicketValidationSchema = z.object({
       invalid_type_error: "Concern is required",
     })
     .min(2, "Concern must be at least 2 characters long"),
+  priority: z.string(),
 });

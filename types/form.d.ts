@@ -219,16 +219,22 @@ declare global {
   }
 
   interface IUpdateTicketForm {
-    profile_id?: number;
-    employee_id?: number;
-    item_id?: number;
-    it_service_id?: number;
-    ticket_number?: string;
+    // profile_id?: number;
+    employee?: {
+      id: number;
+      full_name: string;
+    };
+    item?: {
+      id: number;
+      property_number: string;
+    };
+    it_service?: string | number;
+    // ticket_number?: string;
     concern?: string;
-    query_status?: string;
-    request_status?: string;
+    // query_status?: string;
+    // request_status?: string;
     priority?: string;
-    date?: TDatePickerDate;
+    // date?: TDatePickerDate;
   }
 
   type IFormSubmitEvent<T> = FormSubmitEvent<T>;

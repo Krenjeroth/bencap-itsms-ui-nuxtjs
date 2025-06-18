@@ -60,13 +60,13 @@ const items: ITableActions = (row: any, handlers: IHandlers) => [
   //     icon: "i-heroicons-arrow-right-circle-20-solid",
   //   },
   // ],
-  [
-    {
-      label: "Delete",
-      icon: "i-heroicons-trash-20-solid",
-      click: () => handlers.delete?.(row),
-    },
-  ],
+  // [
+  //   {
+  //     label: "Delete",
+  //     icon: "i-heroicons-trash-20-solid",
+  //     click: () => handlers.delete?.(row),
+  //   },
+  // ],
 ];
 
 const classificationOptions: ITableStatusOptions[] = [

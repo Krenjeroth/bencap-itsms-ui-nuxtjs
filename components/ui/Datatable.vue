@@ -68,6 +68,7 @@ const emit = defineEmits([
   "update:selected-dropdown-filter",
 ]);
 
+const { getStatusColor } = useColorHandler();
 const { capitalizeWord } = useStringHandler();
 const searchQuery = ref(props.search);
 const dropdownFilter = ref(props.selectedDropdownFilter);
@@ -84,7 +85,12 @@ const excludeSelectColumn = computed(() =>
       v.key !== "actions" &&
       v.key !== "name" &&
       v.key !== "full_name" &&
-      v.key !== "photo"
+      v.key !== "photo" &&
+      v.key !== "ticket_number" &&
+      v.key !== "property_number" &&
+      v.key !== "title" &&
+      v.key !== "type" &&
+      v.key !== "code"
   )
 );
 
@@ -258,6 +264,31 @@ const expand = ref({
         >
       </template>
 
+      <template #query_status_formatted-data="{ row }">
+        <UBadge
+          variant="outline"
+          :color="getStatusColor(row.query_status_formatted)"
+          >{{ row.query_status_formatted }}</UBadge
+        >
+      </template>
+
+      <template #request_status_formatted-data="{ row }">
+        <UBadge
+          :color="getStatusColor(row.request_status_formatted)"
+          variant="outline"
+          >{{ row.request_status_formatted }}</UBadge
+        >
+      </template>
+
+      <template #priority_formatted-data="{ row }">
+        <UBadge
+          :color="getStatusColor(row.priority_formatted)"
+          variant="outline"
+          class="mr-2"
+          >{{ row.priority_formatted }}</UBadge
+        >
+      </template>
+
       <template #permissions-data="{ row }">
         <UBadge
           v-for="permission in row.permissions"
@@ -321,6 +352,31 @@ const expand = ref({
           variant="solid"
           class="mr-2"
           >{{ role.title }}</UBadge
+        >
+      </template>
+
+      <template #query_status_formatted-data="{ row }">
+        <UBadge
+          variant="outline"
+          :color="getStatusColor(row.query_status_formatted)"
+          >{{ row.query_status_formatted }}</UBadge
+        >
+      </template>
+
+      <template #request_status_formatted-data="{ row }">
+        <UBadge
+          :color="getStatusColor(row.request_status_formatted)"
+          variant="outline"
+          >{{ row.request_status_formatted }}</UBadge
+        >
+      </template>
+
+      <template #priority_formatted-data="{ row }">
+        <UBadge
+          :color="getStatusColor(row.priority_formatted)"
+          variant="outline"
+          class="mr-2"
+          >{{ row.priority_formatted }}</UBadge
         >
       </template>
 

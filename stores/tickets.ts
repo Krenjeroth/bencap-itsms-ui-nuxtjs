@@ -28,6 +28,12 @@ export const useTicketStore = defineStore("ticketStore", () => {
   const totalTickets = ref(0);
   const selectedStatus = ref("");
 
+  const priorities = ref([
+    { label: "Low", value: "low" },
+    { label: "Medium", value: "medium" },
+    { label: "High", value: "high" },
+  ]);
+
   const fetchTickets = async () => {
     loading.value = true;
     try {
@@ -71,9 +77,8 @@ export const useTicketStore = defineStore("ticketStore", () => {
       employee_id: form.employee?.id,
       item_id: form.item?.id,
       ticket_number: form.ticket_number,
-      query_status: "queued",
-      request_status: "pending",
-      priority: "normal",
+      query_status: "queued", // queued, checking_stock, awaiting_stock, in_progress, resolved, pending, in_progress, closed, cancelled
+      request_status: "pending", // pending, in_progress, closed, cancelled, reopened
       date: transformDatePickerDate(new Date(), "YYYY-MM-DD HH:mm:ss"),
       it_service_id: Number(form.it_service),
     };
@@ -93,7 +98,9 @@ export const useTicketStore = defineStore("ticketStore", () => {
 
     const formattedForm = {
       ...form,
-      status: "active",
+      employee_id: form.employee?.id,
+      item_id: form.item?.id,
+      it_service_id: Number(form.it_service),
     };
 
     await updateTicketApi(id, formattedForm)
@@ -128,6 +135,7 @@ export const useTicketStore = defineStore("ticketStore", () => {
     sort,
     totalTickets,
     selectedStatus,
+    priorities,
     fetchTickets,
     addTicket,
     updateTicket,

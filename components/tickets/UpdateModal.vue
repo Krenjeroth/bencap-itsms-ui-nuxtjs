@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { cloneDeep } from "lodash";
 const ticketStore = useTicketStore();
 const { loading, errorBag, hasError, priorities } = storeToRefs(ticketStore);
 
@@ -12,13 +13,20 @@ const itServiceStore = useItServiceStore();
 const { itServiceSelect } = storeToRefs(itServiceStore);
 itServiceStore.fetchItServicesSelect();
 
-const emit = defineEmits(["reloadTable", "success", "error", "close"]);
+const emit = defineEmits([
+  "reloadTable",
+  "success",
+  "error",
+  "noDataChange",
+  "close",
+]);
 
 const props = defineProps({
   pageTitle: String,
+  ticket: Object,
 });
 
-const { capitalizeAll, capitalizeSentences } = useStringHandler();
+const { capitalizeAll } = useStringHandler();
 
 const onClose = () => emit("close");
 
@@ -32,12 +40,43 @@ const onError = () => {
   emit("error");
 };
 
-const formState = ref<ICreateTicketForm>({
-  employee: undefined,
-  item: undefined,
-  it_service: undefined,
-  concern: undefined,
-  priority: "low",
+const onNoDataChange = () => {
+  emit("noDataChange");
+};
+
+const formState = ref<IUpdateTicketForm>({
+  employee: props.ticket?.employee || undefined,
+  item: props.ticket?.item || undefined,
+  it_service: props.ticket?.it_service.id || undefined,
+  concern: props.ticket?.concern || undefined,
+  priority: props.ticket?.priority || "low",
+});
+
+const originalState = ref<IUpdateTicketForm>({
+  ...cloneDeep({
+    employee: props.ticket?.employee || undefined,
+    item: props.ticket?.item || undefined,
+    it_service: props.ticket?.it_service.id || undefined,
+    concern: props.ticket?.concern || undefined,
+    priority: props.ticket?.priority || "low",
+  }),
+});
+
+const fieldsToCompare: (keyof IUpdateTicketForm)[] = [
+  "employee",
+  "item",
+  "it_service",
+  "concern",
+  "priority",
+];
+
+const isChangedComputed = computed(() => {
+  return fieldsToCompare.some((key) => {
+    const a = formState.value[key];
+    const b = originalState.value[key];
+
+    return !isEqual(a, b);
+  });
 });
 
 const concernComputed = computed({
@@ -48,9 +87,14 @@ const concernComputed = computed({
 });
 
 const handleSubmit = async (
-  event: IFormSubmitEvent<TCreateTicketValidationSchema>
+  event: IFormSubmitEvent<TUpdateTicketValidationSchema>
 ) => {
-  await ticketStore.addTicket(event.data);
+  if (!isChangedComputed.value) {
+    onNoDataChange();
+    return;
+  }
+
+  await ticketStore.updateTicket(props.ticket?.id, event.data);
 
   if (hasError.value) {
     onError();
@@ -88,9 +132,9 @@ const searchItems = async (q: string) => {
 </script>
 
 <template>
-  <BaseModal :on-close="onClose" :title="`Create ${props.pageTitle}`">
+  <BaseModal :on-close="onClose" :title="`Update ${props.pageTitle}`">
     <UForm
-      :schema="CreateTicketValidationSchema"
+      :schema="UpdateTicketValidationSchema"
       :state="formState"
       @submit.prevent="handleSubmit"
       class="space-y-6"
@@ -179,7 +223,9 @@ const searchItems = async (q: string) => {
         />
       </UFormGroup>
 
-      <UButton type="submit" :loading="loading"> Add </UButton>
+      <UButton type="submit" :loading="loading" :disabled="!isChangedComputed">
+        Update
+      </UButton>
     </UForm>
   </BaseModal>
 </template>

@@ -71,4 +71,7 @@ export default defineNuxtConfig({
     defaultLocale: "en",
     defaultTimezone: "Asia/Manila",
   },
+  ui: {
+    safelistColors: ["yellow", "blue", "green", "red", "purple", "gray"],
+  },
 });

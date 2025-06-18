@@ -18,7 +18,7 @@ const pageTitleSingular = strSingular(route.meta.title as string);
 
 import {
   TicketsCreateModal,
-  ItServicesUpdateModal,
+  TicketsUpdateModal,
   ItServicesDeleteModal,
 } from "#components";
 import * as model from "./model/index";
@@ -69,9 +69,9 @@ const addTicketModal = () => {
   });
 };
 
-const editItServiceModal = (itService: any) => {
-  modal.open(ItServicesUpdateModal, {
-    itService,
+const editTicketModal = (ticket: any) => {
+  modal.open(TicketsUpdateModal, {
+    ticket,
     pageTitle: pageTitleSingular,
     onReloadTable() {
       ticketStore.fetchTickets();
@@ -173,7 +173,7 @@ watch(selectedStatus, () => {
       :add-data-modal="addTicketModal"
       :loading="loading"
       :action-handlers="{
-        edit: editItServiceModal,
+        edit: editTicketModal,
         delete: deleteItServiceModal,
       }"
       :pagination="{ page, pageCount, total: totalTickets }"
