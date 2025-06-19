@@ -37,8 +37,8 @@ const columns: ITableColumns[] = [
     rowClass: "whitespace-pre-line max-w-fit",
   },
   {
-    key: "assignees",
-    label: "Assignees",
+    key: "personnel",
+    label: "Personnel In Charge",
     rowClass: "whitespace-pre-line max-w-fit",
   },
   {

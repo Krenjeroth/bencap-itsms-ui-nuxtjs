@@ -300,13 +300,13 @@ const expand = ref({
         >
       </template>
 
-      <template #assignees-data="{ row }">
-        <div v-if="Array.isArray(row.assignees) && row.assignees.length > 0">
+      <template #personnel-data="{ row }">
+        <div v-if="Array.isArray(row.personnel) && row.personnel.length > 0">
           <UAvatarGroup size="2xl" :max="2">
             <UAvatar
-              v-for="assignee in row.assignees"
-              :src="assignee.img_path"
-              :alt="assignee.display_name.toLowerCase()"
+              v-for="personnel in row.personnel"
+              :src="personnel.img_path"
+              :alt="personnel.display_name.toLowerCase()"
             />
           </UAvatarGroup>
         </div>
@@ -404,13 +404,13 @@ const expand = ref({
         >
       </template>
 
-      <template #assignees-data="{ row }">
-        <div v-if="Array.isArray(row.assignees) && row.assignees.length > 0">
+      <template #personnel-data="{ row }">
+        <div v-if="Array.isArray(row.personnel) && row.personnel.length > 0">
           <UAvatarGroup size="2xl" :max="2">
             <UAvatar
-              v-for="assignee in row.assignees"
-              :src="assignee.img_path"
-              :alt="assignee.display_name.toLowerCase()"
+              v-for="personnel in row.personnel"
+              :src="personnel.img_path"
+              :alt="personnel.display_name.toLowerCase()"
             />
           </UAvatarGroup>
         </div>
