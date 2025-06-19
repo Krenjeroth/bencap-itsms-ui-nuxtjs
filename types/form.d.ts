@@ -136,8 +136,6 @@ declare global {
   }
 
   interface ICreateItemForm {
-    item_type?: number;
-    // brand_model?: object | string | number;
     brand_model?: {
       id?: number;
       name?: string;
@@ -163,8 +161,6 @@ declare global {
   }
 
   interface IUpdateItemForm {
-    item_type?: number;
-    // brand_model?: object | string | number;
     brand_model?: {
       id?: number;
       name?: string;

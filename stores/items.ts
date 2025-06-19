@@ -44,7 +44,6 @@ export const useItemStore = defineStore("itemStore", () => {
 
       items.value = response.data.map((item: any) => ({
         ...item,
-        item_type_id: item.item_type.id,
         brand_model_formatted: `${item.brand_model.brand.name} ${item.brand_model.name}`,
         // item_type_formatted: `TYPE: ${item.item_type.type}\r\nClassification: ${item.item_type.classification}\r\nPurpose: ${item.item_type.purpose}`,
       }));
@@ -63,7 +62,6 @@ export const useItemStore = defineStore("itemStore", () => {
 
     const formattedForm = {
       ...form,
-      item_type_id: form.item_type,
       brand_model_id: form.brand_model?.id,
       date_acquired: form.date_acquired
         ? transformDatePickerDate(form.date_acquired, "YYYY-MM-DD HH:mm:ss")
@@ -86,7 +84,6 @@ export const useItemStore = defineStore("itemStore", () => {
 
     const formattedForm = {
       ...form,
-      item_type_id: form.item_type,
       brand_model_id: form.brand_model?.id,
       date_acquired: form.date_acquired
         ? transformDatePickerDate(form.date_acquired, "YYYY-MM-DD HH:mm:ss")

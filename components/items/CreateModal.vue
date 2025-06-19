@@ -4,11 +4,6 @@ import { format } from "date-fns";
 const itemStore = useItemStore();
 const { loading, errorBag, hasError } = storeToRefs(itemStore);
 
-const itemTypeStore = useItemTypeStore();
-const { loading: loadingItemTypes, itemTypeSelect } =
-  storeToRefs(itemTypeStore);
-itemTypeStore.fetchItemTypeSelect();
-
 const brandModelStore = useBrandModelStore();
 const { loading: loadingBrandModels, brandModelSelect } =
   storeToRefs(brandModelStore);
@@ -34,7 +29,6 @@ const onError = () => {
 };
 
 const formState = ref<ICreateItemForm>({
-  item_type: undefined,
   brand_model: undefined,
   parent_component: undefined,
   code: undefined,
@@ -132,16 +126,6 @@ const handleSubmit = async (
   return;
 };
 
-const searchItemTypes = async (q: string) => {
-  if (!q || q.length < 2) return [];
-  if (itemTypeSelect.value.length === 0) {
-    await itemTypeStore.fetchItemTypeSelect();
-  }
-  return itemTypeSelect.value.filter((itemType) =>
-    itemType.type.toLowerCase().includes(q.toLowerCase())
-  );
-};
-
 const brandModelOptions = ref<TBrandModelSelectOption[]>([]);
 const searchQuery = ref("");
 
@@ -167,30 +151,6 @@ const searchBrandModels = async (q: string) => {
       class="space-y-6"
     >
       <div class="space-y-6 md:space-y-0 md:flex md:space-x-6">
-        <UFormGroup
-          label="Item Type"
-          name="item_type"
-          :error="errorBag.item_type"
-          :ui="{ wrapper: 'md:w-full' }"
-        >
-          <USelectMenu
-            v-model="formState.item_type"
-            :options="itemTypeSelect"
-            :searchable="true"
-            :search="searchItemTypes"
-            :loading="loadingItemTypes"
-            placeholder="Type to search..."
-            value-attribute="id"
-            option-attribute="type"
-          >
-            <template #option-empty="{ query }">
-              <q>{{ query }}</q> not found
-            </template>
-
-            <template #empty> No Item Type found </template>
-          </USelectMenu>
-        </UFormGroup>
-
         <UFormGroup
           label="Brand Model"
           name="brand_model"

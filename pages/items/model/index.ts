@@ -66,19 +66,19 @@ const items: ITableActions = (row: any, handlers: IHandlers) => [
 
 const expandableDetails: ITableExpandableDetails = (row: any) => [
   {
-    key: "item_type.type",
+    key: "brand_model.item_type.type",
     label: "Type",
-    value: row.item_type.type,
+    value: row.brand_model.item_type.type,
   },
   {
-    key: "item_type.classification",
+    key: "brand_model.item_type.classification",
     label: "Classification",
-    value: row.item_type.classification,
+    value: row.brand_model.item_type.classification,
   },
   {
-    key: "item_type.purpose",
+    key: "brand_model.item_type.purpose",
     label: "Purpose",
-    value: row.item_type.purpose,
+    value: row.brand_model.item_type.purpose,
   },
   {
     key: "description",
