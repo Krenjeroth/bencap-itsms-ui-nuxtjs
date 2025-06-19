@@ -68,6 +68,7 @@ export const useBrandModelStore = defineStore("brandModelStore", () => {
     const formattedForm = {
       ...form,
       name: capitalizeAll(form.name),
+      item_type_id: form.item_type,
       brand_id: form.brand,
       // image: form.image,
       status: "active",
@@ -89,6 +90,7 @@ export const useBrandModelStore = defineStore("brandModelStore", () => {
     const formattedForm = {
       ...form,
       name: capitalizeAll(form.name),
+      item_type_id: form.item_type,
       brand_id: form.brand,
       // image: form.image,
       status: "active",
