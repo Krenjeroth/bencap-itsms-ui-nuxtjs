@@ -36,7 +36,7 @@ const {
   totalTickets,
   selectedStatus,
 } = storeToRefs(ticketStore);
-const { columns, items } = model;
+const { columns, items, expandableDetails } = model;
 ticketStore.fetchTickets();
 
 const addTicketModal = () => {
@@ -167,6 +167,8 @@ watch(selectedStatus, () => {
   <div>
     <UiDatatable
       :module-title="route.meta.title as string"
+      :is-expandable="true"
+      :expandable-details="expandableDetails"
       :columns="columns"
       :action-items="items"
       :table-data="data"

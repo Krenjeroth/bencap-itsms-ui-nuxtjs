@@ -1,4 +1,4 @@
-export { columns, items, classificationOptions };
+export { columns, items, classificationOptions, expandableDetails };
 
 const columns: ITableColumns[] = [
   {
@@ -37,6 +37,11 @@ const columns: ITableColumns[] = [
     rowClass: "whitespace-pre-line max-w-fit",
   },
   {
+    key: "assignees",
+    label: "Assignees",
+    rowClass: "whitespace-pre-line max-w-fit",
+  },
+  {
     key: "actions",
     rowClass: "whitespace-pre-line max-w-fit text-center",
   },
@@ -67,6 +72,14 @@ const items: ITableActions = (row: any, handlers: IHandlers) => [
   //     click: () => handlers.delete?.(row),
   //   },
   // ],
+];
+
+const expandableDetails: ITableExpandableDetails = (row: any) => [
+  {
+    key: "concern",
+    label: "Concern",
+    value: row.concern,
+  },
 ];
 
 const classificationOptions: ITableStatusOptions[] = [
