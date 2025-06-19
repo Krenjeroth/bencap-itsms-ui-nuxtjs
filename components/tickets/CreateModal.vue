@@ -136,8 +136,9 @@ const searchItems = async (q: string) => {
         >
           <template #option="{ option }">
             <span class="truncate"
-              >{{ option.property_number }} ({{ option.item_type.type }}:
-              {{ option.brand_model.brand.name }}
+              >{{ option.property_number }} ({{
+                option.brand_model.item_type.type
+              }}: {{ option.brand_model.brand.name }}
               {{ option.brand_model.name }})</span
             >
           </template>
