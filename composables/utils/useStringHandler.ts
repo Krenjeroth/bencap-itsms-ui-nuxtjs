@@ -26,6 +26,16 @@ export const useStringHandler = () => {
     );
   };
 
+  const strConvertUnderscoreToSpace = (str: string | undefined | null) => {
+    return (
+      str
+        ?.replace(/[^a-zA-Z0-9 _]+/g, "") // clean string
+        .trim()
+        .replace(/_/g, " ") // convert _ to space
+        .toLowerCase() || ""
+    );
+  };
+
   const capitalizeWord = (str: string | undefined | null) => {
     str = strSanitize(str);
     return str?.replace(/^\w/, (c) => c.toUpperCase()) || "";
@@ -99,5 +109,6 @@ export const useStringHandler = () => {
     lowerCaseAll,
     strSingular,
     capitalizeSentences,
+    strConvertUnderscoreToSpace,
   };
 };

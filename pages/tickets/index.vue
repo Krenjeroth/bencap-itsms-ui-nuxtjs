@@ -19,7 +19,12 @@ const pageTitleSingular = strSingular(route.meta.title as string);
 import {
   TicketsCreateModal,
   TicketsUpdateModal,
-  ItServicesDeleteModal,
+  TicketsAcceptModal,
+  TicketsCheckStockModal,
+  TicketsAwaitStockModal,
+  TicketsResolveModal,
+  TicketsCancelModal,
+  TicketsReopenModal,
 } from "#components";
 import * as model from "./model/index";
 const modal = useModal();
@@ -109,9 +114,40 @@ const editTicketModal = (ticket: any) => {
   });
 };
 
-const deleteItServiceModal = (itService: any) => {
-  modal.open(ItServicesDeleteModal, {
-    itService,
+// const deleteItServiceModal = (itService: any) => {
+//   modal.open(ItServicesDeleteModal, {
+//     itService,
+//     pageTitle: pageTitleSingular,
+//     onReloadTable() {
+//       ticketStore.fetchTickets();
+//     },
+//     onSuccess() {
+//       actionToastResult({
+//         icon: "i-heroicons-check-circle",
+//         // title: "Success !",
+//         description: `${pageTitleSingular} deleted.`,
+//         id: "modal-success",
+//         color: "green",
+//       });
+//     },
+//     onError() {
+//       actionToastResult({
+//         icon: "i-heroicons-x-circle",
+//         // title: "Error !",
+//         description: "Something went wrong.",
+//         id: "modal-error",
+//         color: "red",
+//       });
+//     },
+//     onClose() {
+//       modal.close();
+//     },
+//   });
+// };
+
+const acceptTicketModal = (ticket: any) => {
+  modal.open(TicketsAcceptModal, {
+    ticket,
     pageTitle: pageTitleSingular,
     onReloadTable() {
       ticketStore.fetchTickets();
@@ -120,7 +156,162 @@ const deleteItServiceModal = (itService: any) => {
       actionToastResult({
         icon: "i-heroicons-check-circle",
         // title: "Success !",
-        description: `${pageTitleSingular} deleted.`,
+        description: `${pageTitleSingular} accepted.`,
+        id: "modal-success",
+        color: "green",
+      });
+    },
+    onError() {
+      actionToastResult({
+        icon: "i-heroicons-x-circle",
+        // title: "Error !",
+        description: "Something went wrong.",
+        id: "modal-error",
+        color: "red",
+      });
+    },
+    onClose() {
+      modal.close();
+    },
+  });
+};
+
+const checkStockModal = (ticket: any) => {
+  modal.open(TicketsCheckStockModal, {
+    ticket,
+    pageTitle: pageTitleSingular,
+    onReloadTable() {
+      ticketStore.fetchTickets();
+    },
+    onSuccess() {
+      actionToastResult({
+        icon: "i-heroicons-check-circle",
+        // title: "Success !",
+        description: `Checking stock.`,
+        id: "modal-success",
+        color: "green",
+      });
+    },
+    onError() {
+      actionToastResult({
+        icon: "i-heroicons-x-circle",
+        // title: "Error !",
+        description: "Something went wrong.",
+        id: "modal-error",
+        color: "red",
+      });
+    },
+    onClose() {
+      modal.close();
+    },
+  });
+};
+
+const awaitStockModal = (ticket: any) => {
+  modal.open(TicketsAwaitStockModal, {
+    ticket,
+    pageTitle: pageTitleSingular,
+    onReloadTable() {
+      ticketStore.fetchTickets();
+    },
+    onSuccess() {
+      actionToastResult({
+        icon: "i-heroicons-check-circle",
+        // title: "Success !",
+        description: `Awaiting stock.`,
+        id: "modal-success",
+        color: "green",
+      });
+    },
+    onError() {
+      actionToastResult({
+        icon: "i-heroicons-x-circle",
+        // title: "Error !",
+        description: "Something went wrong.",
+        id: "modal-error",
+        color: "red",
+      });
+    },
+    onClose() {
+      modal.close();
+    },
+  });
+};
+
+const resolveModal = (ticket: any) => {
+  modal.open(TicketsResolveModal, {
+    ticket,
+    pageTitle: pageTitleSingular,
+    onReloadTable() {
+      ticketStore.fetchTickets();
+    },
+    onSuccess() {
+      actionToastResult({
+        icon: "i-heroicons-check-circle",
+        // title: "Success !",
+        description: `Resolved ${pageTitleSingular}.`,
+        id: "modal-success",
+        color: "green",
+      });
+    },
+    onError() {
+      actionToastResult({
+        icon: "i-heroicons-x-circle",
+        // title: "Error !",
+        description: "Something went wrong.",
+        id: "modal-error",
+        color: "red",
+      });
+    },
+    onClose() {
+      modal.close();
+    },
+  });
+};
+
+const cancelModal = (ticket: any) => {
+  modal.open(TicketsCancelModal, {
+    ticket,
+    pageTitle: pageTitleSingular,
+    onReloadTable() {
+      ticketStore.fetchTickets();
+    },
+    onSuccess() {
+      actionToastResult({
+        icon: "i-heroicons-check-circle",
+        // title: "Success !",
+        description: `${pageTitleSingular} Cancelled.`,
+        id: "modal-success",
+        color: "green",
+      });
+    },
+    onError() {
+      actionToastResult({
+        icon: "i-heroicons-x-circle",
+        // title: "Error !",
+        description: "Something went wrong.",
+        id: "modal-error",
+        color: "red",
+      });
+    },
+    onClose() {
+      modal.close();
+    },
+  });
+};
+
+const reopenModal = (ticket: any) => {
+  modal.open(TicketsReopenModal, {
+    ticket,
+    pageTitle: pageTitleSingular,
+    onReloadTable() {
+      ticketStore.fetchTickets();
+    },
+    onSuccess() {
+      actionToastResult({
+        icon: "i-heroicons-check-circle",
+        // title: "Success !",
+        description: `${pageTitleSingular} Reopened.`,
         id: "modal-success",
         color: "green",
       });
@@ -176,7 +367,13 @@ watch(selectedStatus, () => {
       :loading="loading"
       :action-handlers="{
         edit: editTicketModal,
-        delete: deleteItServiceModal,
+        // delete: deleteItServiceModal,
+        accept: acceptTicketModal,
+        checkStock: checkStockModal,
+        awaitStock: awaitStockModal,
+        resolve: resolveModal,
+        cancel: cancelModal,
+        reopen: reopenModal,
       }"
       :pagination="{ page, pageCount, total: totalTickets }"
       :sorting="sort"

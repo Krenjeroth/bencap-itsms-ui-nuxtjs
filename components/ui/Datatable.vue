@@ -265,24 +265,20 @@ const expand = ref({
       </template>
 
       <template #query_status_formatted-data="{ row }">
-        <UBadge
-          variant="outline"
-          :color="getStatusColor(row.query_status_formatted)"
-          >{{ row.query_status_formatted }}</UBadge
-        >
+        <UBadge variant="outline" :color="getStatusColor(row.query_status)">{{
+          row.query_status_formatted
+        }}</UBadge>
       </template>
 
       <template #request_status_formatted-data="{ row }">
-        <UBadge
-          :color="getStatusColor(row.request_status_formatted)"
-          variant="outline"
-          >{{ row.request_status_formatted }}</UBadge
-        >
+        <UBadge :color="getStatusColor(row.request_status)" variant="outline">{{
+          row.request_status_formatted
+        }}</UBadge>
       </template>
 
       <template #priority_formatted-data="{ row }">
         <UBadge
-          :color="getStatusColor(row.priority_formatted)"
+          :color="getStatusColor(row.priority)"
           variant="outline"
           class="mr-2"
           >{{ row.priority_formatted }}</UBadge
@@ -369,24 +365,20 @@ const expand = ref({
       </template>
 
       <template #query_status_formatted-data="{ row }">
-        <UBadge
-          variant="outline"
-          :color="getStatusColor(row.query_status_formatted)"
-          >{{ row.query_status_formatted }}</UBadge
-        >
+        <UBadge variant="outline" :color="getStatusColor(row.query_status)">{{
+          row.query_status_formatted
+        }}</UBadge>
       </template>
 
       <template #request_status_formatted-data="{ row }">
-        <UBadge
-          :color="getStatusColor(row.request_status_formatted)"
-          variant="outline"
-          >{{ row.request_status_formatted }}</UBadge
-        >
+        <UBadge :color="getStatusColor(row.request_status)" variant="outline">{{
+          row.request_status_formatted
+        }}</UBadge>
       </template>
 
       <template #priority_formatted-data="{ row }">
         <UBadge
-          :color="getStatusColor(row.priority_formatted)"
+          :color="getStatusColor(row.priority)"
           variant="outline"
           class="mr-2"
           >{{ row.priority_formatted }}</UBadge

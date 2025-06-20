@@ -1,6 +1,16 @@
 export const useTicketStore = defineStore("ticketStore", () => {
-  const { fetchTicketsApi, addTicketApi, updateTicketApi, deleteTicketApi } =
-    useTicketApi();
+  const {
+    fetchTicketsApi,
+    addTicketApi,
+    updateTicketApi,
+    deleteTicketApi,
+    acceptTicketApi,
+    checkStockApi,
+    awaitStockApi,
+    resolveTicketApi,
+    cancelTicketApi,
+    reopenTicketApi,
+  } = useTicketApi();
   const { hasError, errorBag, transformValidationErrors, resetErrorBag } =
     useErrorHandler();
   const { user: loggedInUser } = useSanctumAuth<IUser>();
@@ -9,7 +19,7 @@ export const useTicketStore = defineStore("ticketStore", () => {
     transformDbDate,
     transformDateDurationHumanize,
   } = useDateHandler();
-  const { capitalizeSentences, capitalizeAll, capitalizeWords } =
+  const { capitalizeSentences, strConvertUnderscoreToSpace, capitalizeWord } =
     useStringHandler();
   enum SortDirection {
     ASC = "asc",
@@ -50,13 +60,20 @@ export const useTicketStore = defineStore("ticketStore", () => {
 
       tickets.value = response.data.map((ticket: any) => ({
         ...ticket,
-        query_status_formatted: capitalizeSentences(ticket.query_status),
-        request_status_formatted: capitalizeSentences(ticket.request_status),
-        priority_formatted: capitalizeSentences(ticket.priority),
+
+        query_status_formatted: capitalizeWord(
+          strConvertUnderscoreToSpace(ticket.query_status)
+        ),
+        request_status_formatted: capitalizeWord(
+          strConvertUnderscoreToSpace(ticket.request_status)
+        ),
+        priority_formatted: capitalizeWord(
+          strConvertUnderscoreToSpace(ticket.priority)
+        ),
         date_formatted: `${transformDatePickerDate(
           ticket.date,
           "MMM DD, YYYY"
-        )} (${transformDateDurationHumanize(ticket.date)})`,
+        )} (${transformDateDurationHumanize(ticket.created_at)})`,
       }));
 
       totalTickets.value = Number(response.meta.total) || 0;
@@ -77,8 +94,8 @@ export const useTicketStore = defineStore("ticketStore", () => {
       employee_id: form.employee?.id,
       item_id: form.item?.id,
       ticket_number: form.ticket_number,
-      query_status: "queued", // queued, checking_stock, awaiting_stock, in_progress, resolved, pending, in_progress, closed, cancelled
-      request_status: "pending", // pending, in_progress, closed, cancelled, reopened
+      query_status: "queued", // queued, checking_stock, awaiting_stock, in_progress, resolved, cancelled
+      request_status: "open", // open, accepted, closed
       date: transformDatePickerDate(new Date(), "YYYY-MM-DD HH:mm:ss"),
       it_service_id: Number(form.it_service),
     };
@@ -124,6 +141,78 @@ export const useTicketStore = defineStore("ticketStore", () => {
       });
   };
 
+  const acceptTicket = async (id: string) => {
+    loading.value = true;
+    resetErrorBag();
+    await acceptTicketApi(id)
+      .catch((err: any) => {
+        transformValidationErrors(err);
+      })
+      .finally(() => {
+        loading.value = false;
+      });
+  };
+
+  const checkStock = async (id: string) => {
+    loading.value = true;
+    resetErrorBag();
+    await checkStockApi(id)
+      .catch((err: any) => {
+        transformValidationErrors(err);
+      })
+      .finally(() => {
+        loading.value = false;
+      });
+  };
+
+  const awaitStock = async (id: string) => {
+    loading.value = true;
+    resetErrorBag();
+    await awaitStockApi(id)
+      .catch((err: any) => {
+        transformValidationErrors(err);
+      })
+      .finally(() => {
+        loading.value = false;
+      });
+  };
+
+  const resolveTicket = async (id: string) => {
+    loading.value = true;
+    resetErrorBag();
+    await resolveTicketApi(id)
+      .catch((err: any) => {
+        transformValidationErrors(err);
+      })
+      .finally(() => {
+        loading.value = false;
+      });
+  };
+
+  const cancelTicket = async (id: string) => {
+    loading.value = true;
+    resetErrorBag();
+    await cancelTicketApi(id)
+      .catch((err: any) => {
+        transformValidationErrors(err);
+      })
+      .finally(() => {
+        loading.value = false;
+      });
+  };
+
+  const reopenTicket = async (id: string) => {
+    loading.value = true;
+    resetErrorBag();
+    await reopenTicketApi(id)
+      .catch((err: any) => {
+        transformValidationErrors(err);
+      })
+      .finally(() => {
+        loading.value = false;
+      });
+  };
+
   return {
     tickets,
     loading,
@@ -140,5 +229,11 @@ export const useTicketStore = defineStore("ticketStore", () => {
     addTicket,
     updateTicket,
     deleteTicket,
+    acceptTicket,
+    checkStock,
+    awaitStock,
+    resolveTicket,
+    cancelTicket,
+    reopenTicket,
   };
 });

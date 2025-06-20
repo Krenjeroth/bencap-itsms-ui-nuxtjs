@@ -19,12 +19,12 @@ const columns: ITableColumns[] = [
   {
     key: "query_status_formatted",
     label: "Query Status",
-    rowClass: "whitespace-pre-line max-w-fit",
+    rowClass: "max-w-fit",
   },
   {
     key: "request_status_formatted",
     label: "Request Status",
-    rowClass: "whitespace-pre-line max-w-fit",
+    rowClass: "max-w-fit",
   },
   {
     key: "priority_formatted",
@@ -53,6 +53,38 @@ const items: ITableActions = (row: any, handlers: IHandlers) => [
       label: "Edit",
       icon: "i-heroicons-pencil-square-20-solid",
       click: () => handlers.edit?.(row),
+    },
+  ],
+  [
+    {
+      label: "Accept",
+      icon: "material-symbols:assignment-add-outline",
+      click: () => handlers.accept?.(row),
+    },
+    {
+      label: "Check Stock",
+      icon: "material-symbols:checked-bag-question-outline",
+      click: () => handlers.checkStock?.(row),
+    },
+    {
+      label: "Await Stock",
+      icon: "material-symbols:deployed-code-history-outline",
+      click: () => handlers.awaitStock?.(row),
+    },
+    {
+      label: "Resolve",
+      icon: "material-symbols:check-circle-outline",
+      click: () => handlers.resolve?.(row),
+    },
+    {
+      label: "Cancel",
+      icon: "material-symbols:cancel-outline",
+      click: () => handlers.cancel?.(row),
+    },
+    {
+      label: "Reopen",
+      icon: "material-symbols:door-open-outline",
+      click: () => handlers.reopen?.(row),
     },
   ],
   // [

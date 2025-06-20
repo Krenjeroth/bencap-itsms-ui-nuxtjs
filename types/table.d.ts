@@ -17,6 +17,12 @@ declare global {
     create?: (row: any) => void;
     edit?: (row: any) => void;
     delete?: (row: any) => void;
+    accept?: (row: any) => void;
+    checkStock?: (row: any) => void;
+    awaitStock?: (row: any) => void;
+    resolve?: (row: any) => void;
+    cancel?: (row: any) => void;
+    reopen?: (row: any) => void;
     // Add other handler functions here if needed in the future
   }
 
