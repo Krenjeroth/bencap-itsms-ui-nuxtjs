@@ -76,6 +76,8 @@ export const useTicketStore = defineStore("ticketStore", () => {
         )} (${transformDateDurationHumanize(ticket.created_at)})`,
       }));
 
+      console.log(tickets.value);
+
       totalTickets.value = Number(response.meta.total) || 0;
     } catch (err: any) {
       throw err;

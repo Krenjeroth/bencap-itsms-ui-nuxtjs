@@ -1,3 +1,5 @@
+// const authStore = useAuthStore();
+import { useAuthStore } from "@/stores/auths";
 export { columns, items, classificationOptions, expandableDetails };
 
 const columns: ITableColumns[] = [
@@ -47,64 +49,118 @@ const columns: ITableColumns[] = [
   },
 ];
 
-const items: ITableActions = (row: any, handlers: IHandlers) => [
-  [
+const items: ITableActions = (row: any, handlers: IHandlers) => {
+  const actions: any[] = [];
+
+  if (row.can_accept) {
+    actions.push([
+      {
+        label: "Accept",
+        icon: "material-symbols:assignment-add-outline",
+        click: () => handlers.accept?.(row),
+      },
+    ]);
+  }
+
+  if (row.is_accepted_by_me) {
+    actions.push([
+      {
+        label: "Check Stock",
+        icon: "material-symbols:checked-bag-question-outline",
+        click: () => handlers.checkStock?.(row),
+      },
+      {
+        label: "Await Stock",
+        icon: "material-symbols:deployed-code-history-outline",
+        click: () => handlers.awaitStock?.(row),
+      },
+      {
+        label: "Resolve",
+        icon: "material-symbols:check-circle-outline",
+        click: () => handlers.resolve?.(row),
+      },
+      {
+        label: "Cancel",
+        icon: "material-symbols:cancel-outline",
+        click: () => handlers.cancel?.(row),
+      },
+      {
+        label: "Reopen",
+        icon: "material-symbols:door-open-outline",
+        click: () => handlers.reopen?.(row),
+      },
+    ]);
+  }
+
+  actions.unshift([
     {
       label: "Edit",
       icon: "i-heroicons-pencil-square-20-solid",
       click: () => handlers.edit?.(row),
     },
-  ],
-  [
-    {
-      label: "Accept",
-      icon: "material-symbols:assignment-add-outline",
-      click: () => handlers.accept?.(row),
-    },
-    {
-      label: "Check Stock",
-      icon: "material-symbols:checked-bag-question-outline",
-      click: () => handlers.checkStock?.(row),
-    },
-    {
-      label: "Await Stock",
-      icon: "material-symbols:deployed-code-history-outline",
-      click: () => handlers.awaitStock?.(row),
-    },
-    {
-      label: "Resolve",
-      icon: "material-symbols:check-circle-outline",
-      click: () => handlers.resolve?.(row),
-    },
-    {
-      label: "Cancel",
-      icon: "material-symbols:cancel-outline",
-      click: () => handlers.cancel?.(row),
-    },
-    {
-      label: "Reopen",
-      icon: "material-symbols:door-open-outline",
-      click: () => handlers.reopen?.(row),
-    },
-  ],
-  // [
-  //   {
-  //     label: "Archive",
-  //     icon: "i-heroicons-archive-box-20-solid",
-  //   },
-  //   {
-  //     label: "Move",
-  //     icon: "i-heroicons-arrow-right-circle-20-solid",
-  //   },
-  // ],
-  // [
-  //   {
-  //     label: "Delete",
-  //     icon: "i-heroicons-trash-20-solid",
-  //     click: () => handlers.delete?.(row),
-  //   },
-  // ],
-];
+  ]);
+
+  return actions;
+};
+
+// const items: ITableActions = (row: any, handlers: IHandlers) => [
+//   [
+//     {
+//       label: "Edit",
+//       icon: "i-heroicons-pencil-square-20-solid",
+//       click: () => handlers.edit?.(row),
+//     },
+//   ],
+//   [
+//     {
+//       label: "Accept",
+//       icon: "material-symbols:assignment-add-outline",
+//       click: () => handlers.accept?.(row),
+//     },
+//     {
+//       label: "Check Stock",
+//       icon: "material-symbols:checked-bag-question-outline",
+//       click: () => handlers.checkStock?.(row),
+//     },
+//     {
+//       label: "Await Stock",
+//       icon: "material-symbols:deployed-code-history-outline",
+//       click: () => handlers.awaitStock?.(row),
+//     },
+//     {
+//       label: "Resolve",
+//       icon: "material-symbols:check-circle-outline",
+//       click: () => handlers.resolve?.(row),
+//     },
+//     {
+//       label: "Cancel",
+//       icon: "material-symbols:cancel-outline",
+//       click: () => handlers.cancel?.(row),
+//     },
+//     {
+//       label: "Reopen",
+//       icon: "material-symbols:door-open-outline",
+//       click: () => handlers.reopen?.(row),
+//     },
+//   ],
+//   // [
+//   //   {
+//   //     label: "Archive",
+//   //     icon: "i-heroicons-archive-box-20-solid",
+//   //   },
+//   //   {
+//   //     label: "Move",
+//   //     icon: "i-heroicons-arrow-right-circle-20-solid",
+//   //   },
+//   // ],
+//   // [
+//   //   {
+//   //     label: "Delete",
+//   //     icon: "i-heroicons-trash-20-solid",
+//   //     click: () => handlers.delete?.(row),
+//   //   },
+//   // ],
+// ];
 
 const expandableDetails: ITableExpandableDetails = (row: any) => [
   {
