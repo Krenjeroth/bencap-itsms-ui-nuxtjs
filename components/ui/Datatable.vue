@@ -310,7 +310,6 @@ const expand = ref({
       </template>
 
       <template #actions-data="{ row }">
-        <!-- <pre>{{ row }}</pre> -->
         <UDropdown :items="actionItems(row, props.actionHandlers)">
           <UButton
             color="gray"
@@ -411,14 +410,13 @@ const expand = ref({
       </template>
 
       <template #actions-data="{ row }">
-        <pre>{{ row }}</pre>
-        <!-- <UDropdown :items="actionItems(row, props.actionHandlers)">
+        <UDropdown :items="actionItems(row, props.actionHandlers)">
           <UButton
             color="gray"
             variant="ghost"
             icon="i-heroicons-ellipsis-horizontal-20-solid"
           />
-        </UDropdown> -->
+        </UDropdown>
       </template>
     </UTable>
 
