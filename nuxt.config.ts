@@ -16,7 +16,9 @@ export default defineNuxtConfig({
     },
   },
   devServer: {
-    host: "itsms",
+    // host: "itsms",
+    host: "192.168.6.169",
+    port: 8000,
   },
   modules: [
     "nuxt-auth-sanctum",
@@ -32,7 +34,8 @@ export default defineNuxtConfig({
     "@vueuse/nuxt",
   ],
   sanctum: {
-    baseUrl: "http://itsms:80", // Laravel API
+    // baseUrl: "http://itsms:80", // Laravel API: Local
+    baseUrl: "http://192.168.6.169", // Laravel API: Remote
     redirect: {
       onAuthOnly: "/auth/login",
       onLogout: "/auth/login",
