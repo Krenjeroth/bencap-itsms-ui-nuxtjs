@@ -1,7 +1,9 @@
 export const useCommonProblemApi = () => {
   const sanctumFetch = useSanctumClient();
+  const { apiUrl } = useUrlHandler();
+  const moduleTitle = "common-problems";
   const commonProblemsUrl = computed(() => {
-    const url = new URL("http://itsms/api/common-problems");
+    const url = apiUrl(moduleTitle);
     return url;
   });
 

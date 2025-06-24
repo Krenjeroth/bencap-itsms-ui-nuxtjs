@@ -1,12 +1,14 @@
 export const useDepartmentApi = () => {
   const sanctumFetch = useSanctumClient();
+  const { apiUrl } = useUrlHandler();
+  const moduleTitle = "departments";
   const departmentsUrl = computed(() => {
-    const url = new URL("http://itsms/api/departments");
+    const url = apiUrl(moduleTitle);
     return url;
   });
 
   const departmentSelectUrl = computed(() => {
-    const url = new URL("http://itsms/api/departments-select");
+    const url = apiUrl(moduleTitle + "-select");
     return url;
   });
 

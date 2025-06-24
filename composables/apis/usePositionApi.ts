@@ -1,12 +1,14 @@
 export const usePositionApi = () => {
   const sanctumFetch = useSanctumClient();
+  const { apiUrl } = useUrlHandler();
+  const moduleTitle = "positions";
   const positionsUrl = computed(() => {
-    const url = new URL("http://itsms/api/positions");
+    const url = apiUrl(moduleTitle);
     return url;
   });
 
   const positionsSelectUrl = computed(() => {
-    const url = new URL("http://itsms/api/positions-select");
+    const url = apiUrl(moduleTitle + "-select");
     return url;
   });
 

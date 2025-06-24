@@ -1,12 +1,14 @@
 export const useItemTypeApi = () => {
   const sanctumFetch = useSanctumClient();
+  const { apiUrl } = useUrlHandler();
+  const moduleTitle = "item-types";
   const itemTypesUrl = computed(() => {
-    const url = new URL("http://itsms/api/item-types");
+    const url = apiUrl(moduleTitle);
     return url;
   });
 
   const itemTypesSelectUrl = computed(() => {
-    const url = new URL("http://itsms/api/item-types-select");
+    const url = apiUrl(moduleTitle + "-select");
     return url;
   });
 

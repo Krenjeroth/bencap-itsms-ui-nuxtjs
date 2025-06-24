@@ -1,12 +1,14 @@
 export const useItServiceApi = () => {
   const sanctumFetch = useSanctumClient();
+  const { apiUrl } = useUrlHandler();
+  const moduleTitle = "it-services";
   const itServicesUrl = computed(() => {
-    const url = new URL("http://itsms/api/it-services");
+    const url = apiUrl(moduleTitle);
     return url;
   });
 
   const itServicesSelectUrl = computed(() => {
-    const url = new URL("http://itsms/api/it-services-select");
+    const url = apiUrl(moduleTitle + "-select");
     return url;
   });
 

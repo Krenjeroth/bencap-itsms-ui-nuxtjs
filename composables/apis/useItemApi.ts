@@ -1,12 +1,14 @@
 export const useItemApi = () => {
   const sanctumFetch = useSanctumClient();
+  const { apiUrl } = useUrlHandler();
+  const moduleTitle = "items";
   const itemsUrl = computed(() => {
-    const url = new URL("http://itsms/api/items");
+    const url = apiUrl(moduleTitle);
     return url;
   });
 
   const itemsSearchUrl = computed(() => {
-    const url = new URL("http://itsms/api/items-search");
+    const url = apiUrl(moduleTitle + "-search");
     return url;
   });
 

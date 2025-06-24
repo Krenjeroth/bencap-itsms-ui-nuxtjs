@@ -1,7 +1,9 @@
 export const useUserApi = () => {
   const sanctumFetch = useSanctumClient();
+  const { apiUrl } = useUrlHandler();
+  const moduleTitle = "users";
   const usersUrl = computed(() => {
-    const url = new URL("http://itsms/api/users");
+    const url = apiUrl(moduleTitle);
     return url;
   });
 

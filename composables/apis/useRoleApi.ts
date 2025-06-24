@@ -1,12 +1,14 @@
 export const useRoleApi = () => {
   const sanctumFetch = useSanctumClient();
+  const { apiUrl } = useUrlHandler();
+  const moduleTitle = "roles";
   const rolesUrl = computed(() => {
-    const url = new URL("http://itsms/api/roles");
+    const url = apiUrl(moduleTitle);
     return url;
   });
 
   const roleSelectUrl = computed(() => {
-    const url = new URL("http://itsms/api/roles-select");
+    const url = apiUrl(moduleTitle + "-select");
     return url;
   });
 

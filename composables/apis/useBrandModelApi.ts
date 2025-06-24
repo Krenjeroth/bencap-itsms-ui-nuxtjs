@@ -1,12 +1,14 @@
 export const useBrandModelApi = () => {
   const sanctumFetch = useSanctumClient();
+  const { apiUrl } = useUrlHandler();
+  const moduleTitle = "brand-models";
   const brandsUrl = computed(() => {
-    const url = new URL("http://itsms/api/brand-models");
+    const url = apiUrl(moduleTitle);
     return url;
   });
 
   const brandModelSelectUrl = computed(() => {
-    const url = new URL("http://itsms/api/brand-models-select");
+    const url = apiUrl(moduleTitle + "-select");
     return url;
   });
 

@@ -1,12 +1,14 @@
 export const usePermissionApi = () => {
   const sanctumFetch = useSanctumClient();
+  const { apiUrl } = useUrlHandler();
+  const moduleTitle = "permissions";
   const permissionsUrl = computed(() => {
-    const url = new URL("http://itsms/api/permissions");
+    const url = apiUrl(moduleTitle);
     return url;
   });
 
   const permissionsAllUrl = computed(() => {
-    const url = new URL("http://itsms/api/permissions-all");
+    const url = apiUrl(moduleTitle + "-all");
     return url;
   });
 

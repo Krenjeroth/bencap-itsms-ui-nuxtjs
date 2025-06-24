@@ -1,12 +1,14 @@
 export const useEmployeeApi = () => {
   const sanctumFetch = useSanctumClient();
+  const { apiUrl } = useUrlHandler();
+  const moduleTitle = "employees";
   const employeesUrl = computed(() => {
-    const url = new URL("http://itsms/api/employees");
+    const url = apiUrl(moduleTitle);
     return url;
   });
 
   const employeeSearchUrl = computed(() => {
-    const url = new URL("http://itsms/api/employees-search");
+    const url = apiUrl(moduleTitle + "-search");
     return url;
   });
 

@@ -1,12 +1,14 @@
 export const useTicketApi = () => {
   const sanctumFetch = useSanctumClient();
+  const { apiUrl } = useUrlHandler();
+  const moduleTitle = "tickets";
   const ticketsUrl = computed(() => {
-    const url = new URL("http://itsms/api/tickets");
+    const url = apiUrl(moduleTitle);
     return url;
   });
 
   const ticketsSelectUrl = computed(() => {
-    const url = new URL("http://itsms/api/tickets-select");
+    const url = apiUrl(moduleTitle + "-select");
     return url;
   });
 
