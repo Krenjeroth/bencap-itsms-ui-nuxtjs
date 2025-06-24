@@ -19,7 +19,7 @@ declare global {
     delete?: (row: any) => void;
     accept?: (row: any) => void;
     checkStock?: (row: any) => void;
-    awaitStock?: (row: any) => void;
+    awaitPart?: (row: any) => void;
     resolve?: (row: any) => void;
     cancel?: (row: any) => void;
     reopen?: (row: any) => void;

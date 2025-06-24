@@ -6,7 +6,7 @@ export const useColorHandler = () => {
         return "yellow";
       case "checking_stock":
         return "yellow";
-      case "awaiting_stock":
+      case "awaiting_part":
         return "yellow";
       case "awaiting_user":
         return "yellow";

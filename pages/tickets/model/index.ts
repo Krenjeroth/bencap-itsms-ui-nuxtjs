@@ -52,6 +52,16 @@ const columns: ITableColumns[] = [
 const items: ITableActions = (row: any, handlers: IHandlers) => {
   const actions: any[] = [];
 
+  // Always show Edit
+  actions.unshift([
+    {
+      label: "Edit",
+      icon: "i-heroicons-pencil-square-20-solid",
+      click: () => handlers.edit?.(row),
+    },
+  ]);
+
+  // Accept only if user hasn't accepted and ticket is still joinable
   if (row.can_accept) {
     actions.push([
       {
@@ -62,43 +72,54 @@ const items: ITableActions = (row: any, handlers: IHandlers) => {
     ]);
   }
 
-  if (row.is_accepted_by_me) {
+  // Reopen action if ticket is resolved or closed
+  if (["resolved", "closed"].includes(row.query_status)) {
     actions.push([
-      {
-        label: "Check Stock",
-        icon: "material-symbols:checked-bag-question-outline",
-        click: () => handlers.checkStock?.(row),
-      },
-      {
-        label: "Await Stock",
-        icon: "material-symbols:deployed-code-history-outline",
-        click: () => handlers.awaitStock?.(row),
-      },
-      {
-        label: "Resolve",
-        icon: "material-symbols:check-circle-outline",
-        click: () => handlers.resolve?.(row),
-      },
-      {
-        label: "Cancel",
-        icon: "material-symbols:cancel-outline",
-        click: () => handlers.cancel?.(row),
-      },
       {
         label: "Reopen",
         icon: "material-symbols:door-open-outline",
         click: () => handlers.reopen?.(row),
       },
     ]);
+    return actions; // return early — no other actions
   }
 
-  actions.unshift([
-    {
-      label: "Edit",
-      icon: "i-heroicons-pencil-square-20-solid",
-      click: () => handlers.edit?.(row),
-    },
-  ]);
+  // Actions for accepted personnel
+  if (row.is_accepted_by_me) {
+    const acceptedActions = [];
+
+    // if (row.query_status !== "checking_stock") {
+    //   acceptedActions.push({
+    //     label: "Check Stock",
+    //     icon: "material-symbols:checked-bag-question-outline",
+    //     click: () => handlers.checkStock?.(row),
+    //   });
+    // }
+
+    if (row.query_status !== "awaiting_part") {
+      acceptedActions.push({
+        label: "Await Part",
+        icon: "material-symbols:deployed-code-history-outline",
+        click: () => handlers.awaitPart?.(row),
+      });
+    }
+
+    acceptedActions.push({
+      label: "Resolve",
+      icon: "material-symbols:check-circle-outline",
+      click: () => handlers.resolve?.(row),
+    });
+
+    if (row.query_status !== "cancelled") {
+      acceptedActions.push({
+        label: "Cancel",
+        icon: "material-symbols:cancel-outline",
+        click: () => handlers.cancel?.(row),
+      });
+    }
+
+    actions.push(acceptedActions);
+  }
 
   return actions;
 };

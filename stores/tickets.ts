@@ -96,7 +96,7 @@ export const useTicketStore = defineStore("ticketStore", () => {
       employee_id: form.employee?.id,
       item_id: form.item?.id,
       ticket_number: form.ticket_number,
-      query_status: "queued", // queued, checking_stock, awaiting_stock, in_progress, resolved, cancelled
+      query_status: "queued", // queued, checking_stock, awaiting_part, in_progress, resolved, cancelled
       request_status: "open", // open, accepted, closed
       date: transformDatePickerDate(new Date(), "YYYY-MM-DD HH:mm:ss"),
       it_service_id: Number(form.it_service),
