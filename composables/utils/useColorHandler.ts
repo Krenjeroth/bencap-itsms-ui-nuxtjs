@@ -34,7 +34,7 @@ export const useColorHandler = () => {
         return "yellow";
       case "high":
         return "red";
-      // Completion Type
+      // Service Method
       case "on_site":
         return "blue";
       case "pulled_out":
