@@ -1,5 +1,6 @@
 // const authStore = useAuthStore();
-import { useAuthStore } from "@/stores/auths";
+const { hasRole } = useRoleHandler();
+
 export { columns, items, classificationOptions, expandableDetails };
 
 const columns: ITableColumns[] = [
@@ -57,17 +58,38 @@ const columns: ITableColumns[] = [
 const items: ITableActions = (row: any, handlers: IHandlers) => {
   const actions: any[] = [];
 
+  const isAdmin = hasRole("admin");
+  const isPersonnel = hasRole("personnel");
+
   // Always show Edit
-  actions.unshift([
-    {
-      label: "Edit",
-      icon: "i-heroicons-pencil-square-20-solid",
-      click: () => handlers.edit?.(row),
-    },
-  ]);
+  if (isAdmin) {
+    actions.unshift([
+      {
+        label: "Edit",
+        icon: "i-heroicons-pencil-square-20-solid",
+        click: () => handlers.edit?.(row),
+      },
+      {
+        label: "Set Release Date",
+        icon: "i-heroicons-calendar-20-solid",
+        click: () => handlers.edit?.(row),
+      },
+    ]);
+  }
+
+  // Enable if personnel can set release date
+  // if (isPersonnel) {
+  //   actions.unshift([
+  //     {
+  //       label: "Set Release Date",
+  //       icon: "i-heroicons-calendar-20-solid",
+  //       click: () => handlers.edit?.(row),
+  //     },
+  //   ]);
+  // }
 
   // Accept only if user hasn't accepted and ticket is still joinable
-  if (row.can_accept) {
+  if (isPersonnel && row.can_accept) {
     actions.push([
       {
         label: "Accept",
@@ -78,7 +100,7 @@ const items: ITableActions = (row: any, handlers: IHandlers) => {
   }
 
   // Actions for accepted personnel
-  if (row.is_accepted_by_me) {
+  if (isAdmin || (isPersonnel && row.is_accepted_by_me)) {
     const acceptedActions = [];
 
     // if (row.query_status !== "checking_stock") {
@@ -98,7 +120,19 @@ const items: ITableActions = (row: any, handlers: IHandlers) => {
           click: () => handlers.reopen?.(row),
         },
       ]);
-      return actions; // return early — no other actions
+      return actions;
+    }
+
+    // Reopen action if ticket is cancelled or closed
+    if (["cancelled", "closed"].includes(row.query_status)) {
+      actions.push([
+        {
+          label: "Reopen",
+          icon: "material-symbols:door-open-outline",
+          click: () => handlers.reopen?.(row),
+        },
+      ]);
+      return actions;
     }
 
     if (row.query_status !== "awaiting_part") {
@@ -136,65 +170,6 @@ const items: ITableActions = (row: any, handlers: IHandlers) => {
 
   return actions;
 };
-
-// const items: ITableActions = (row: any, handlers: IHandlers) => [
-//   [
-//     {
-//       label: "Edit",
-//       icon: "i-heroicons-pencil-square-20-solid",
-//       click: () => handlers.edit?.(row),
-//     },
-//   ],
-//   [
-//     {
-//       label: "Accept",
-//       icon: "material-symbols:assignment-add-outline",
-//       click: () => handlers.accept?.(row),
-//     },
-//     {
-//       label: "Check Stock",
-//       icon: "material-symbols:checked-bag-question-outline",
-//       click: () => handlers.checkStock?.(row),
-//     },
-//     {
-//       label: "Await Stock",
-//       icon: "material-symbols:deployed-code-history-outline",
-//       click: () => handlers.awaitStock?.(row),
-//     },
-//     {
-//       label: "Resolve",
-//       icon: "material-symbols:check-circle-outline",
-//       click: () => handlers.resolve?.(row),
-//     },
-//     {
-//       label: "Cancel",
-//       icon: "material-symbols:cancel-outline",
-//       click: () => handlers.cancel?.(row),
-//     },
-//     {
-//       label: "Reopen",
-//       icon: "material-symbols:door-open-outline",
-//       click: () => handlers.reopen?.(row),
-//     },
-//   ],
-//   // [
-//   //   {
-//   //     label: "Archive",
-//   //     icon: "i-heroicons-archive-box-20-solid",
-//   //   },
-//   //   {
-//   //     label: "Move",
-//   //     icon: "i-heroicons-arrow-right-circle-20-solid",
-//   //   },
-//   // ],
-//   // [
-//   //   {
-//   //     label: "Delete",
-//   //     icon: "i-heroicons-trash-20-solid",
-//   //     click: () => handlers.delete?.(row),
-//   //   },
-//   // ],
-// ];
 
 const expandableDetails: ITableExpandableDetails = (row: any) => [
   {

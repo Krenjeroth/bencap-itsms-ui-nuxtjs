@@ -7,6 +7,7 @@ declare global {
     email: string;
     profile: any;
     permissions: string[];
+    roles: string[];
   }
 
   type TCreateUserValidationSchema = z.output<
