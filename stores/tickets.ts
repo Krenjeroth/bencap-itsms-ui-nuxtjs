@@ -11,6 +11,7 @@ export const useTicketStore = defineStore("ticketStore", () => {
     cancelTicketApi,
     reopenTicketApi,
     setTicketServiceMethodApi,
+    setTicketReleasedDateApi,
   } = useTicketApi();
   const { hasError, errorBag, transformValidationErrors, resetErrorBag } =
     useErrorHandler();
@@ -80,7 +81,11 @@ export const useTicketStore = defineStore("ticketStore", () => {
         date_formatted: `${transformDatePickerDate(
           ticket.date,
           "MMM DD, YYYY"
-        )} (${transformDateDurationHumanize(ticket.created_at)})`,
+        )} (${transformDateDurationHumanize(ticket.date)})`,
+        released_at_formatted: `${transformDatePickerDate(
+          ticket.released_at,
+          "MM/DD/YY"
+        )}`,
       }));
 
       totalTickets.value = Number(response.meta.total) || 0;
@@ -105,6 +110,7 @@ export const useTicketStore = defineStore("ticketStore", () => {
       request_status: "open", // open, accepted, closed
       date: transformDatePickerDate(new Date(), "YYYY-MM-DD HH:mm:ss"),
       it_service_id: Number(form.it_service),
+      service_method: "on_site",
     };
 
     await addTicketApi(formattedForm)
@@ -235,6 +241,29 @@ export const useTicketStore = defineStore("ticketStore", () => {
       });
   };
 
+  const setTicketReleaseDate = async (
+    id: string,
+    form: ISetTicketReleaseDateForm
+  ) => {
+    loading.value = true;
+    resetErrorBag();
+
+    const formattedForm = {
+      ...form,
+      released_at: form.released_at
+        ? transformDatePickerDate(form.released_at, "YYYY-MM-DD HH:mm:ss")
+        : null,
+    };
+
+    await setTicketReleasedDateApi(id, formattedForm)
+      .catch((err: any) => {
+        transformValidationErrors(err);
+      })
+      .finally(() => {
+        loading.value = false;
+      });
+  };
+
   return {
     tickets,
     loading,
@@ -259,5 +288,6 @@ export const useTicketStore = defineStore("ticketStore", () => {
     cancelTicket,
     reopenTicket,
     setTicketServiceMethod,
+    setTicketReleaseDate,
   };
 });

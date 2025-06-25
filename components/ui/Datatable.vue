@@ -289,6 +289,15 @@ const expand = ref({
         <UBadge :color="getStatusColor(row.service_method)" variant="outline">{{
           row.service_method_formatted
         }}</UBadge>
+
+        <div
+          class="mt-2"
+          v-if="row.service_method === 'pulled_out' && row.released_at !== null"
+        >
+          <UBadge :color="getStatusColor(row.service_method)" variant="outline">
+            Released: {{ row.released_at_formatted }}
+          </UBadge>
+        </div>
       </template>
 
       <template #permissions-data="{ row }">

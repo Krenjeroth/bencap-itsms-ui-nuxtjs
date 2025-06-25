@@ -26,6 +26,7 @@ import {
   TicketsCancelModal,
   TicketsReopenModal,
   TicketsSetServiceMethodModal,
+  TicketsSetReleaseDateModal,
 } from "#components";
 import * as model from "./model/index";
 const modal = useModal();
@@ -372,6 +373,46 @@ const setServiceMethodModal = (ticket: any) => {
   });
 };
 
+const setReleaseDateModal = (ticket: any) => {
+  modal.open(TicketsSetReleaseDateModal, {
+    ticket,
+    pageTitle: pageTitleSingular,
+    onReloadTable() {
+      ticketStore.fetchTickets();
+    },
+    onSuccess() {
+      actionToastResult({
+        icon: "i-heroicons-check-circle",
+        // title: "Success !",
+        description: `Release Date Set.`,
+        id: "modal-success",
+        color: "green",
+      });
+    },
+    onError() {
+      actionToastResult({
+        icon: "i-heroicons-x-circle",
+        // title: "Error !",
+        description: "Something went wrong.",
+        id: "modal-error",
+        color: "red",
+      });
+    },
+    onNoDataChange() {
+      actionToastResult({
+        icon: "i-heroicons-exclamation-circle",
+        // title: "Error !",
+        description: "No data changes detected.",
+        id: "modal-warning",
+        color: "yellow",
+      });
+    },
+    onClose() {
+      modal.close();
+    },
+  });
+};
+
 // Watch search changes and fetch when updated
 watch(search, () => {
   page.value = 1; // Reset page
@@ -416,6 +457,7 @@ watch(selectedStatus, () => {
         cancel: cancelModal,
         reopen: reopenModal,
         setServiceMethod: setServiceMethodModal,
+        setReleaseDate: setReleaseDateModal,
       }"
       :pagination="{ page, pageCount, total: totalTickets }"
       :sorting="sort"

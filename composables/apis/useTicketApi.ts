@@ -107,6 +107,19 @@ export const useTicketApi = () => {
     });
   };
 
+  const setTicketReleasedDateApi = async (
+    id: string,
+    form: ISetTicketReleaseDateForm
+  ) => {
+    return await sanctumFetch(`${ticketsUrl.value}/${id}/set-release-date`, {
+      method: "POST",
+      body: form,
+      headers: {
+        Accept: "application/json",
+      },
+    });
+  };
+
   return {
     fetchTicketsApi,
     addTicketApi,
@@ -119,5 +132,6 @@ export const useTicketApi = () => {
     cancelTicketApi,
     reopenTicketApi,
     setTicketServiceMethodApi,
+    setTicketReleasedDateApi,
   };
 };

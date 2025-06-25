@@ -24,6 +24,7 @@ declare global {
     cancel?: (row: any) => void;
     reopen?: (row: any) => void;
     setServiceMethod?: (row: any) => void;
+    setReleaseDate?: (row: any) => void;
     // Add other handler functions here if needed in the future
   }
 

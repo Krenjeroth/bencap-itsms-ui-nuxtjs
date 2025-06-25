@@ -37,6 +37,9 @@ declare global {
   type TSetTicketServiceMethodValidationSchema = z.output<
     typeof SetTicketServiceMethodValidationSchema
   >;
+  type TSetTicketReleaseDateValidationSchema = z.output<
+    typeof SetTicketReleaseDateValidationSchema
+  >;
 }
 
 export {
@@ -45,4 +48,5 @@ export {
   TUpdateTicketValidationSchema,
   TResolveTicketValidationSchema,
   TSetTicketServiceMethodValidationSchema,
+  TSetTicketReleaseDateValidationSchema,
 };

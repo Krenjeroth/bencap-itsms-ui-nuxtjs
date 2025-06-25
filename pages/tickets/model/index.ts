@@ -69,10 +69,11 @@ const items: ITableActions = (row: any, handlers: IHandlers) => {
         icon: "i-heroicons-pencil-square-20-solid",
         click: () => handlers.edit?.(row),
       },
+      // only show set release if query status === pulled out
       {
         label: "Set Release Date",
         icon: "i-heroicons-calendar-20-solid",
-        click: () => handlers.edit?.(row),
+        click: () => handlers.setReleaseDate?.(row),
       },
     ]);
   }
