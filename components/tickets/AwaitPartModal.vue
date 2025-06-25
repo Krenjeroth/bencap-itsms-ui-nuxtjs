@@ -22,7 +22,7 @@ const onError = () => {
 };
 
 const handleSubmit = async () => {
-  await ticketStore.awaitStock(props.ticket?.id);
+  await ticketStore.awaitPart(props.ticket?.id);
 
   if (hasError.value) {
     onError();
@@ -37,7 +37,7 @@ const handleSubmit = async () => {
 <template>
   <BaseModal
     :on-close="onClose"
-    :title="`Await stock for this ${props.pageTitle}?`"
+    :title="`Await part for this ${props.pageTitle}?`"
   >
     <!-- <p class="font-bold text-lg text-center mb-4">Ticket Details</p> -->
     <div class="flex flex-col gap-2">
@@ -100,7 +100,7 @@ const handleSubmit = async () => {
       @click="handleSubmit"
       :loading="loading"
     >
-      I Agree, Await stock
+      I Agree, Await part
     </UButton>
   </BaseModal>
 </template>

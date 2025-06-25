@@ -21,7 +21,7 @@ import {
   TicketsUpdateModal,
   TicketsAcceptModal,
   TicketsCheckStockModal,
-  TicketsAwaitStockModal,
+  TicketsAwaitPartModal,
   TicketsResolveModal,
   TicketsCancelModal,
   TicketsReopenModal,
@@ -208,8 +208,8 @@ const checkStockModal = (ticket: any) => {
   });
 };
 
-const awaitStockModal = (ticket: any) => {
-  modal.open(TicketsAwaitStockModal, {
+const awaitPartModal = (ticket: any) => {
+  modal.open(TicketsAwaitPartModal, {
     ticket,
     pageTitle: pageTitleSingular,
     onReloadTable() {
@@ -411,7 +411,7 @@ watch(selectedStatus, () => {
         // delete: deleteItServiceModal,
         accept: acceptTicketModal,
         checkStock: checkStockModal,
-        awaitStock: awaitStockModal,
+        awaitPart: awaitPartModal,
         resolve: resolveModal,
         cancel: cancelModal,
         reopen: reopenModal,

@@ -57,8 +57,8 @@ export const useTicketApi = () => {
     });
   };
 
-  const awaitStockApi = async (id: string) => {
-    return await sanctumFetch(`${ticketsUrl.value}/${id}/await-stock`, {
+  const awaitPartApi = async (id: string) => {
+    return await sanctumFetch(`${ticketsUrl.value}/${id}/await-part`, {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -114,7 +114,7 @@ export const useTicketApi = () => {
     deleteTicketApi,
     acceptTicketApi,
     checkStockApi,
-    awaitStockApi,
+    awaitPartApi,
     resolveTicketApi,
     cancelTicketApi,
     reopenTicketApi,
