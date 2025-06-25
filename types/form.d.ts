@@ -235,6 +235,14 @@ declare global {
     // date?: TDatePickerDate;
   }
 
+  interface IResolveTicketForm {
+    service_method?: string | null;
+  }
+
+  interface ISetTicketServiceMethodForm {
+    service_method?: string | null;
+  }
+
   type IFormSubmitEvent<T> = FormSubmitEvent<T>;
 }
 
@@ -261,5 +269,7 @@ export {
   IUpdateCommonProblemForm,
   ICreateTicketForm,
   IUpdateTicketForm,
+  IResolveTicketForm,
+  ISetTicketServiceMethodForm,
   IFormSubmitEvent,
 };

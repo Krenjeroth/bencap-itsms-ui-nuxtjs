@@ -285,6 +285,12 @@ const expand = ref({
         >
       </template>
 
+      <template #service_method_formatted-data="{ row }">
+        <UBadge :color="getStatusColor(row.service_method)" variant="outline">{{
+          row.service_method_formatted
+        }}</UBadge>
+      </template>
+
       <template #permissions-data="{ row }">
         <UBadge
           v-for="permission in row.permissions"

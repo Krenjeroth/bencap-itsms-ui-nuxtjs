@@ -10,6 +10,7 @@ export const useTicketStore = defineStore("ticketStore", () => {
     resolveTicketApi,
     cancelTicketApi,
     reopenTicketApi,
+    setTicketServiceMethodApi,
   } = useTicketApi();
   const { hasError, errorBag, transformValidationErrors, resetErrorBag } =
     useErrorHandler();
@@ -25,6 +26,12 @@ export const useTicketStore = defineStore("ticketStore", () => {
     ASC = "asc",
     DESC = "desc",
   }
+
+  const serviceMethodOptions = ref([
+    { label: "On Site", value: "on_site" },
+    { label: "Pulled Out", value: "pulled_out" },
+  ]);
+
   const tickets = ref([]);
 
   const loading = ref(false);
@@ -75,8 +82,6 @@ export const useTicketStore = defineStore("ticketStore", () => {
           "MMM DD, YYYY"
         )} (${transformDateDurationHumanize(ticket.created_at)})`,
       }));
-
-      console.log(tickets.value);
 
       totalTickets.value = Number(response.meta.total) || 0;
     } catch (err: any) {
@@ -179,10 +184,10 @@ export const useTicketStore = defineStore("ticketStore", () => {
       });
   };
 
-  const resolveTicket = async (id: string) => {
+  const resolveTicket = async (id: string, form: IResolveTicketForm) => {
     loading.value = true;
     resetErrorBag();
-    await resolveTicketApi(id)
+    await resolveTicketApi(id, form)
       .catch((err: any) => {
         transformValidationErrors(err);
       })
@@ -215,6 +220,21 @@ export const useTicketStore = defineStore("ticketStore", () => {
       });
   };
 
+  const setTicketServiceMethod = async (
+    id: string,
+    form: ISetTicketServiceMethodForm
+  ) => {
+    loading.value = true;
+    resetErrorBag();
+    await setTicketServiceMethodApi(id, form)
+      .catch((err: any) => {
+        transformValidationErrors(err);
+      })
+      .finally(() => {
+        loading.value = false;
+      });
+  };
+
   return {
     tickets,
     loading,
@@ -227,6 +247,7 @@ export const useTicketStore = defineStore("ticketStore", () => {
     totalTickets,
     selectedStatus,
     priorities,
+    serviceMethodOptions,
     fetchTickets,
     addTicket,
     updateTicket,
@@ -237,5 +258,6 @@ export const useTicketStore = defineStore("ticketStore", () => {
     resolveTicket,
     cancelTicket,
     reopenTicket,
+    setTicketServiceMethod,
   };
 });

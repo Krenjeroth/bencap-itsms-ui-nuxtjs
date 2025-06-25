@@ -31,10 +31,18 @@ declare global {
   type TUpdateTicketValidationSchema = z.output<
     typeof UpdateTicketValidationSchema
   >;
+  type TResolveTicketValidationSchema = z.output<
+    typeof ResolveTicketValidationSchema
+  >;
+  type TSetTicketServiceMethodValidationSchema = z.output<
+    typeof SetTicketServiceMethodValidationSchema
+  >;
 }
 
 export {
   ITicket,
   TCreateTicketValidationSchema,
   TUpdateTicketValidationSchema,
+  TResolveTicketValidationSchema,
+  TSetTicketServiceMethodValidationSchema,
 };

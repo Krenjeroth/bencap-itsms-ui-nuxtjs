@@ -25,6 +25,7 @@ import {
   TicketsResolveModal,
   TicketsCancelModal,
   TicketsReopenModal,
+  TicketsSetServiceMethodModal,
 } from "#components";
 import * as model from "./model/index";
 const modal = useModal();
@@ -331,6 +332,46 @@ const reopenModal = (ticket: any) => {
   });
 };
 
+const setServiceMethodModal = (ticket: any) => {
+  modal.open(TicketsSetServiceMethodModal, {
+    ticket,
+    pageTitle: pageTitleSingular,
+    onReloadTable() {
+      ticketStore.fetchTickets();
+    },
+    onSuccess() {
+      actionToastResult({
+        icon: "i-heroicons-check-circle",
+        // title: "Success !",
+        description: `Service Method Set.`,
+        id: "modal-success",
+        color: "green",
+      });
+    },
+    onError() {
+      actionToastResult({
+        icon: "i-heroicons-x-circle",
+        // title: "Error !",
+        description: "Something went wrong.",
+        id: "modal-error",
+        color: "red",
+      });
+    },
+    onNoDataChange() {
+      actionToastResult({
+        icon: "i-heroicons-exclamation-circle",
+        // title: "Error !",
+        description: "No data changes detected.",
+        id: "modal-warning",
+        color: "yellow",
+      });
+    },
+    onClose() {
+      modal.close();
+    },
+  });
+};
+
 // Watch search changes and fetch when updated
 watch(search, () => {
   page.value = 1; // Reset page
@@ -374,6 +415,7 @@ watch(selectedStatus, () => {
         resolve: resolveModal,
         cancel: cancelModal,
         reopen: reopenModal,
+        setServiceMethod: setServiceMethodModal,
       }"
       :pagination="{ page, pageCount, total: totalTickets }"
       :sorting="sort"

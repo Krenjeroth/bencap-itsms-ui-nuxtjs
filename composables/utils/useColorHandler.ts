@@ -34,6 +34,11 @@ export const useColorHandler = () => {
         return "yellow";
       case "high":
         return "red";
+      // Completion Type
+      case "on_site":
+        return "blue";
+      case "pulled_out":
+        return "yellow";
       default:
         return "gray";
     }

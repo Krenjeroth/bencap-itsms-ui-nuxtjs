@@ -66,9 +66,10 @@ export const useTicketApi = () => {
     });
   };
 
-  const resolveTicketApi = async (id: string) => {
+  const resolveTicketApi = async (id: string, form: IResolveTicketForm) => {
     return await sanctumFetch(`${ticketsUrl.value}/${id}/resolve`, {
       method: "POST",
+      body: form,
       headers: {
         Accept: "application/json",
       },
@@ -93,6 +94,19 @@ export const useTicketApi = () => {
     });
   };
 
+  const setTicketServiceMethodApi = async (
+    id: string,
+    form: ISetTicketServiceMethodForm
+  ) => {
+    return await sanctumFetch(`${ticketsUrl.value}/${id}/set-service-method`, {
+      method: "POST",
+      body: form,
+      headers: {
+        Accept: "application/json",
+      },
+    });
+  };
+
   return {
     fetchTicketsApi,
     addTicketApi,
@@ -104,5 +118,6 @@ export const useTicketApi = () => {
     resolveTicketApi,
     cancelTicketApi,
     reopenTicketApi,
+    setTicketServiceMethodApi,
   };
 };

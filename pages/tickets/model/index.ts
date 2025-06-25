@@ -34,6 +34,11 @@ const columns: ITableColumns[] = [
     rowClass: "whitespace-pre-line max-w-fit",
   },
   {
+    key: "service_method_formatted",
+    label: "Service Method",
+    rowClass: "max-w-fit",
+  },
+  {
     key: "date_formatted",
     label: "Request Date",
     rowClass: "whitespace-pre-line max-w-fit",
@@ -72,18 +77,6 @@ const items: ITableActions = (row: any, handlers: IHandlers) => {
     ]);
   }
 
-  // Reopen action if ticket is resolved or closed
-  if (["resolved", "closed"].includes(row.query_status)) {
-    actions.push([
-      {
-        label: "Reopen",
-        icon: "material-symbols:door-open-outline",
-        click: () => handlers.reopen?.(row),
-      },
-    ]);
-    return actions; // return early — no other actions
-  }
-
   // Actions for accepted personnel
   if (row.is_accepted_by_me) {
     const acceptedActions = [];
@@ -95,6 +88,18 @@ const items: ITableActions = (row: any, handlers: IHandlers) => {
     //     click: () => handlers.checkStock?.(row),
     //   });
     // }
+
+    // Reopen action if ticket is resolved or closed
+    if (["resolved", "closed"].includes(row.query_status)) {
+      actions.push([
+        {
+          label: "Reopen",
+          icon: "material-symbols:door-open-outline",
+          click: () => handlers.reopen?.(row),
+        },
+      ]);
+      return actions; // return early — no other actions
+    }
 
     if (row.query_status !== "awaiting_part") {
       acceptedActions.push({
@@ -118,7 +123,15 @@ const items: ITableActions = (row: any, handlers: IHandlers) => {
       });
     }
 
-    actions.push(acceptedActions);
+    actions.push(acceptedActions); // Group of accepted actions
+
+    actions.push([
+      {
+        label: "Set Service Method",
+        icon: "material-symbols:build-circle-outline",
+        click: () => handlers.setServiceMethod?.(row),
+      },
+    ]);
   }
 
   return actions;
