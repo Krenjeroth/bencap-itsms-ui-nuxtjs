@@ -8,6 +8,8 @@ const brandModelStore = useBrandModelStore();
 const { loading: loadingBrandModels, brandModelSelect } =
   storeToRefs(brandModelStore);
 
+const { transformDbDate } = useDateHandler();
+
 const emit = defineEmits([
   "reloadTable",
   "success",
@@ -48,7 +50,9 @@ const formState = ref<IUpdateItemForm>({
   serial_number: props.item?.serial_number || undefined,
   property_number: props.item?.property_number || undefined,
   ics_number: props.item?.ics_number || undefined,
-  date_acquired: props.item?.date_acquired || undefined,
+  date_acquired: props.item?.date_acquired
+    ? transformDbDate(props.item.date_acquired)
+    : undefined,
   ip_address: props.item?.ip_address || undefined,
   mac_address: props.item?.mac_address || undefined,
 });
@@ -63,7 +67,9 @@ const originalState = ref<IUpdateItemForm>({
     serial_number: props.item?.serial_number || undefined,
     property_number: props.item?.property_number || undefined,
     ics_number: props.item?.ics_number || undefined,
-    date_acquired: props.item?.date_acquired || undefined,
+    date_acquired: props.item?.date_acquired
+      ? transformDbDate(props.item.date_acquired)
+      : undefined,
     ip_address: props.item?.ip_address || undefined,
     mac_address: props.item?.mac_address || undefined,
   }),
