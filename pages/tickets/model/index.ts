@@ -57,25 +57,28 @@ const columns: ITableColumns[] = [
 
 const items: ITableActions = (row: any, handlers: IHandlers) => {
   const actions: any[] = [];
+  const adminActions: any[] = [];
 
   const isAdmin = hasRole("admin");
   const isPersonnel = hasRole("personnel");
 
   // Always show Edit
   if (isAdmin) {
-    actions.unshift([
-      {
-        label: "Edit",
-        icon: "i-heroicons-pencil-square-20-solid",
-        click: () => handlers.edit?.(row),
-      },
-      // only show set release if query status === pulled out
-      {
+    adminActions.unshift({
+      label: "Edit",
+      icon: "i-heroicons-pencil-square-20-solid",
+      click: () => handlers.edit?.(row),
+    });
+
+    // only show set release if query status === pulled out
+    if (row.service_method === "pulled_out") {
+      adminActions.push({
         label: "Set Release Date",
         icon: "i-heroicons-calendar-20-solid",
         click: () => handlers.setReleaseDate?.(row),
-      },
-    ]);
+      });
+    }
+    actions.unshift(adminActions);
   }
 
   // Enable if personnel can set release date
