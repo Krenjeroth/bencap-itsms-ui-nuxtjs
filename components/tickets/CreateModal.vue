@@ -8,6 +8,11 @@ const { loading: loadingEmployees } = storeToRefs(employeeStore);
 const itemStore = useItemStore();
 const { loading: loadingItems } = storeToRefs(itemStore);
 
+const itemTypeStore = useItemTypeStore();
+const { loading: loadingItemTypes, itemTypeSelect } =
+  storeToRefs(itemTypeStore);
+itemTypeStore.fetchItemTypeSelect();
+
 const itServiceStore = useItServiceStore();
 const { itServiceSelect } = storeToRefs(itServiceStore);
 itServiceStore.fetchItServicesSelect();
@@ -35,6 +40,7 @@ const onError = () => {
 const formState = ref<ICreateTicketForm>({
   employee: undefined,
   item: undefined,
+  item_type: undefined,
   it_service: undefined,
   concern: undefined,
   priority: "low",
@@ -84,6 +90,16 @@ const searchItems = async (q: string) => {
   const result = await itemStore.fetchItemSearch(itemSearchQuery.value);
   itemOptions.value = result;
   return result;
+};
+
+const searchItemTypes = async (q: string) => {
+  if (!q || q.length < 2) return [];
+  if (itemTypeSelect.value.length === 0) {
+    await itemTypeStore.fetchItemTypeSelect();
+  }
+  return itemTypeSelect.value.filter((itemType) =>
+    itemType.type.toLowerCase().includes(q.toLowerCase())
+  );
 };
 </script>
 
@@ -137,10 +153,16 @@ const searchItems = async (q: string) => {
           <template #option="{ option }">
             <span class="truncate"
               >{{ option.property_number }} ({{
+                option.brand_model.brand.name
+              }}
+              {{ option.brand_model.name }})</span
+            >
+            <!-- <span class="truncate"
+              >{{ option.property_number }} ({{
                 option.brand_model.item_type.type
               }}: {{ option.brand_model.brand.name }}
               {{ option.brand_model.name }})</span
-            >
+            > -->
           </template>
 
           <template #empty>
@@ -150,6 +172,30 @@ const searchItems = async (q: string) => {
             <span v-else class="text-gray-400">No Item found</span>
           </template>
         </UInputMenu>
+      </UFormGroup>
+
+      <UFormGroup
+        label="Item Type"
+        name="item_type"
+        :error="errorBag.item_type"
+        :ui="{ wrapper: 'md:w-full' }"
+      >
+        <USelectMenu
+          v-model="formState.item_type"
+          :options="itemTypeSelect"
+          :searchable="true"
+          :search="searchItemTypes"
+          :loading="loadingItemTypes"
+          placeholder="Type to search..."
+          value-attribute="id"
+          option-attribute="type"
+        >
+          <template #option-empty="{ query }">
+            <q>{{ query }}</q> not found
+          </template>
+
+          <template #empty> No Item Type found </template>
+        </USelectMenu>
       </UFormGroup>
 
       <UFormGroup

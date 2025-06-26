@@ -5,10 +5,14 @@ export const UpdateTicketValidationSchema = z.object({
     id: z.number(),
     full_name: z.string(),
   }),
-  item: z.object({
-    id: z.number(),
-    property_number: z.string(),
-  }),
+  item: z
+    .object({
+      id: z.number(),
+      property_number: z.string(),
+    })
+    .nullable()
+    .optional(),
+  item_type: z.number(),
   it_service: z.union([z.string(), z.number()]),
   concern: z
     .string({

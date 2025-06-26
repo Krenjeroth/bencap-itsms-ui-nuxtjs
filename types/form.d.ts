@@ -203,10 +203,8 @@ declare global {
       id: number;
       full_name: string;
     };
-    item?: {
-      id: number;
-      property_number: string;
-    };
+    item?: Item | null;
+    item_type?: number;
     it_service?: string;
     ticket_number?: string;
     concern?: string;
@@ -222,10 +220,8 @@ declare global {
       id: number;
       full_name: string;
     };
-    item?: {
-      id: number;
-      property_number: string;
-    };
+    item?: Item | null;
+    item_type?: number;
     it_service?: string | number;
     // ticket_number?: string;
     concern?: string;

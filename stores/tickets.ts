@@ -109,6 +109,7 @@ export const useTicketStore = defineStore("ticketStore", () => {
       query_status: "queued", // queued, checking_stock, awaiting_part, in_progress, resolved, cancelled
       request_status: "open", // open, accepted, closed
       date: transformDatePickerDate(new Date(), "YYYY-MM-DD HH:mm:ss"),
+      item_type_id: form.item_type,
       it_service_id: Number(form.it_service),
       service_method: "on_site",
     };
@@ -130,6 +131,7 @@ export const useTicketStore = defineStore("ticketStore", () => {
       ...form,
       employee_id: form.employee?.id,
       item_id: form.item?.id,
+      item_type_id: form.item_type,
       it_service_id: Number(form.it_service),
     };
 
