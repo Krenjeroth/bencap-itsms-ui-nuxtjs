@@ -95,7 +95,7 @@ declare global {
 
   interface ICreateBrandModelForm {
     name?: string;
-    item_type?: number;
+    // item_type?: number;
     brand?: number;
     image?: string;
     year_released?: string;
@@ -103,7 +103,7 @@ declare global {
 
   interface IUpdateBrandModelForm {
     name?: string;
-    item_type?: number;
+    // item_type?: number;
     brand?: number;
     image?: string;
     year_released?: string;

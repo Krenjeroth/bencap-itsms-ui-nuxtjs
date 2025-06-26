@@ -65,21 +65,21 @@ const items: ITableActions = (row: any, handlers: IHandlers) => [
 ];
 
 const expandableDetails: ITableExpandableDetails = (row: any) => [
-  {
-    key: "brand_model.item_type.type",
-    label: "Type",
-    value: row.brand_model.item_type.type,
-  },
-  {
-    key: "brand_model.item_type.classification",
-    label: "Classification",
-    value: row.brand_model.item_type.classification,
-  },
-  {
-    key: "brand_model.item_type.purpose",
-    label: "Purpose",
-    value: row.brand_model.item_type.purpose,
-  },
+  // {
+  //   key: "brand_model.item_type.type",
+  //   label: "Type",
+  //   value: row.brand_model.item_type.type,
+  // },
+  // {
+  //   key: "brand_model.item_type.classification",
+  //   label: "Classification",
+  //   value: row.brand_model.item_type.classification,
+  // },
+  // {
+  //   key: "brand_model.item_type.purpose",
+  //   label: "Purpose",
+  //   value: row.brand_model.item_type.purpose,
+  // },
   {
     key: "description",
     label: "Description",

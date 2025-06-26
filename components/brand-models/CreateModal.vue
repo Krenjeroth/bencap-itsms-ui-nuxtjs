@@ -32,7 +32,7 @@ const onError = () => {
 
 const formState = ref<ICreateBrandModelForm>({
   name: undefined,
-  item_type: undefined,
+  // item_type: undefined,
   brand: undefined,
   year_released: undefined,
 });
@@ -109,7 +109,7 @@ const searchBrands = async (q: string) => {
         </UFormGroup>
       </div>
 
-      <UFormGroup
+      <!-- <UFormGroup
         label="Item Type"
         name="item_type"
         :error="errorBag.item_type"
@@ -131,7 +131,7 @@ const searchBrands = async (q: string) => {
 
           <template #empty> No Item Type found </template>
         </USelectMenu>
-      </UFormGroup>
+      </UFormGroup> -->
 
       <UFormGroup
         label="Brand"

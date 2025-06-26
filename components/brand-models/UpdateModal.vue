@@ -45,7 +45,7 @@ const onNoDataChange = () => {
 
 const formState = ref<IUpdateBrandModelForm>({
   name: props.brandModel?.name || undefined,
-  item_type: props.brandModel?.item_type.id || undefined,
+  // item_type: props.brandModel?.item_type.id || undefined,
   brand: props.brandModel?.brand.id || undefined,
   year_released: props.brandModel?.year_released || undefined,
 });
@@ -53,7 +53,7 @@ const formState = ref<IUpdateBrandModelForm>({
 const originalState = ref<IUpdateBrandModelForm>({
   ...cloneDeep({
     name: props.brandModel?.name || undefined,
-    item_type: props.brandModel?.item_type.id || undefined,
+    // item_type: props.brandModel?.item_type.id || undefined,
     brand: props.brandModel?.brand.id || undefined,
     year_released: props.brandModel?.year_released || undefined,
   }),
@@ -61,7 +61,7 @@ const originalState = ref<IUpdateBrandModelForm>({
 
 const fieldsToCompare: (keyof IUpdateBrandModelForm)[] = [
   "name",
-  "item_type",
+  // "item_type",
   "brand",
   "year_released",
 ];
@@ -152,7 +152,7 @@ const searchBrands = async (q: string) => {
         </UFormGroup>
       </div>
 
-      <UFormGroup
+      <!-- <UFormGroup
         label="Item Type"
         name="item_type"
         :error="errorBag.item_type"
@@ -174,7 +174,7 @@ const searchBrands = async (q: string) => {
 
           <template #empty> No Item Type found </template>
         </USelectMenu>
-      </UFormGroup>
+      </UFormGroup> -->
 
       <UFormGroup
         label="Brand"
