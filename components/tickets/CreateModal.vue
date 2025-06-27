@@ -44,12 +44,20 @@ const formState = ref<ICreateTicketForm>({
   it_service: undefined,
   concern: undefined,
   priority: "low",
+  contact_number: undefined,
 });
 
 const concernComputed = computed({
   get: () => formState.value.concern,
   set: (value) => {
     formState.value.concern = capitalizeAll(value);
+  },
+});
+
+const contactNumberComputed = computed({
+  get: () => formState.value.contact_number ?? undefined,
+  set: (value: string | undefined) => {
+    formState.value.contact_number = value ?? undefined;
   },
 });
 
@@ -137,93 +145,123 @@ const searchItemTypes = async (q: string) => {
         </UInputMenu>
       </UFormGroup>
 
-      <UFormGroup
-        label="Item"
-        name="item"
-        :error="errorBag.item"
-        :ui="{ wrapper: 'md:w-full' }"
+      <div
+        class="space-y-6 space-x-0 md:space-y-0 md:space-x-6 md:flex md:justify-between md:grid-cols-3"
       >
-        <UInputMenu
-          v-model="formState.item"
-          :search="searchItems"
-          :loading="loadingItems"
-          placeholder="Type to search by property number..."
-          option-attribute="property_number"
+        <UFormGroup
+          label="Item (Optional)"
+          name="item"
+          :error="errorBag.item"
+          :ui="{ wrapper: 'md:w-full' }"
         >
-          <template #option="{ option }">
-            <span class="truncate"
-              >{{ option.property_number }} ({{
-                option.brand_model.brand.name
-              }}
-              {{ option.brand_model.name }})</span
-            >
-            <!-- <span class="truncate"
+          <UInputMenu
+            v-model="formState.item"
+            :search="searchItems"
+            :loading="loadingItems"
+            placeholder="Search by property number..."
+            option-attribute="property_number"
+          >
+            <template #option="{ option }">
+              <span class="truncate"
+                >{{ option.property_number }} ({{
+                  option.brand_model.brand.name
+                }}
+                {{ option.brand_model.name }})</span
+              >
+              <!-- <span class="truncate"
               >{{ option.property_number }} ({{
                 option.brand_model.item_type.type
               }}: {{ option.brand_model.brand.name }}
               {{ option.brand_model.name }})</span
             > -->
-          </template>
+            </template>
 
-          <template #empty>
-            <span v-if="itemSearchQuery.length < 2" class="text-gray-400"
-              >Type at least 2 characters...</span
-            >
-            <span v-else class="text-gray-400">No Item found</span>
-          </template>
-        </UInputMenu>
-      </UFormGroup>
+            <template #empty>
+              <span v-if="itemSearchQuery.length < 2" class="text-gray-400"
+                >Type at least 2 characters...</span
+              >
+              <span v-else class="text-gray-400">No Item found</span>
+            </template>
+          </UInputMenu>
+        </UFormGroup>
 
-      <UFormGroup
-        label="Item Type"
-        name="item_type"
-        :error="errorBag.item_type"
-        :ui="{ wrapper: 'md:w-full' }"
-      >
-        <USelectMenu
-          v-model="formState.item_type"
-          :options="itemTypeSelect"
-          :searchable="true"
-          :search="searchItemTypes"
-          :loading="loadingItemTypes"
-          placeholder="Type to search..."
-          value-attribute="id"
-          option-attribute="type"
+        <UFormGroup
+          label="Item Type"
+          name="item_type"
+          :error="errorBag.item_type"
+          :ui="{ wrapper: 'md:w-full' }"
         >
-          <template #option-empty="{ query }">
-            <q>{{ query }}</q> not found
-          </template>
+          <USelectMenu
+            v-model="formState.item_type"
+            :options="itemTypeSelect"
+            :searchable="true"
+            :search="searchItemTypes"
+            :loading="loadingItemTypes"
+            placeholder="Type to search..."
+            value-attribute="id"
+            option-attribute="type"
+          >
+            <template #option-empty="{ query }">
+              <q>{{ query }}</q> not found
+            </template>
 
-          <template #empty> No Item Type found </template>
-        </USelectMenu>
-      </UFormGroup>
+            <template #empty> No Item Type found </template>
+          </USelectMenu>
+        </UFormGroup>
+      </div>
 
-      <UFormGroup
-        label="IT Service"
-        name="it_service"
-        :error="errorBag.it_service"
+      <div
+        class="space-y-6 space-x-0 md:space-y-0 md:space-x-6 md:flex md:justify-between md:grid-cols-3"
       >
-        <USelect
-          v-model="formState.it_service"
-          :options="itServiceSelect"
-          value-attribute="id"
-          option-attribute="name"
-          placeholder="Select"
-        />
-      </UFormGroup>
+        <UFormGroup
+          label="IT Service"
+          name="it_service"
+          :error="errorBag.it_service"
+          :ui="{ wrapper: 'md:w-full' }"
+        >
+          <USelect
+            v-model="formState.it_service"
+            :options="itServiceSelect"
+            value-attribute="id"
+            option-attribute="name"
+            placeholder="Select"
+          />
+        </UFormGroup>
+
+        <UFormGroup
+          label="Priority"
+          name="priority"
+          :error="errorBag.priority"
+          :ui="{ wrapper: 'md:w-1/2' }"
+        >
+          <USelect
+            v-model="formState.priority"
+            :options="priorities"
+            value-attribute="value"
+            option-attribute="label"
+            placeholder="Select"
+          />
+        </UFormGroup>
+      </div>
 
       <UFormGroup label="Concern" name="concern" :error="errorBag.concern">
         <UInput v-model="concernComputed" />
       </UFormGroup>
 
-      <UFormGroup label="Priority" name="priority" :error="errorBag.priority">
-        <USelect
-          v-model="formState.priority"
-          :options="priorities"
-          value-attribute="value"
-          option-attribute="label"
-          placeholder="Select"
-        />
+      <UFormGroup
+        label="Contact Number (Optional)"
+        name="contact_number"
+        :error="errorBag.contact_number"
+        :ui="{ wrapper: 'md:w-full' }"
+      >
+        <UButtonGroup
+          orient="horizontal"
+          :ui="{
+            wrapper: { horizontal: 'w-full' },
+          }"
+        >
+          <UInput v-model="contactNumberComputed" class="flex-1" />
+        </UButtonGroup>
       </UFormGroup>
 
       <UButton type="submit" :loading="loading"> Add </UButton>

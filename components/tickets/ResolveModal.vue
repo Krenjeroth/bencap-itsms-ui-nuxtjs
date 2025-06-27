@@ -1,6 +1,23 @@
 <script setup lang="ts">
 const ticketStore = useTicketStore();
-const { loading, hasError } = storeToRefs(ticketStore);
+const { loading, errorBag, hasError, serviceMethodOptions } =
+  storeToRefs(ticketStore);
+
+const itemTypeStore = useItemTypeStore();
+const { loading: loadingItemTypes, itemTypeSelect } =
+  storeToRefs(itemTypeStore);
+itemTypeStore.fetchItemTypeSelect();
+
+const solutionStore = useSolutionStore();
+const { loading: loadingSolutions, solutionSelect } =
+  storeToRefs(solutionStore);
+solutionStore.fetchSolutionSelect();
+
+const loadingSolution = ref(false);
+
+const { user } = useSanctumAuth<IUser>();
+
+const selectedSolution = ref<any>(null);
 
 const emit = defineEmits(["reloadTable", "success", "error", "close"]);
 
@@ -21,8 +38,15 @@ const onError = () => {
   emit("error");
 };
 
-const handleSubmit = async () => {
-  await ticketStore.resolveTicket(props.ticket?.id);
+const formState = ref<IResolveTicketForm>({
+  solution: undefined,
+});
+
+const handleSubmit = async (
+  event: IFormSubmitEvent<TResolveTicketValidationSchema>
+) => {
+  console.log(event.data);
+  // await ticketStore.resolveTicket(props.ticket?.id, event.data);
 
   if (hasError.value) {
     onError();
@@ -32,72 +56,72 @@ const handleSubmit = async () => {
   onSuccess();
   return;
 };
+
+const solutionModel = computed({
+  get: () => selectedSolution.value,
+  set: async (value: any) => {
+    if (typeof value === "string") {
+      loadingSolution.value = true;
+
+      const form = {
+        description: value,
+        author_id: user.value?.profile.id,
+        item_type_id: props.ticket?.item_type.id,
+      };
+
+      try {
+        const newSolution = await solutionStore.addSolutionSelect(form);
+        solutionStore.solutionSelect.push(newSolution);
+        selectedSolution.value = newSolution;
+        formState.value.solution = newSolution.id;
+      } finally {
+        loadingSolution.value = false;
+      }
+    } else {
+      selectedSolution.value = value;
+      formState.value.solution = value.id;
+    }
+  },
+});
 </script>
 
 <template>
   <BaseModal :on-close="onClose" :title="`Resolve this ${props.pageTitle}?`">
-    <!-- <p class="font-bold text-lg text-center mb-4">Ticket Details</p> -->
-    <div class="flex flex-col gap-2">
-      <p class="flex justify-between">
-        <span class="font-semibold">Ticket Number: </span>
-        <span class="italic">{{ props.ticket?.ticket_number }}</span>
-      </p>
-      <p class="flex justify-between">
-        <span class="font-semibold">Assistance Type: </span>
-        <span class="italic"
-          >{{ props.ticket?.it_service?.name }} ({{
-            props.ticket?.it_service?.code
-          }})</span
-        >
-      </p>
-      <p class="flex justify-between">
-        <span class="font-semibold">Employee: </span>
-        <span class="italic">{{ props.ticket?.employee?.full_name }}</span>
-      </p>
-      <p class="flex justify-between">
-        <span class="font-semibold">Department: </span>
-        <span class="italic"
-          >{{ props.ticket?.employee?.department?.name }} ({{
-            props.ticket?.employee?.department?.abbreviation
-          }})</span
-        >
-      </p>
-      <p class="flex justify-between">
-        <span class="font-semibold">Item: </span>
-        <span class="italic"
-          >{{ props.ticket?.item?.property_number }} ({{
-            props.ticket?.item?.brand_model?.name
-          }}
-          - {{ props.ticket?.item?.brand_model?.brand?.name }})</span
-        >
-      </p>
-      <p class="flex justify-between">
-        <span class="font-semibold">Concern: </span>
-        <span class="italic">{{ props.ticket?.concern }}</span>
-      </p>
-      <p class="flex justify-between">
-        <span class="font-semibold">Query Status: </span>
-        <span class="italic">{{ props.ticket?.query_status_formatted }}</span>
-      </p>
-      <p class="flex justify-between">
-        <span class="font-semibold">Request Status: </span>
-        <span class="italic">{{ props.ticket?.request_status_formatted }}</span>
-      </p>
-    </div>
-
-    <!-- <p class="italic">This action cannot be undone.</p>
-    <p class="italic">
-      All data associated with this {{ props.pageTitle }} will be deleted.
-    </p> -->
-    <UButton
-      variant="outline"
-      color="green"
-      class="w-full justify-center mt-4"
-      :ui="{ base: 'text-center' }"
-      @click="handleSubmit"
-      :loading="loading"
+    <UForm
+      :schema="ResolveTicketValidationSchema"
+      :state="formState"
+      @submit.prevent="handleSubmit"
+      class="space-y-6"
     >
-      I'm sure! This {{ props.pageTitle }} is Resolved.
-    </UButton>
+      <UFormGroup
+        label="Solution"
+        name="solution"
+        :error="errorBag.solution"
+        :ui="{ wrapper: 'md:w-full' }"
+      >
+        <USelectMenu
+          v-model="solutionModel"
+          :options="solutionSelect"
+          option-attribute="description"
+          value-attribute="id"
+          by="id"
+          searchable
+          creatable
+          :loading="loadingSolution"
+          placeholder="Select or create solution"
+        />
+      </UFormGroup>
+
+      <UButton
+        type="submit"
+        variant="outline"
+        color="green"
+        class="w-full justify-center mt-4"
+        :ui="{ base: 'text-center' }"
+        :loading="loading"
+      >
+        I'm sure! This {{ props.pageTitle }} is Resolved.
+      </UButton>
+    </UForm>
   </BaseModal>
 </template>

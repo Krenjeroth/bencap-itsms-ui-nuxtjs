@@ -20,4 +20,17 @@ export const CreateTicketValidationSchema = z.object({
     })
     .min(2, "Concern must be at least 2 characters long"),
   priority: z.string(),
+  contact_number: z
+    .string()
+    .refine(
+      (p) => {
+        const mobilePattern = /^(09\d{9}|\+639\d{9})$/;
+        return mobilePattern.test(p);
+      },
+      {
+        message: "Invalid Phone number format",
+      }
+    )
+    .nullable()
+    .optional(),
 });

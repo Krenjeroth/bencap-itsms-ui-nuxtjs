@@ -212,6 +212,7 @@ declare global {
     request_status?: string;
     priority?: string;
     date?: TDatePickerDate;
+    contact_number?: string | null;
   }
 
   interface IUpdateTicketForm {
@@ -229,10 +230,21 @@ declare global {
     // request_status?: string;
     priority?: string;
     // date?: TDatePickerDate;
+    contact_number?: string | null;
+  }
+
+  interface ICreateSolutionForm {
+    description?: string;
+    author_id?: number;
+    item_type_id?: number;
+  }
+
+  interface IUpdateSolutionForm {
+    description?: string;
   }
 
   interface IResolveTicketForm {
-    service_method?: string | null;
+    solution?: number | null;
   }
 
   interface ISetTicketServiceMethodForm {
@@ -269,6 +281,8 @@ export {
   IUpdateCommonProblemForm,
   ICreateTicketForm,
   IUpdateTicketForm,
+  ICreateSolutionForm,
+  IUpdateSolutionForm,
   IResolveTicketForm,
   ISetTicketServiceMethodForm,
   ISetTicketReleaseDateForm,

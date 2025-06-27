@@ -12,3 +12,4 @@ export * from "./useCommonProblemApi";
 export * from "./useItemApi";
 export * from "./useItServiceApi";
 export * from "./useTicketApi";
+export * from "./useSolutionApi";

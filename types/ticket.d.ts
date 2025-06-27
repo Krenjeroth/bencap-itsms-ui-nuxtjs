@@ -13,6 +13,7 @@ declare global {
     request_status: string;
     priority: string;
     date: string;
+    contact_number: string | null;
     barcode: string;
     description: string | null;
     serial_number: string | null;
