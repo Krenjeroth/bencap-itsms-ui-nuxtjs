@@ -3,11 +3,6 @@ const ticketStore = useTicketStore();
 const { loading, errorBag, hasError, serviceMethodOptions } =
   storeToRefs(ticketStore);
 
-const itemTypeStore = useItemTypeStore();
-const { loading: loadingItemTypes, itemTypeSelect } =
-  storeToRefs(itemTypeStore);
-itemTypeStore.fetchItemTypeSelect();
-
 const solutionStore = useSolutionStore();
 const { loading: loadingSolutions, solutionSelect } =
   storeToRefs(solutionStore);
@@ -45,8 +40,7 @@ const formState = ref<IResolveTicketForm>({
 const handleSubmit = async (
   event: IFormSubmitEvent<TResolveTicketValidationSchema>
 ) => {
-  console.log(event.data);
-  // await ticketStore.resolveTicket(props.ticket?.id, event.data);
+  await ticketStore.resolveTicket(props.ticket?.id, event.data);
 
   if (hasError.value) {
     onError();
@@ -59,29 +53,50 @@ const handleSubmit = async (
 
 const solutionModel = computed({
   get: () => selectedSolution.value,
-  set: async (value: any) => {
-    if (typeof value === "string") {
-      loadingSolution.value = true;
-
-      const form = {
-        description: value,
-        author_id: user.value?.profile.id,
-        item_type_id: props.ticket?.item_type.id,
-      };
-
-      try {
-        const newSolution = await solutionStore.addSolutionSelect(form);
-        solutionStore.solutionSelect.push(newSolution);
-        selectedSolution.value = newSolution;
-        formState.value.solution = newSolution.id;
-      } finally {
-        loadingSolution.value = false;
-      }
-    } else {
-      selectedSolution.value = value;
-      formState.value.solution = value.id;
+  set: async (sol: any) => {
+    if (!sol) {
+      selectedSolution.value = null;
+      formState.value.solution = undefined;
+      return;
     }
+
+    if (typeof sol === "string") {
+      return await createSolution(sol);
+    }
+
+    if (sol && !sol.id && typeof sol.description === "string") {
+      return await createSolution(sol.description);
+    }
+
+    selectedSolution.value = sol;
+    formState.value.solution =
+      typeof sol === "number" ? { id: sol } : undefined;
   },
+});
+
+const createSolution = async (description: string) => {
+  loadingSolution.value = true;
+
+  const form = {
+    description,
+    author_id: user.value?.profile.id,
+    item_type_id: props.ticket?.item_type.id,
+  };
+
+  try {
+    const newSolution = await solutionStore.addSolutionSelect(form);
+    solutionStore.solutionSelect.push(newSolution);
+    selectedSolution.value = newSolution;
+    formState.value.solution = newSolution.id;
+  } catch (err) {
+    console.error("Failed to create solution", err);
+  } finally {
+    loadingSolution.value = false;
+  }
+};
+
+watch(selectedSolution, (sol) => {
+  formState.value.solution = sol ?? undefined;
 });
 </script>
 
@@ -103,8 +118,6 @@ const solutionModel = computed({
           v-model="solutionModel"
           :options="solutionSelect"
           option-attribute="description"
-          value-attribute="id"
-          by="id"
           searchable
           creatable
           :loading="loadingSolution"
