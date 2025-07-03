@@ -86,6 +86,13 @@ export const useTicketStore = defineStore("ticketStore", () => {
           ticket.released_at,
           "MM/DD/YY"
         )}`,
+        solution_formatted: `${
+          ticket.solution
+            ? ticket.solution.description.concat(
+                ` — ${ticket.solution.author.display_name}`
+              )
+            : "None"
+        }`,
       }));
 
       totalTickets.value = Number(response.meta.total) || 0;
@@ -195,7 +202,13 @@ export const useTicketStore = defineStore("ticketStore", () => {
   const resolveTicket = async (id: string, form: IResolveTicketForm) => {
     loading.value = true;
     resetErrorBag();
-    await resolveTicketApi(id, form)
+
+    const formattedForm = {
+      ...form,
+      solution_id: form.solution?.id,
+    };
+
+    await resolveTicketApi(id, formattedForm)
       .catch((err: any) => {
         transformValidationErrors(err);
       })

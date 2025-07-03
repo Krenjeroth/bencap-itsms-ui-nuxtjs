@@ -122,7 +122,11 @@ watch(selectedSolution, (sol) => {
           creatable
           :loading="loadingSolution"
           placeholder="Select or create solution"
-        />
+        >
+          <template #option="{ option }">
+            <span class="">{{ option.description }}</span>
+          </template>
+        </USelectMenu>
       </UFormGroup>
 
       <UButton

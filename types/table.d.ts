@@ -11,6 +11,7 @@ declare global {
     direction?: "desc" | "asc" | undefined;
     class?: string;
     rowClass?: string;
+    responsiveClass?: string;
   }
 
   interface IHandlers {

@@ -244,7 +244,7 @@ declare global {
   }
 
   interface IResolveTicketForm {
-    solution?: number | null;
+    solution?: { id: number };
   }
 
   interface ISetTicketServiceMethodForm {

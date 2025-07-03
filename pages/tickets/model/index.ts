@@ -23,6 +23,7 @@ const columns: ITableColumns[] = [
     key: "concern",
     label: "Concern",
     rowClass: "whitespace-pre-line max-w-fit",
+    // responsiveClass: "hidden md:table-cell",
   },
   {
     key: "query_status_formatted",
@@ -48,6 +49,7 @@ const columns: ITableColumns[] = [
     key: "date_formatted",
     label: "Request Date",
     rowClass: "whitespace-pre-line max-w-fit",
+    responsiveClass: "hidden md:table-cell",
   },
   {
     key: "personnel",
@@ -182,9 +184,9 @@ const items: ITableActions = (row: any, handlers: IHandlers) => {
 
 const expandableDetails: ITableExpandableDetails = (row: any) => [
   {
-    key: "concern",
-    label: "Concern",
-    value: row.concern,
+    key: "solution_formatted",
+    label: "Solution",
+    value: row.solution_formatted,
   },
 ];
 
