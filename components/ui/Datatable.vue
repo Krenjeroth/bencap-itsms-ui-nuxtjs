@@ -76,7 +76,12 @@ const dropdownFilter = ref(props.selectedDropdownFilter);
 // Columns
 const selectedColumns = ref(props.columns);
 const columnsTable = computed(() =>
-  props.columns.filter((column) => selectedColumns.value.includes(column))
+  props.columns
+    .filter((column) => selectedColumns.value.includes(column))
+    .map((column) => ({
+      ...column,
+      responsiveClass: column.responsiveClass || "",
+    }))
 );
 const excludeSelectColumn = computed(() =>
   props.columns.filter(
@@ -243,6 +248,14 @@ const expand = ref({
       :progress="{ color: 'primary', animation: 'carousel' }"
       @update:sort="emit('update:sort', localSort)"
     >
+      <template #date_formatted-header="{ column }">
+        <th :class="column.responsiveClass">{{ column.label }}</th>
+      </template>
+
+      <template #date_formatted-data="{ column, row }">
+        <td :class="column.responsiveClass">{{ row.date_formatted }}</td>
+      </template>
+
       <template #photo-data="{ row }">
         <UAvatar
           size="3xl"
@@ -313,7 +326,11 @@ const expand = ref({
 
       <template #personnel-data="{ row }">
         <div v-if="Array.isArray(row.personnel) && row.personnel.length > 0">
-          <UAvatarGroup size="2xl" :max="2">
+          <UAvatarGroup
+            size="2xl"
+            :max="3"
+            :key="row.personnel && row.personnel.length ? row.personnel.map((p:any) => p.id).join('-') : 'none'"
+          >
             <UAvatar
               v-for="personnel in row.personnel"
               :src="personnel.img_path"
@@ -358,6 +375,14 @@ const expand = ref({
       :progress="{ color: 'primary', animation: 'carousel' }"
       @update:sort="emit('update:sort', localSort)"
     >
+      <template #date_formatted-header="{ column }">
+        <th :class="column.responsiveClass">{{ column.label }}</th>
+      </template>
+
+      <template #date_formatted-data="{ column, row }">
+        <td :class="column.responsiveClass">{{ row.date_formatted }}</td>
+      </template>
+
       <template #photo-data="{ row }">
         <UAvatar
           size="3xl"
@@ -413,7 +438,11 @@ const expand = ref({
 
       <template #personnel-data="{ row }">
         <div v-if="Array.isArray(row.personnel) && row.personnel.length > 0">
-          <UAvatarGroup size="2xl" :max="2">
+          <UAvatarGroup
+            size="2xl"
+            :max="3"
+            :key="row.personnel && row.personnel.length ? row.personnel.map((p:any) => p.id).join('-') : 'none'"
+          >
             <UAvatar
               v-for="personnel in row.personnel"
               :src="personnel.img_path"
