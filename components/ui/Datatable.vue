@@ -355,7 +355,8 @@ const expand = ref({
         <div class="px-4 py-4 text-gray-500 dark:text-gray-400 text-sm">
           <p v-for="detail in expandableDetails(row)" :key="detail.key">
             <strong>{{ detail.label }}</strong
-            >: <span class="italic">{{ detail.value }}</span>
+            >:
+            <span class="italic whitespace-pre-line">{{ detail.value }}</span>
           </p>
         </div>
       </template>

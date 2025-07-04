@@ -3,19 +3,21 @@ import type { z } from "zod";
 declare global {
   interface ISolution {
     id: string;
+    title: string;
     description: string;
+    error_code: string;
+    reference_url: string;
     author_id: string;
-    item_type_id: string;
     created_at: string;
     updated_at: string;
   }
 
-  // type TCreateTicketValidationSchema = z.output<
-  //   typeof CreateTicketValidationSchema
-  // >;
-  // type TUpdateTicketValidationSchema = z.output<
-  //   typeof UpdateTicketValidationSchema
-  // >;
+  type TCreateSolutionValidationSchema = z.output<
+    typeof CreateSolutionValidationSchema
+  >;
+  type TUpdateSolutionValidationSchema = z.output<
+    typeof UpdateSolutionValidationSchema
+  >;
   // type TResolveTicketValidationSchema = z.output<
   //   typeof ResolveTicketValidationSchema
   // >;
@@ -29,9 +31,6 @@ declare global {
 
 export {
   ISolution,
-  // TCreateTicketValidationSchema,
-  // TUpdateTicketValidationSchema,
-  // TResolveTicketValidationSchema,
-  // TSetTicketServiceMethodValidationSchema,
-  // TSetTicketReleaseDateValidationSchema,
+  TCreateSolutionValidationSchema,
+  TUpdateSolutionValidationSchema,
 };

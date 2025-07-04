@@ -10,13 +10,13 @@ export const useSolutionStore = defineStore("solutionStore", () => {
   const { hasError, errorBag, transformValidationErrors, resetErrorBag } =
     useErrorHandler();
   const { capitalizeWords, capitalizeAll } = useStringHandler();
-  // const { transformUtcDatetime } = useDateHandler();
+  const { transformDatePickerDate } = useDateHandler();
   enum SortDirection {
     ASC = "asc",
     DESC = "desc",
   }
   const solutions = ref([]);
-  const solutionSelect = ref([]);
+  const solutionSelect = ref<ISolution[]>([]);
   const loading = ref(false);
   const page = ref(1);
   const pageCount = ref(5);
@@ -42,7 +42,14 @@ export const useSolutionStore = defineStore("solutionStore", () => {
 
       const response = await fetchSolutionsApi(queryParams);
 
-      solutions.value = response.data;
+      solutions.value = response.data.map((solution: any) => ({
+        ...solution,
+        description_updated_at_formatted: `${transformDatePickerDate(
+          solution.description_updated_at,
+          "MMM DD, YYYY"
+        )}`,
+      }));
+
       totalSolutions.value = Number(response.meta.total) || 0;
     } catch (err: any) {
       throw err;
@@ -55,14 +62,14 @@ export const useSolutionStore = defineStore("solutionStore", () => {
     loading.value = true;
     resetErrorBag();
 
-    const formattedForm = {
-      ...form,
-      description: capitalizeWords(form.description),
-    };
+    // const formattedForm = {
+    //   ...form,
+    //   description: capitalize(form.description),
+    // };
 
     // console.log("Solutions Store", formattedForm);
 
-    await addSolutionApi(formattedForm)
+    await addSolutionApi(form)
       .catch((err: any) => {
         transformValidationErrors(err);
       })
@@ -74,9 +81,20 @@ export const useSolutionStore = defineStore("solutionStore", () => {
   const updateSolution = async (id: string, form: IUpdateSolutionForm) => {
     loading.value = true;
     resetErrorBag();
+
+    let descriptionUpdatedAt = null;
+
+    if (form.description !== form.description_original_state) {
+      descriptionUpdatedAt = transformDatePickerDate(
+        new Date(),
+        "YYYY-MM-DD HH:mm:ss"
+      );
+    }
+
     const formattedForm = {
       ...form,
-      description: capitalizeWords(form.description),
+      // description: capitalizeWords(form.description),
+      description_updated_at: descriptionUpdatedAt,
     };
 
     await updateSolutionApi(id, formattedForm)
@@ -118,7 +136,7 @@ export const useSolutionStore = defineStore("solutionStore", () => {
       description: capitalizeAll(form.description),
     };
 
-    console.log("Solutions Store", form, formattedForm);
+    console.log("Solutions Store", formattedForm);
 
     try {
       const newSolution = await addSolutionApi(formattedForm);

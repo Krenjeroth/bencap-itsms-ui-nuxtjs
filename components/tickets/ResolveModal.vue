@@ -64,8 +64,8 @@ const solutionModel = computed({
       return await createSolution(sol);
     }
 
-    if (sol && !sol.id && typeof sol.description === "string") {
-      return await createSolution(sol.description);
+    if (sol && !sol.id && typeof sol.title === "string") {
+      return await createSolution(sol.title);
     }
 
     selectedSolution.value = sol;
@@ -74,13 +74,12 @@ const solutionModel = computed({
   },
 });
 
-const createSolution = async (description: string) => {
+const createSolution = async (title: string) => {
   loadingSolution.value = true;
 
   const form = {
-    description,
+    title,
     author_id: user.value?.profile.id,
-    item_type_id: props.ticket?.item_type.id,
   };
 
   try {
@@ -117,14 +116,17 @@ watch(selectedSolution, (sol) => {
         <USelectMenu
           v-model="solutionModel"
           :options="solutionSelect"
-          option-attribute="description"
+          option-attribute="title"
           searchable
           creatable
           :loading="loadingSolution"
           placeholder="Select or create solution"
         >
           <template #option="{ option }">
-            <span class="">{{ option.description }}</span>
+            <span class=""
+              >{{ option.title }} —
+              <span class="italic">{{ option.author.display_name }}</span></span
+            >
           </template>
         </USelectMenu>
       </UFormGroup>

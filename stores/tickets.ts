@@ -87,8 +87,8 @@ export const useTicketStore = defineStore("ticketStore", () => {
           "MM/DD/YY"
         )}`,
         solution_formatted: `${
-          ticket.solution
-            ? ticket.solution.description.concat(
+          ticket.solution && ticket.solution?.description
+            ? ticket.solution?.description.concat(
                 ` — ${ticket.solution.author.display_name}`
               )
             : "None"

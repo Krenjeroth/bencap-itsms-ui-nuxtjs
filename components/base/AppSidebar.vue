@@ -81,6 +81,11 @@ const links = [
       to: "/items",
     },
     {
+      label: "Solutions",
+      icon: "i-heroicons-archive-box",
+      to: "/solutions",
+    },
+    {
       label: "Tickets",
       icon: "i-heroicons-ticket",
       to: "/tickets",

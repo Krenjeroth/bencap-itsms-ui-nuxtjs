@@ -63,9 +63,10 @@ export const useStringHandler = () => {
 
   const capitalizeSentences = (
     str: string | undefined | null,
-    options: CapitalizeOptions = {}
-  ): string => {
-    const sanitized = strSanitize(str);
+    options: CapitalizeOptions = {},
+    sanitize = true
+  ): string | undefined => {
+    const sanitized = sanitize ? strSanitize(str) : str;
     const exceptions = options.exceptions || ["e.g.", "i.e.", "etc."];
     const lowercaseWords = options.lowercaseWords || [
       "and",
@@ -80,7 +81,7 @@ export const useStringHandler = () => {
       "for",
     ];
 
-    return sanitized.replace(/(^\w+|[.!?]\s+\w+|,\s+\w+)/g, (match) => {
+    return sanitized?.replace(/(^\w+|[.!?]\s+\w+|,\s+\w+)/g, (match) => {
       const word = match.trim();
       const lowerWord = word.toLowerCase();
 

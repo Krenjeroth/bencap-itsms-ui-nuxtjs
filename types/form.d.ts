@@ -234,13 +234,19 @@ declare global {
   }
 
   interface ICreateSolutionForm {
-    description?: string;
+    title?: string;
+    description?: string | null;
+    error_code?: string | null;
+    reference_url?: string | null;
     author_id?: number;
-    item_type_id?: number;
   }
 
   interface IUpdateSolutionForm {
-    description?: string;
+    title?: string;
+    description?: string | null;
+    error_code?: string | null;
+    reference_url?: string | null;
+    description_original_state?: string | null;
   }
 
   interface IResolveTicketForm {
