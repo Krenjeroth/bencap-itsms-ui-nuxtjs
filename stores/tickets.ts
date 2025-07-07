@@ -87,10 +87,11 @@ export const useTicketStore = defineStore("ticketStore", () => {
           "MM/DD/YY"
         )}`,
         solution_formatted: `${
-          ticket.solution && ticket.solution?.description
-            ? ticket.solution?.description.concat(
-                ` — ${ticket.solution.author.display_name}`
-              )
+          ticket.solution
+            ? ticket.solution?.description
+              ? `${ticket.solution.title} — ${ticket.solution.author.display_name} \n\r\n\r` +
+                ticket.solution?.description
+              : `${ticket.solution.title} — ${ticket.solution.author.display_name}`
             : "None"
         }`,
       }));
