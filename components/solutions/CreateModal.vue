@@ -34,7 +34,7 @@ const formState = ref<ICreateSolutionForm>({
 const titleComputed = computed({
   get: () => formState.value.title,
   set: (value) => {
-    formState.value.title = capitalizeAll(value);
+    formState.value.title = capitalizeSentences(value, {}, false);
   },
 });
 

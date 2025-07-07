@@ -17,8 +17,7 @@ const props = defineProps({
   solution: Object,
 });
 
-const { capitalizeAll } = useStringHandler();
-const { capitalizeSentences } = useStringHandler();
+const { capitalizeAll, capitalizeSentences } = useStringHandler();
 
 const onClose = () => emit("close");
 
@@ -71,7 +70,7 @@ const isChangedComputed = computed(() => {
 const titleComputed = computed({
   get: () => formState.value.title,
   set: (value) => {
-    formState.value.title = capitalizeAll(value);
+    formState.value.title = capitalizeSentences(value, {}, false);
   },
 });
 

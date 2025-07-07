@@ -16,7 +16,11 @@ const { strSingular } = useStringHandler();
 
 const pageTitleSingular = strSingular(route.meta.title as string);
 
-import { SolutionsCreateModal, SolutionsUpdateModal } from "#components";
+import {
+  SolutionsCreateModal,
+  SolutionsUpdateModal,
+  SolutionsDeleteModal,
+} from "#components";
 import * as model from "./model/index";
 const modal = useModal();
 const { actionToastResult } = useToastHandler();
@@ -105,36 +109,36 @@ const editSolutionModal = (solution: any) => {
   });
 };
 
-// const deleteItServiceModal = (itService: any) => {
-//   modal.open(ItServicesDeleteModal, {
-//     itService,
-//     pageTitle: pageTitleSingular,
-//     onReloadTable() {
-//       solutionStore.fetchSolutions();
-//     },
-//     onSuccess() {
-//       actionToastResult({
-//         icon: "i-heroicons-check-circle",
-//         // title: "Success !",
-//         description: `${pageTitleSingular} deleted.`,
-//         id: "modal-success",
-//         color: "green",
-//       });
-//     },
-//     onError() {
-//       actionToastResult({
-//         icon: "i-heroicons-x-circle",
-//         // title: "Error !",
-//         description: "Something went wrong.",
-//         id: "modal-error",
-//         color: "red",
-//       });
-//     },
-//     onClose() {
-//       modal.close();
-//     },
-//   });
-// };
+const deleteSolutionModal = (solution: any) => {
+  modal.open(SolutionsDeleteModal, {
+    solution,
+    pageTitle: pageTitleSingular,
+    onReloadTable() {
+      solutionStore.fetchSolutions();
+    },
+    onSuccess() {
+      actionToastResult({
+        icon: "i-heroicons-check-circle",
+        // title: "Success !",
+        description: `${pageTitleSingular} deleted.`,
+        id: "modal-success",
+        color: "green",
+      });
+    },
+    onError() {
+      actionToastResult({
+        icon: "i-heroicons-x-circle",
+        // title: "Error !",
+        description: "Something went wrong.",
+        id: "modal-error",
+        color: "red",
+      });
+    },
+    onClose() {
+      modal.close();
+    },
+  });
+};
 
 // Watch search changes and fetch when updated
 watch(search, () => {
@@ -172,7 +176,7 @@ watch(selectedStatus, () => {
       :loading="loading"
       :action-handlers="{
         edit: editSolutionModal,
-        // delete: deleteItServiceModal,
+        delete: deleteSolutionModal,
       }"
       :pagination="{ page, pageCount, total: totalSolutions }"
       :sorting="sort"

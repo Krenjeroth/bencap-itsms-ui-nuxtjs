@@ -27,117 +27,23 @@ const columns: ITableColumns[] = [
 
 const items: ITableActions = (row: any, handlers: IHandlers) => {
   const actions: any[] = [];
-  const adminActions: any[] = [];
-
   const isAdmin = hasRole("admin");
   const isPersonnel = hasRole("personnel");
 
-  // Always show Edit
-  if (isAdmin) {
-    adminActions.unshift({
-      label: "Edit",
-      icon: "i-heroicons-pencil-square-20-solid",
-      click: () => handlers.edit?.(row),
-    });
-
-    // only show set release if query status === pulled out
-    if (row.service_method === "pulled_out") {
-      adminActions.push({
-        label: "Set Release Date",
-        icon: "i-heroicons-calendar-20-solid",
-        click: () => handlers.setReleaseDate?.(row),
-      });
-    }
-    actions.unshift(adminActions);
-  }
-
-  // Enable if personnel can set release date
-  // if (isPersonnel) {
-  //   actions.unshift([
-  //     {
-  //       label: "Set Release Date",
-  //       icon: "i-heroicons-calendar-20-solid",
-  //       click: () => handlers.edit?.(row),
-  //     },
-  //   ]);
-  // }
-
-  // Accept only if user hasn't accepted and ticket is still joinable
-  if (isPersonnel && row.can_accept) {
+  if (isAdmin || isPersonnel) {
     actions.push([
       {
-        label: "Accept",
-        icon: "material-symbols:assignment-add-outline",
-        click: () => handlers.accept?.(row),
+        label: "Edit",
+        icon: "i-heroicons-pencil-square-20-solid",
+        click: () => handlers.edit?.(row),
       },
     ]);
-  }
-
-  // Actions for accepted personnel
-  if (isAdmin || (isPersonnel && row.is_accepted_by_me)) {
-    const acceptedActions = [];
-
-    // if (row.query_status !== "checking_stock") {
-    //   acceptedActions.push({
-    //     label: "Check Stock",
-    //     icon: "material-symbols:checked-bag-question-outline",
-    //     click: () => handlers.checkStock?.(row),
-    //   });
-    // }
-
-    // Reopen action if ticket is resolved or closed
-    if (["resolved", "closed"].includes(row.query_status)) {
-      actions.push([
-        {
-          label: "Reopen",
-          icon: "material-symbols:door-open-outline",
-          click: () => handlers.reopen?.(row),
-        },
-      ]);
-      return actions;
-    }
-
-    // Reopen action if ticket is cancelled or closed
-    if (["cancelled", "closed"].includes(row.query_status)) {
-      actions.push([
-        {
-          label: "Reopen",
-          icon: "material-symbols:door-open-outline",
-          click: () => handlers.reopen?.(row),
-        },
-      ]);
-      return actions;
-    }
-
-    if (row.query_status !== "awaiting_part") {
-      acceptedActions.push({
-        label: "Await Part",
-        icon: "material-symbols:deployed-code-history-outline",
-        click: () => handlers.awaitPart?.(row),
-      });
-    }
-
-    acceptedActions.push({
-      label: "Resolve",
-      icon: "material-symbols:check-circle-outline",
-      click: () => handlers.resolve?.(row),
-    });
-
-    if (row.query_status !== "cancelled") {
-      acceptedActions.push({
-        label: "Cancel",
-        icon: "material-symbols:cancel-outline",
-        click: () => handlers.cancel?.(row),
-      });
-    }
-
-    actions.push(acceptedActions); // Group of accepted actions
 
     actions.push([
       {
-        label: "Set Service Method",
-        icon: "material-symbols:build-circle-outline",
-        click: () => handlers.setServiceMethod?.(row),
+        label: "Delete",
+        icon: "i-heroicons-trash-20-solid",
+        click: () => handlers.delete?.(row),
       },
     ]);
   }

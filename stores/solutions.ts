@@ -9,7 +9,7 @@ export const useSolutionStore = defineStore("solutionStore", () => {
   } = useSolutionApi();
   const { hasError, errorBag, transformValidationErrors, resetErrorBag } =
     useErrorHandler();
-  const { capitalizeWords, capitalizeAll } = useStringHandler();
+  const { capitalizeSentences, capitalizeAll } = useStringHandler();
   const { transformDatePickerDate } = useDateHandler();
   enum SortDirection {
     ASC = "asc",
@@ -62,14 +62,13 @@ export const useSolutionStore = defineStore("solutionStore", () => {
     loading.value = true;
     resetErrorBag();
 
-    // const formattedForm = {
-    //   ...form,
-    //   description: capitalize(form.description),
-    // };
+    const formattedForm = {
+      ...form,
+      title: capitalizeSentences(form.title, {}, false),
+      description: capitalizeSentences(form.description, {}, false),
+    };
 
-    // console.log("Solutions Store", formattedForm);
-
-    await addSolutionApi(form)
+    await addSolutionApi(formattedForm)
       .catch((err: any) => {
         transformValidationErrors(err);
       })
@@ -93,7 +92,8 @@ export const useSolutionStore = defineStore("solutionStore", () => {
 
     const formattedForm = {
       ...form,
-      // description: capitalizeWords(form.description),
+      title: capitalizeSentences(form.title, {}, false),
+      description: capitalizeSentences(form.description, {}, false),
       description_updated_at: descriptionUpdatedAt,
     };
 
@@ -133,28 +133,18 @@ export const useSolutionStore = defineStore("solutionStore", () => {
 
     const formattedForm = {
       ...form,
-      description: capitalizeAll(form.description),
+      title: capitalizeSentences(form.title, {}, false),
     };
-
-    console.log("Solutions Store", formattedForm);
 
     try {
       const newSolution = await addSolutionApi(formattedForm);
-      return newSolution; // ✅ return new solution
+      return newSolution;
     } catch (err) {
       transformValidationErrors(err);
       throw err;
     } finally {
       loading.value = false;
     }
-
-    // await addSolutionSelectApi(formattedForm)
-    //   .catch((err: any) => {
-    //     transformValidationErrors(err);
-    //   })
-    //   .finally(() => {
-    //     loading.value = false;
-    //   });
   };
 
   return {
