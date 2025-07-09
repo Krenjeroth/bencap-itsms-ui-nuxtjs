@@ -8,7 +8,7 @@ export const UpdateBrandModelValidationSchema = z.object({
       invalid_type_error: "Brand model name is required",
     })
     .min(2, "Brand model name must be at least 2 characters long"),
-  // item_type: z.number(),
+  item_type: z.number(),
   brand: z.number(),
   // image: z
   //   .string({
