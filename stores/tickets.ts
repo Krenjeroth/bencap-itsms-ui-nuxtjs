@@ -45,6 +45,9 @@ export const useTicketStore = defineStore("ticketStore", () => {
   });
   const totalTickets = ref(0);
   const selectedStatus = ref("");
+  const activeTab = ref<
+    "all" | "accepted_by_me" | "accepted_by_others" | "closed"
+  >("all");
 
   const priorities = ref([
     { label: "Low", value: "low" },
@@ -61,7 +64,8 @@ export const useTicketStore = defineStore("ticketStore", () => {
         sort: sort.value.column,
         order: sort.value.direction,
         search: search.value,
-        ...(selectedStatus.value ? { status: selectedStatus.value } : {}),
+        ...(selectedStatus.value ? { query_status: selectedStatus.value } : {}),
+        ...(activeTab.value !== "all" ? { tab: activeTab.value } : {}),
       });
 
       const response = await fetchTicketsApi(queryParams);
@@ -293,6 +297,7 @@ export const useTicketStore = defineStore("ticketStore", () => {
     selectedStatus,
     priorities,
     serviceMethodOptions,
+    activeTab,
     fetchTickets,
     addTicket,
     updateTicket,

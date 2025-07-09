@@ -44,6 +44,12 @@ declare global {
   interface ITableExpandableDetails {
     (row: ITableRow): Array<{ key: string; label: string; value: any }>;
   }
+
+  interface ITableTabItem {
+    label: string;
+    value: string;
+    icon?: string;
+  }
 }
 
 export {
@@ -53,4 +59,5 @@ export {
   IHandlers,
   ITableStatusOptions,
   ITableExpandableDetails,
+  ITableTabItem,
 };

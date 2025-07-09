@@ -42,8 +42,10 @@ const {
   sort,
   totalTickets,
   selectedStatus,
+  activeTab,
 } = storeToRefs(ticketStore);
-const { columns, items, expandableDetails } = model;
+const { columns, items, expandableDetails, queryStatusOptions, tabItems } =
+  model;
 ticketStore.fetchTickets();
 
 const addTicketModal = () => {
@@ -413,19 +415,16 @@ const setReleaseDateModal = (ticket: any) => {
   });
 };
 
-// Watch search changes and fetch when updated
 watch(search, () => {
   page.value = 1; // Reset page
   ticketStore.fetchTickets();
 });
 
-// ✅ Reset page to 1 when rows per page (`pageCount`) changes
 watch(pageCount, () => {
   page.value = 1;
   ticketStore.fetchTickets();
 });
 
-// ✅ Ensure pagination updates correctly
 watch([page, pageCount], () => {
   ticketStore.fetchTickets();
 });
@@ -433,6 +432,11 @@ watch([page, pageCount], () => {
 watch(selectedStatus, () => {
   page.value = 1;
   ticketStore.fetchTickets();
+});
+
+watch(activeTab, () => {
+  page.value = 1;
+  // ticketStore.fetchTickets();
 });
 </script>
 
@@ -443,8 +447,12 @@ watch(selectedStatus, () => {
       :is-expandable="true"
       :expandable-details="expandableDetails"
       :columns="columns"
+      :enable-dropdown-filter="true"
+      :dropdown-filter-options="queryStatusOptions"
       :action-items="items"
       :table-data="data"
+      :enable-tab="true"
+      :tab-items="tabItems"
       :add-data-modal="addTicketModal"
       :loading="loading"
       :action-handlers="{
@@ -468,6 +476,7 @@ watch(selectedStatus, () => {
       @update:sort="ticketStore.fetchTickets"
       @update:search="(value) => (search = value)"
       @update:selected-dropdown-filter="(value) => (selectedStatus = value)"
+      @update:active-tab="(value) => (activeTab = value)"
     />
   </div>
 </template>

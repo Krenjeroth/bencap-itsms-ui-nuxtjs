@@ -1,7 +1,7 @@
 // const authStore = useAuthStore();
 const { hasRole } = useRoleHandler();
 
-export { columns, items, classificationOptions, expandableDetails };
+export { columns, items, expandableDetails, queryStatusOptions, tabItems };
 
 const columns: ITableColumns[] = [
   {
@@ -190,14 +190,36 @@ const expandableDetails: ITableExpandableDetails = (row: any) => [
   },
 ];
 
-const classificationOptions: ITableStatusOptions[] = [
+const queryStatusOptions: ITableStatusOptions[] = [
   { key: "all", label: "All", value: "" },
-  { key: "software", label: "Software", value: "SOFTWARE" },
-  { key: "hardware", label: "Hardware", value: "HARDWARE" },
-  { key: "accessory", label: "Accessory", value: "ACCESSORY" },
-  { key: "consumable", label: "Consumable", value: "CONSUMABLE" },
-  { key: "equipment", label: "Equipment", value: "EQUIPMENT" },
-  { key: "office_supply", label: "Office Supply", value: "OFFICE SUPPLY" },
-  { key: "system_unit", label: "System Unit", value: "SYSTEM UNIT" },
-  { key: "tool", label: "Tool", value: "TOOL" },
+  { key: "queued", label: "Queued", value: "queued" },
+  { key: "in_progress", label: "In Progress", value: "in_progress" },
+  { key: "awaiting_part", label: "Awaiting Part", value: "awaiting_part" },
+  { key: "resolved", label: "Resolved", value: "resolved" },
+  { key: "cancelled", label: "Cancelled", value: "cancelled" },
+  { key: "reopened", label: "Reopened", value: "reopened" },
+];
+
+const tabItems = [
+  { label: "All Tickets", value: "all", icon: "i-heroicons-list-bullet" },
+  {
+    label: "Open Tickets",
+    value: "open",
+    icon: "material-symbols-light:adjust-outline",
+  },
+  {
+    label: "Accepted by Me",
+    value: "accepted_by_me",
+    icon: "material-symbols:assignment-add-outline",
+  },
+  {
+    label: "Accepted by Others",
+    value: "accepted_by_others",
+    icon: "material-symbols-light:person-check-outline-rounded",
+  },
+  {
+    label: "Closed Tickets",
+    value: "closed",
+    icon: "material-symbols-light:line-end-circle-outline-rounded",
+  },
 ];

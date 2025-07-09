@@ -58,6 +58,14 @@ const props = defineProps({
     type: Function as PropType<ITableExpandableDetails>,
     default: () => [],
   },
+  enableTab: {
+    type: Boolean,
+    default: false,
+  },
+  tabItems: {
+    type: Array as PropType<ITableTabItem[]>,
+    default: () => [],
+  },
 });
 
 const emit = defineEmits([
@@ -66,12 +74,72 @@ const emit = defineEmits([
   "update:sort",
   "update:search",
   "update:selected-dropdown-filter",
+  "update:active-tab",
 ]);
 
 const { getStatusColor } = useColorHandler();
 const { capitalizeWord } = useStringHandler();
 const searchQuery = ref(props.search);
 const dropdownFilter = ref(props.selectedDropdownFilter);
+
+const localPage = ref(1);
+const localPageCount = ref(5);
+
+// Start Tab Items
+
+const filteredTableData = computed(() => {
+  switch (currentTab.value) {
+    case "open":
+      return props.tableData.filter((row) => row.request_status === "open");
+    case "closed":
+      return props.tableData.filter((row) => row.request_status === "closed");
+    case "accepted_by_others":
+      return props.tableData.filter((row) => row.is_accepted_by_others);
+    case "accepted_by_me":
+      return props.tableData.filter((row) => row.is_accepted_by_me);
+    // case "unaccepted":
+    //   return props.tableData.filter((row) => !row.is_accepted_by_me);
+    default:
+      return props.tableData;
+  }
+});
+
+const localSort = ref(props.sorting);
+
+const sortedTableData = computed(() => {
+  const data = [...filteredTableData.value];
+
+  if (!localSort.value?.column) {
+    return data.sort((a, b) => {
+      const acceptedA = Number(!!a.is_accepted_by_me);
+      const acceptedB = Number(!!b.is_accepted_by_me);
+      if (acceptedA !== acceptedB) return acceptedB - acceptedA;
+      return (
+        new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+      );
+    });
+  }
+
+  const { column, direction } = localSort.value;
+  return data.sort((a, b) => {
+    const valA = a[column];
+    const valB = b[column];
+    if (valA == null) return 1;
+    if (valB == null) return -1;
+    const cmp = valA > valB ? 1 : valA < valB ? -1 : 0;
+    return direction === "asc" ? cmp : -cmp;
+  });
+});
+
+// const activeTab = ref(["all"]);
+const activeTab = ref(0);
+
+const currentTab = computed(() =>
+  props.enableTab ? props.tabItems[activeTab.value].value : "all"
+);
+// const currentTab = computed(() => activeTab.value[0]);
+
+// End Tab Items
 
 // Columns
 const selectedColumns = ref(props.columns);
@@ -83,6 +151,7 @@ const columnsTable = computed(() =>
       responsiveClass: column.responsiveClass || "",
     }))
 );
+
 const excludeSelectColumn = computed(() =>
   props.columns.filter(
     (v) =>
@@ -100,22 +169,37 @@ const excludeSelectColumn = computed(() =>
 );
 
 // Pagination info
-const pageFrom = computed(
-  () => (props.pagination.page - 1) * props.pagination.pageCount + 1
+const pageFrom = computed(() =>
+  paginationTotal.value === 0
+    ? 0
+    : (props.pagination.page - 1) * props.pagination.pageCount + 1
 );
+
 const pageTo = computed(() =>
   Math.min(
     props.pagination.page * props.pagination.pageCount,
-    props.pagination.total
+    paginationTotal.value
   )
 );
+
+const paginationTotal = computed(() => {
+  // If not on the 'all' tab, or if search or dropdown filter is active, use filtered data length
+  if (currentTab.value !== "all" || searchQuery.value || dropdownFilter.value) {
+    return sortedTableData.value.length;
+  }
+  return props.pagination.total;
+});
 
 const resetFilters = () => {
   searchQuery.value = "";
   dropdownFilter.value = "";
 };
 
-const localSort = ref(props.sorting);
+// const localSort = ref(props.sorting);
+
+watch([currentTab, localPageCount], () => {
+  localPage.value = 1;
+});
 
 watch([searchQuery], () => {
   props.pagination.page = 1;
@@ -136,6 +220,10 @@ watch(localSort, (e) => {
 const expand = ref({
   openedRows: [props.tableData[0]],
   row: {},
+});
+
+watch(activeTab, (e) => {
+  emit("update:active-tab", e);
 });
 </script>
 
@@ -232,12 +320,30 @@ const expand = ref({
       </div>
     </div>
 
+    <div v-if="props.enableTab" class="flex w-full px-2 pt-2">
+      <UTabs
+        :items="props.tabItems"
+        v-model="activeTab"
+        :ui="{
+          wrapper: 'justify-center w-full',
+        }"
+      >
+        <template #icon="{ item, selected }">
+          <UIcon
+            :name="item.icon"
+            class="w-5 h-5 flex-shrink-0 me-2"
+            :class="[selected && 'text-primary-500 dark:text-primary-400']"
+          />
+        </template>
+      </UTabs>
+    </div>
+
     <!-- Table Expandable -->
     <UTable
       :key="props.isExpandable ? 'expand-enabled' : 'expand-disabled'"
       v-if="props.isExpandable"
       v-model:expand="expand"
-      :rows="props.tableData"
+      :rows="sortedTableData"
       :columns="columnsTable"
       v-model:sort="localSort"
       :loading="props.loading"
@@ -365,7 +471,7 @@ const expand = ref({
     <!-- Table Non-Expandable -->
     <UTable
       v-else
-      :rows="props.tableData"
+      :rows="sortedTableData"
       :columns="columnsTable"
       v-model:sort="localSort"
       :loading="props.loading"
@@ -474,13 +580,13 @@ const expand = ref({
         -
         <span class="font-medium">{{ pageTo }}</span>
         of
-        <span class="font-medium">{{ props.pagination.total }}</span>
+        <span class="font-medium">{{ paginationTotal }}</span>
         results
       </p>
       <UPagination
-        v-model="props.pagination.page"
-        :total="Number(props.pagination.total) || 0"
-        :page-count="Number(props.pagination.pageCount)"
+        v-model="localPage"
+        :total="paginationTotal"
+        :page-count="localPageCount"
         @update:modelValue="emit('update:page', $event)"
         :ui="{
           wrapper: 'flex items-center gap-1',
