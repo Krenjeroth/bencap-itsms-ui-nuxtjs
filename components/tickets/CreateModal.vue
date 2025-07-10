@@ -38,13 +38,16 @@ const onError = () => {
 };
 
 const formState = ref<ICreateTicketForm>({
-  employee: undefined,
+  // employee: undefined,
   item: undefined,
   item_type: undefined,
   it_service: undefined,
   concern: undefined,
   priority: "low",
   contact_number: undefined,
+  is_other_agency: false,
+  full_name: undefined,
+  agency: undefined,
 });
 
 const concernComputed = computed({
@@ -58,6 +61,13 @@ const contactNumberComputed = computed({
   get: () => formState.value.contact_number ?? undefined,
   set: (value: string | undefined) => {
     formState.value.contact_number = value ?? undefined;
+  },
+});
+
+const fullNameComputed = computed({
+  get: () => formState.value.full_name ?? undefined,
+  set: (value: string | undefined) => {
+    formState.value.full_name = capitalizeAll(value) ?? undefined;
   },
 });
 
@@ -109,6 +119,8 @@ const searchItemTypes = async (q: string) => {
     itemType.type.toLowerCase().includes(q.toLowerCase())
   );
 };
+
+const agencies = ["United States", "Canada", "Mexico"];
 </script>
 
 <template>
@@ -120,69 +132,34 @@ const searchItemTypes = async (q: string) => {
       class="space-y-6"
     >
       <UFormGroup
-        label="Employee"
-        name="employee"
-        :error="errorBag.employee"
-        :ui="{ wrapper: 'md:w-full' }"
+        name="is_other_agency"
+        :error="errorBag.is_other_agency"
+        :ui="{ wrapper: 'flex items-center justify-end' }"
       >
-        <UInputMenu
-          v-model="formState.employee"
-          :search="searchEmployees"
-          :loading="loadingEmployees"
-          placeholder="Type to search..."
-          option-attribute="full_name"
-        >
-          <template #option="{ option }">
-            <span class="truncate">{{ option.full_name }}</span>
-          </template>
-
-          <template #empty>
-            <span v-if="employeeSearchQuery.length < 2" class="text-gray-400"
-              >Type at least 2 characters...</span
-            >
-            <span v-else class="text-gray-400">No Employee found</span>
-          </template>
-        </UInputMenu>
+        <UCheckbox
+          color="primary"
+          label="Other Agency"
+          v-model="formState.is_other_agency"
+        />
       </UFormGroup>
 
       <div
-        class="space-y-6 space-x-0 md:space-y-0 md:space-x-6 md:flex md:justify-between md:grid-cols-3"
+        v-if="formState.is_other_agency"
+        class="space-y-6 space-x-0 md:space-y-0 md:space-x-6 md:flex md:justify-center md:grid-cols-3"
       >
         <UFormGroup
-          label="Item (Optional)"
-          name="item"
-          :error="errorBag.item"
+          label="Agency"
+          name="agency"
+          :error="errorBag.agency"
           :ui="{ wrapper: 'md:w-full' }"
         >
-          <UInputMenu
-            v-model="formState.item"
-            :search="searchItems"
-            :loading="loadingItems"
-            placeholder="Search by property number..."
-            option-attribute="property_number"
-          >
-            <template #option="{ option }">
-              <span class="truncate"
-                >{{ option.property_number }} ({{
-                  option.brand_model.brand.name
-                }}
-                {{ option.brand_model.name }})</span
-              >
-              <!-- <span class="truncate"
-              >{{ option.property_number }} ({{
-                option.brand_model.item_type.type
-              }}: {{ option.brand_model.brand.name }}
-              {{ option.brand_model.name }})</span
-            > -->
-            </template>
-
-            <template #empty>
-              <span v-if="itemSearchQuery.length < 2" class="text-gray-400"
-                >Type at least 2 characters...</span
-              >
-              <span v-else class="text-gray-400">No Item found</span>
-            </template>
-          </UInputMenu>
+          <USelect
+            v-model="formState.agency"
+            :options="agencies"
+            value-attribute="id"
+            option-attribute="name"
+            placeholder="Select"
+          />
         </UFormGroup>
 
         <UFormGroup
@@ -209,6 +186,80 @@ const searchItemTypes = async (q: string) => {
           </USelectMenu>
         </UFormGroup>
       </div>
+
+      <UFormGroup
+        v-if="formState.is_other_agency"
+        label="Full Name"
+        name="full_name"
+        :error="errorBag.full_name"
+        :ui="{ wrapper: 'md:w-full' }"
+      >
+        <UInput v-model="fullNameComputed" />
+      </UFormGroup>
+
+      <!-- <UFormGroup
+        label="Employee"
+        name="employee"
+        :error="errorBag.employee"
+        :ui="{ wrapper: 'md:w-full' }"
+      >
+        <UInputMenu
+          v-model="formState.employee"
+          :search="searchEmployees"
+          :loading="loadingEmployees"
+          placeholder="Type to search..."
+          option-attribute="full_name"
+        >
+          <template #option="{ option }">
+            <span class="truncate">{{ option.full_name }}</span>
+          </template>
+
+          <template #empty>
+            <span v-if="employeeSearchQuery.length < 2" class="text-gray-400"
+              >Type at least 2 characters...</span
+            >
+            <span v-else class="text-gray-400">No Employee found</span>
+          </template>
+        </UInputMenu>
+      </UFormGroup> -->
+
+      <UFormGroup
+        v-if="!formState.is_other_agency"
+        label="Item"
+        name="item"
+        :error="errorBag.item"
+        :ui="{ wrapper: 'md:w-full' }"
+      >
+        <UInputMenu
+          v-model="formState.item"
+          :search="searchItems"
+          :loading="loadingItems"
+          placeholder="Search by property number..."
+          option-attribute="property_number"
+        >
+          <template #option="{ option }">
+            <span class="truncate"
+              >{{ option.property_number }} ({{
+                option.brand_model.brand.name
+              }}
+              {{ option.brand_model.name }})</span
+            >
+            <!-- <span class="truncate"
+              >{{ option.property_number }} ({{
+                option.brand_model.item_type.type
+              }}: {{ option.brand_model.brand.name }}
+              {{ option.brand_model.name }})</span
+            > -->
+          </template>
+
+          <template #empty>
+            <span v-if="itemSearchQuery.length < 2" class="text-gray-400"
+              >Type at least 2 characters...</span
+            >
+            <span v-else class="text-gray-400">No Item found</span>
+          </template>
+        </UInputMenu>
+      </UFormGroup>
 
       <div
         class="space-y-6 space-x-0 md:space-y-0 md:space-x-6 md:flex md:justify-between md:grid-cols-3"

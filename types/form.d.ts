@@ -199,10 +199,10 @@ declare global {
 
   interface ICreateTicketForm {
     profile_id?: number;
-    employee?: {
-      id: number;
-      full_name: string;
-    };
+    // employee?: {
+    //   id: number;
+    //   full_name: string;
+    // };
     item?: Item | null;
     item_type?: number;
     it_service?: string;
@@ -213,14 +213,21 @@ declare global {
     priority?: string;
     date?: TDatePickerDate;
     contact_number?: string | null;
+    is_other_agency?: boolean;
+    full_name?: string | null;
+    // agency?: {
+    //   id?: number;
+    //   name?: string;
+    // } | null;
+    agency?: Agency | null;
   }
 
   interface IUpdateTicketForm {
     // profile_id?: number;
-    employee?: {
-      id: number;
-      full_name: string;
-    };
+    // employee?: {
+    //   id: number;
+    //   full_name: string;
+    // };
     item?: Item | null;
     item_type?: number;
     it_service?: string | number;
