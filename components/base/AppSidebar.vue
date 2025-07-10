@@ -82,7 +82,7 @@ const links = [
     },
     {
       label: "Solutions",
-      icon: "i-heroicons-archive-box",
+      icon: "material-symbols:search-check-2-outline-rounded",
       to: "/solutions",
     },
     {
