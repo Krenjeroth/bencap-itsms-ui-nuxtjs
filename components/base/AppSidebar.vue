@@ -13,6 +13,11 @@ const links = [
       label: "Control Panel",
     },
     {
+      label: "Agencies",
+      icon: "material-symbols:identity-platform-outline-rounded",
+      to: "/agencies",
+    },
+    {
       label: "Brands",
       icon: "material-symbols:shoppingmode-outline",
       to: "/brands",

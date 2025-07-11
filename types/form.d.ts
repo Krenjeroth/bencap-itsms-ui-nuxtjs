@@ -268,6 +268,16 @@ declare global {
     released_at?: TDatePickerDate | null;
   }
 
+  interface ICreateAgencyForm {
+    name?: string;
+    abbreviation?: string;
+  }
+
+  interface IUpdateAgencyForm {
+    name?: string;
+    abbreviation?: string;
+  }
+
   type IFormSubmitEvent<T> = FormSubmitEvent<T>;
 }
 
@@ -299,5 +309,7 @@ export {
   IResolveTicketForm,
   ISetTicketServiceMethodForm,
   ISetTicketReleaseDateForm,
+  ICreateAgencyForm,
+  IUpdateAgencyForm,
   IFormSubmitEvent,
 };
