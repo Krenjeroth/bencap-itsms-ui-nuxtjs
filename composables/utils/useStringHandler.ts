@@ -58,7 +58,18 @@ export const useStringHandler = () => {
   };
 
   const strSingular = (str: string | undefined | null) => {
-    return str?.replace(/(.)$/, "");
+    if (!str) return "";
+
+    return str
+      .replace(/ies$/, "y") // parties → party
+      .replace(/ves$/, "f") // wolves → wolf (simplified)
+      .replace(/oes$/, "o") // heroes → hero
+      .replace(/ses$/, "s") // buses → bus
+      .replace(/xes$/, "x") // boxes → box
+      .replace(/zes$/, "z") // quizzes → quiz
+      .replace(/ches$/, "ch") // benches → bench
+      .replace(/shes$/, "sh") // dishes → dish
+      .replace(/s$/, ""); // cats → cat
   };
 
   const capitalizeSentences = (
