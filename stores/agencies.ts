@@ -5,6 +5,7 @@ export const useAgencyStore = defineStore("agencyStore", () => {
     updateAgencyApi,
     deleteAgencyApi,
     fetchAgencySelectApi,
+    fetchAgencySearchApi,
   } = useAgencyApi();
   const { hasError, errorBag, transformValidationErrors, resetErrorBag } =
     useErrorHandler();
@@ -107,6 +108,20 @@ export const useAgencyStore = defineStore("agencyStore", () => {
     }
   };
 
+  const fetchAgencySearch = async (q: string) => {
+    try {
+      const queryParams = new URLSearchParams({
+        q,
+        limit: "50",
+      });
+      const response = await fetchAgencySearchApi(queryParams);
+      return response.data;
+    } catch (err) {
+      console.error("API Error:", err);
+      return [];
+    }
+  };
+
   return {
     agencies,
     agencySelect,
@@ -124,5 +139,6 @@ export const useAgencyStore = defineStore("agencyStore", () => {
     updateAgency,
     deleteAgency,
     fetchAgencySelect,
+    fetchAgencySearch,
   };
 });

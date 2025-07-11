@@ -17,6 +17,10 @@ const itServiceStore = useItServiceStore();
 const { itServiceSelect } = storeToRefs(itServiceStore);
 itServiceStore.fetchItServicesSelect();
 
+const agencyStore = useAgencyStore();
+const { loading: loadingAgencies } = storeToRefs(agencyStore);
+agencyStore.fetchAgencySelect();
+
 const emit = defineEmits(["reloadTable", "success", "error", "close"]);
 
 const props = defineProps({
@@ -120,7 +124,16 @@ const searchItemTypes = async (q: string) => {
   );
 };
 
-const agencies = ["United States", "Canada", "Mexico"];
+const agencyOptions = ref<TAgencySelectOption[]>([]);
+const agencySearchQuery = ref("");
+
+const searchAgencies = async (q: string) => {
+  agencySearchQuery.value = q;
+  if (!agencySearchQuery.value || agencySearchQuery.value.length < 2) return [];
+  const result = await agencyStore.fetchAgencySearch(agencySearchQuery.value);
+  agencyOptions.value = result;
+  return result;
+};
 </script>
 
 <template>
@@ -153,13 +166,24 @@ const agencies = ["United States", "Canada", "Mexico"];
           :error="errorBag.agency"
           :ui="{ wrapper: 'md:w-full' }"
         >
-          <USelect
+          <UInputMenu
             v-model="formState.agency"
-            :options="agencies"
-            value-attribute="id"
-            option-attribute="name"
-            placeholder="Select"
-          />
+            :search="searchAgencies"
+            :loading="loadingAgencies"
+            placeholder="Type to search..."
+            option-attribute="abbreviation"
+          >
+            <template #option="{ option }">
+              <span class="truncate">{{ option.abbreviation }}</span>
+            </template>
+
+            <template #empty>
+              <span v-if="agencySearchQuery.length < 2" class="text-gray-400"
+                >Type at least 2 characters...</span
+              >
+              <span v-else class="text-gray-400">No Agency found</span>
+            </template>
+          </UInputMenu>
         </UFormGroup>
 
         <UFormGroup

@@ -115,7 +115,8 @@ export const useTicketStore = defineStore("ticketStore", () => {
     const formattedForm = {
       ...form,
       profile_id: loggedInUser.value?.profile?.id,
-      employee_id: form.employee?.id,
+      // employee_id: form.employee?.id,
+      agency_id: form.agency?.id,
       item_id: form.item?.id,
       ticket_number: form.ticket_number,
       query_status: "queued", // queued, checking_stock, awaiting_part, in_progress, resolved, cancelled
@@ -141,7 +142,8 @@ export const useTicketStore = defineStore("ticketStore", () => {
 
     const formattedForm = {
       ...form,
-      employee_id: form.employee?.id,
+      // employee_id: form.employee?.id,
+      agency_id: form.agency?.id,
       item_id: form.item?.id,
       item_type_id: form.item_type,
       it_service_id: Number(form.it_service),

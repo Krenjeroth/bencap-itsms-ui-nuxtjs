@@ -220,6 +220,7 @@ declare global {
     //   name?: string;
     // } | null;
     agency?: Agency | null;
+    agency_id?: number | null;
   }
 
   interface IUpdateTicketForm {
@@ -238,6 +239,8 @@ declare global {
     priority?: string;
     // date?: TDatePickerDate;
     contact_number?: string | null;
+    agency?: Agency | null;
+    agency_id?: number | null;
   }
 
   interface ICreateSolutionForm {

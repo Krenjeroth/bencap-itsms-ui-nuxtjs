@@ -12,6 +12,11 @@ export const useAgencyApi = () => {
     return url;
   });
 
+  const agencySearchUrl = computed(() => {
+    const url = apiUrl(moduleTitle + "-search");
+    return url;
+  });
+
   const fetchAgenciesApi = async (queryParams: URLSearchParams) => {
     return await sanctumFetch(`${agenciesUrl.value}?${queryParams.toString()}`);
   };
@@ -43,11 +48,17 @@ export const useAgencyApi = () => {
     return await sanctumFetch(`${agencySelectUrl.value}`);
   };
 
+  const fetchAgencySearchApi = async (queryParams?: URLSearchParams) => {
+    const queryString = queryParams?.toString() || "";
+    return await sanctumFetch(`${agencySearchUrl.value}?${queryString}`);
+  };
+
   return {
     fetchAgenciesApi,
     addAgencyApi,
     updateAgencyApi,
     deleteAgencyApi,
     fetchAgencySelectApi,
+    fetchAgencySearchApi,
   };
 };
