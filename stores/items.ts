@@ -62,6 +62,7 @@ export const useItemStore = defineStore("itemStore", () => {
 
     const formattedForm = {
       ...form,
+      employee_id: form.employee?.id,
       brand_model_id: form.brand_model?.id,
       date_acquired: form.date_acquired
         ? transformDatePickerDate(form.date_acquired, "YYYY-MM-DD HH:mm:ss")
@@ -84,6 +85,7 @@ export const useItemStore = defineStore("itemStore", () => {
 
     const formattedForm = {
       ...form,
+      employee_id: form.employee?.id,
       brand_model_id: form.brand_model?.id,
       date_acquired: form.date_acquired
         ? transformDatePickerDate(form.date_acquired, "YYYY-MM-DD HH:mm:ss")

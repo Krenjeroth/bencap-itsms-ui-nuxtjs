@@ -1,17 +1,28 @@
 import { z } from "zod";
 
 export const CreateItemValidationSchema = z.object({
+  employee: z.object({
+    id: z.number(),
+    full_name: z.string(),
+  }),
   brand_model: z.object({
     id: z.number(),
     name: z.string(),
     brand: z.object({
       id: z.number(),
       name: z.string(),
+      status: z.string().optional(),
+    }),
+    item_type: z.object({
+      id: z.number(),
+      type: z.string(),
+      classification: z.string(),
+      purpose: z.string(),
       status: z.string(),
     }),
     image: z.string().nullable().optional(),
     year_released: z.string().nullable().optional(),
-    status: z.string(),
+    status: z.string().optional(),
   }),
   parent_component: z.string().nullable().optional(),
   code: z.string().nullable().optional(),

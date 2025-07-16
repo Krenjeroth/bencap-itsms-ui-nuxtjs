@@ -81,6 +81,11 @@ const expandableDetails: ITableExpandableDetails = (row: any) => [
   //   value: row.brand_model.item_type.purpose,
   // },
   {
+    key: "employee.full_name",
+    label: "Issued To",
+    value: row.employee.full_name,
+  },
+  {
     key: "description",
     label: "Description",
     value: row.description,

@@ -3,7 +3,8 @@ import type { z } from "zod";
 declare global {
   interface IItem {
     id: string;
-    item_type: string;
+    // item_type: string;
+    employee: string;
     brand_model: string;
     parent_component: string | null;
     code: string | null;
@@ -21,7 +22,8 @@ declare global {
 
   type TItemSelectOption = {
     id: number | string;
-    item_type: string;
+    // item_type: string;
+    employee: string;
     brand_model: string;
     parent_component: string | null;
     code: string | null;
