@@ -58,6 +58,7 @@ export const useBrandStore = defineStore("brandStore", () => {
     const formattedForm = {
       ...form,
       name: capitalizeAll(form.name),
+      status: "active",
     };
 
     await addBrandApi(formattedForm)
