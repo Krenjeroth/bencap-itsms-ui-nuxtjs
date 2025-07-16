@@ -136,12 +136,23 @@ declare global {
   }
 
   interface ICreateItemForm {
+    employee?: {
+      id: number;
+      full_name: string;
+    };
     brand_model?: {
       id?: number;
       name?: string;
       brand?: {
         id?: number;
         name?: string;
+      };
+      item_type?: {
+        id?: number;
+        type?: string;
+        classification?: string;
+        purpose?: string;
+        status?: string;
       };
       image?: string | null;
       year_released?: string | null;
@@ -161,12 +172,23 @@ declare global {
   }
 
   interface IUpdateItemForm {
+    employee?: {
+      id: number;
+      full_name: string;
+    };
     brand_model?: {
       id?: number;
       name?: string;
       brand?: {
         id?: number;
         name?: string;
+      };
+      item_type?: {
+        id?: number;
+        type?: string;
+        classification?: string;
+        purpose?: string;
+        status?: string;
       };
       image?: string | null;
       year_released?: string | null;
@@ -199,10 +221,10 @@ declare global {
 
   interface ICreateTicketForm {
     profile_id?: number;
-    // employee?: {
-    //   id: number;
-    //   full_name: string;
-    // };
+    employee?: {
+      id: number;
+      full_name: string;
+    };
     item?: Item | null;
     item_type?: number;
     it_service?: string;
@@ -225,10 +247,10 @@ declare global {
 
   interface IUpdateTicketForm {
     // profile_id?: number;
-    // employee?: {
-    //   id: number;
-    //   full_name: string;
-    // };
+    employee?: {
+      id: number;
+      full_name: string;
+    };
     item?: Item | null;
     item_type?: number;
     it_service?: string | number;
@@ -239,6 +261,8 @@ declare global {
     priority?: string;
     // date?: TDatePickerDate;
     contact_number?: string | null;
+    is_other_agency?: boolean;
+    full_name?: string | null;
     agency?: Agency | null;
     agency_id?: number | null;
   }
