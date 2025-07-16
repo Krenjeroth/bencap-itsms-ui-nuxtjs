@@ -8,6 +8,9 @@ const brandModelStore = useBrandModelStore();
 const { loading: loadingBrandModels, brandModelSelect } =
   storeToRefs(brandModelStore);
 
+const employeeStore = useEmployeeStore();
+const { loading: loadingEmployees } = storeToRefs(employeeStore);
+
 const { transformDbDate } = useDateHandler();
 
 const emit = defineEmits([
@@ -42,6 +45,7 @@ const onNoDataChange = () => {
 };
 
 const formState = ref<IUpdateItemForm>({
+  employee: props.item?.employee || undefined,
   brand_model: props.item?.brand_model || undefined,
   parent_component: props.item?.parent_component || undefined,
   code: props.item?.code || undefined,
@@ -59,6 +63,7 @@ const formState = ref<IUpdateItemForm>({
 
 const originalState = ref<IUpdateItemForm>({
   ...cloneDeep({
+    employee: props.item?.employee || undefined,
     brand_model: props.item?.brand_model || undefined,
     parent_component: props.item?.parent_component || undefined,
     code: props.item?.code || undefined,
@@ -76,6 +81,7 @@ const originalState = ref<IUpdateItemForm>({
 });
 
 const fieldsToCompare: (keyof IUpdateItemForm)[] = [
+  "employee",
   "brand_model",
   "parent_component",
   "code",
@@ -176,6 +182,20 @@ const searchBrandModels = async (q: string) => {
   brandModelOptions.value = result;
   return result;
 };
+
+const employeeOptions = ref<TEmployeeSelectOption[]>([]);
+const employeeSearchQuery = ref("");
+
+const searchEmployees = async (q: string) => {
+  employeeSearchQuery.value = q;
+  if (!employeeSearchQuery.value || employeeSearchQuery.value.length < 2)
+    return [];
+  const result = await employeeStore.fetchEmployeeSearch(
+    employeeSearchQuery.value
+  );
+  employeeOptions.value = result;
+  return result;
+};
 </script>
 
 <template>
@@ -213,6 +233,32 @@ const searchBrandModels = async (q: string) => {
                 >Type at least 2 characters...</span
               >
               <span v-else class="text-gray-400">No Brand Model found</span>
+            </template>
+          </UInputMenu>
+        </UFormGroup>
+
+        <UFormGroup
+          label="Employee"
+          name="employee"
+          :error="errorBag.employee"
+          :ui="{ wrapper: 'md:w-full' }"
+        >
+          <UInputMenu
+            v-model="formState.employee"
+            :search="searchEmployees"
+            :loading="loadingEmployees"
+            placeholder="Type to search..."
+            option-attribute="full_name"
+          >
+            <template #option="{ option }">
+              <span class="truncate">{{ option.full_name }}</span>
+            </template>
+
+            <template #empty>
+              <span v-if="employeeSearchQuery.length < 2" class="text-gray-400"
+                >Type at least 2 characters...</span
+              >
+              <span v-else class="text-gray-400">No Employee found</span>
             </template>
           </UInputMenu>
         </UFormGroup>

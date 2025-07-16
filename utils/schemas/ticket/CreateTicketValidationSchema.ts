@@ -2,10 +2,6 @@ import { z } from "zod";
 
 export const CreateTicketValidationSchema = z
   .object({
-    // employee: z.object({
-    //   id: z.number(),
-    //   full_name: z.string(),
-    // }),
     item: z
       .object({
         id: z.number(),

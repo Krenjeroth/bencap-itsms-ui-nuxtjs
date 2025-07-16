@@ -115,7 +115,7 @@ export const useTicketStore = defineStore("ticketStore", () => {
     const formattedForm = {
       ...form,
       profile_id: loggedInUser.value?.profile?.id,
-      // employee_id: form.employee?.id,
+      employee_id: form.employee?.id,
       agency_id: form.agency?.id,
       item_id: form.item?.id,
       ticket_number: form.ticket_number,
@@ -142,10 +142,12 @@ export const useTicketStore = defineStore("ticketStore", () => {
 
     const formattedForm = {
       ...form,
-      // employee_id: form.employee?.id,
-      agency_id: form.agency?.id,
-      item_id: form.item?.id,
-      item_type_id: form.item_type,
+      employee_id: form.is_other_agency ? null : form.employee?.id,
+      agency_id: form.is_other_agency ? form.agency?.id : null,
+      full_name: form.is_other_agency ? form.full_name : null,
+
+      item_id: form.is_other_agency ? null : form.item?.id,
+      item_type_id: form.is_other_agency ? form.item_type : null,
       it_service_id: Number(form.it_service),
     };
 

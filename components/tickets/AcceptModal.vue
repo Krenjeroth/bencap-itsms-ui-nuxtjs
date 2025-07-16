@@ -53,27 +53,54 @@ const handleSubmit = async () => {
           }})</span
         >
       </p>
-      <p class="flex justify-between">
-        <span class="font-semibold">Employee: </span>
-        <span class="italic">{{ props.ticket?.employee?.full_name }}</span>
-      </p>
-      <p class="flex justify-between">
-        <span class="font-semibold">Department: </span>
-        <span class="italic"
-          >{{ props.ticket?.employee?.department?.name }} ({{
-            props.ticket?.employee?.department?.abbreviation
-          }})</span
-        >
-      </p>
-      <p class="flex justify-between">
-        <span class="font-semibold">Item: </span>
-        <span class="italic"
-          >{{ props.ticket?.item?.property_number }} ({{
-            props.ticket?.item?.brand_model?.name
-          }}
-          - {{ props.ticket?.item?.brand_model?.brand?.name }})</span
-        >
-      </p>
+
+      <div v-if="!props.ticket?.is_other_agency" class="space-y-2">
+        <p class="flex justify-between">
+          <span class="font-semibold">Employee: </span>
+          <span class="italic">{{
+            props.ticket?.item?.employee?.full_name
+          }}</span>
+        </p>
+        <p class="flex justify-between">
+          <span class="font-semibold">Department: </span>
+          <span class="italic"
+            >{{ props.ticket?.item?.employee?.department?.name }} ({{
+              props.ticket?.item?.employee?.department?.abbreviation
+            }})</span
+          >
+        </p>
+        <p class="flex justify-between">
+          <span class="font-semibold">Item: </span>
+          <span class="italic"
+            >{{ props.ticket?.item?.property_number }} ({{
+              props.ticket?.item?.brand_model?.name
+            }}
+            - {{ props.ticket?.item?.brand_model?.brand?.name }})</span
+          >
+        </p>
+      </div>
+
+      <div v-else class="space-y-2">
+        <p class="flex justify-between">
+          <span class="font-semibold">Name: </span>
+          <span class="italic">{{ props.ticket?.full_name }}</span>
+        </p>
+        <p class="flex justify-between">
+          <span class="font-semibold"
+            >Agency: <UBadge color="red">Outside Agency</UBadge></span
+          >
+          <span class="italic"
+            >{{ props.ticket?.agency?.name }} ({{
+              props.ticket?.agency?.abbreviation
+            }})</span
+          >
+        </p>
+        <p class="flex justify-between">
+          <span class="font-semibold">Item: </span>
+          <span class="italic">{{ props.ticket?.item_type?.type }}</span>
+        </p>
+      </div>
+
       <p class="flex justify-between">
         <span class="font-semibold">Concern: </span>
         <span class="italic">{{ props.ticket?.concern }}</span>

@@ -2,9 +2,6 @@
 const ticketStore = useTicketStore();
 const { loading, errorBag, hasError, priorities } = storeToRefs(ticketStore);
 
-const employeeStore = useEmployeeStore();
-const { loading: loadingEmployees } = storeToRefs(employeeStore);
-
 const itemStore = useItemStore();
 const { loading: loadingItems } = storeToRefs(itemStore);
 
@@ -87,20 +84,6 @@ const handleSubmit = async (
 
   onSuccess();
   return;
-};
-
-const employeeOptions = ref<TEmployeeSelectOption[]>([]);
-const employeeSearchQuery = ref("");
-
-const searchEmployees = async (q: string) => {
-  employeeSearchQuery.value = q;
-  if (!employeeSearchQuery.value || employeeSearchQuery.value.length < 2)
-    return [];
-  const result = await employeeStore.fetchEmployeeSearch(
-    employeeSearchQuery.value
-  );
-  employeeOptions.value = result;
-  return result;
 };
 
 const itemOptions = ref<TItemSelectOption[]>([]);
@@ -220,32 +203,6 @@ const searchAgencies = async (q: string) => {
       >
         <UInput v-model="fullNameComputed" />
       </UFormGroup>
-
-      <!-- <UFormGroup
-        label="Employee"
-        name="employee"
-        :error="errorBag.employee"
-        :ui="{ wrapper: 'md:w-full' }"
-      >
-        <UInputMenu
-          v-model="formState.employee"
-          :search="searchEmployees"
-          :loading="loadingEmployees"
-          placeholder="Type to search..."
-          option-attribute="full_name"
-        >
-          <template #option="{ option }">
-            <span class="truncate">{{ option.full_name }}</span>
-          </template>
-
-          <template #empty>
-            <span v-if="employeeSearchQuery.length < 2" class="text-gray-400"
-              >Type at least 2 characters...</span
-            >
-            <span v-else class="text-gray-400">No Employee found</span>
-          </template>
-        </UInputMenu>
-      </UFormGroup> -->
 
       <UFormGroup
         v-if="!formState.is_other_agency"

@@ -4,7 +4,7 @@ declare global {
   interface ITicket {
     id: string;
     profile_id: string;
-    employee_id: string;
+    // employee_id: string;
     item_id: string;
     it_service_id: string;
     ticket_number: string;
