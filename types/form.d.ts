@@ -305,6 +305,18 @@ declare global {
     abbreviation?: string;
   }
 
+  interface ICreateMeasurementUnitForm {
+    name?: string;
+    abbreviation?: string;
+    description?: string | null;
+  }
+
+  interface IUpdateMeasurementUnitForm {
+    name?: string;
+    abbreviation?: string;
+    description?: string | null;
+  }
+
   type IFormSubmitEvent<T> = FormSubmitEvent<T>;
 }
 
@@ -338,5 +350,7 @@ export {
   ISetTicketReleaseDateForm,
   ICreateAgencyForm,
   IUpdateAgencyForm,
+  ICreateMeasurementUnitForm,
+  IUpdateMeasurementUnitForm,
   IFormSubmitEvent,
 };

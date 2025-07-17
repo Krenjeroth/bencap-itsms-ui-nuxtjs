@@ -37,11 +37,15 @@ const links = [
       icon: "i-heroicons-building-office-2",
       to: "/departments",
     },
-
     {
       label: "Item Types",
       icon: "material-symbols:trolley-outline-rounded",
       to: "/item-types",
+    },
+    {
+      label: "Measurement Units",
+      icon: "material-symbols:measuring-tape-outline-rounded",
+      to: "/measurement-units",
     },
     {
       label: "Permissions",
