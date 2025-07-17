@@ -169,6 +169,12 @@ declare global {
     ip_address?: string | null;
     mac_address?: string | null;
     inventory_type?: string | null;
+    iar_number?: string | null;
+    po_number?: string | null;
+    control_number?: string | null;
+    date_issued?: TDatePickerDate;
+    date_accepted?: TDatePickerDate;
+    date_installed?: TDatePickerDate;
   }
 
   interface IUpdateItemForm {
@@ -205,6 +211,12 @@ declare global {
     ip_address?: string | null;
     mac_address?: string | null;
     inventory_type?: string | null;
+    iar_number?: string | null;
+    po_number?: string | null;
+    control_number?: string | null;
+    date_issued?: TDatePickerDate;
+    date_accepted?: TDatePickerDate;
+    date_installed?: TDatePickerDate;
   }
 
   interface ICreateItServiceForm {

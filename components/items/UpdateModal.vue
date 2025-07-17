@@ -54,11 +54,24 @@ const formState = ref<IUpdateItemForm>({
   serial_number: props.item?.serial_number || undefined,
   property_number: props.item?.property_number || undefined,
   ics_number: props.item?.ics_number || undefined,
+  iar_number: props.item?.iar_number || undefined,
+  po_number: props.item?.po_number || undefined,
+  control_number: props.item?.control_number || undefined,
+  date_issued: props.item?.date_issued
+    ? transformDbDate(props.item.date_issued)
+    : undefined,
   date_acquired: props.item?.date_acquired
     ? transformDbDate(props.item.date_acquired)
     : undefined,
+  date_accepted: props.item?.date_accepted
+    ? transformDbDate(props.item.date_accepted)
+    : undefined,
+  date_installed: props.item?.date_installed
+    ? transformDbDate(props.item.date_installed)
+    : undefined,
   ip_address: props.item?.ip_address || undefined,
   mac_address: props.item?.mac_address || undefined,
+  inventory_type: props.item?.inventory_type || undefined,
 });
 
 const originalState = ref<IUpdateItemForm>({
@@ -72,8 +85,21 @@ const originalState = ref<IUpdateItemForm>({
     serial_number: props.item?.serial_number || undefined,
     property_number: props.item?.property_number || undefined,
     ics_number: props.item?.ics_number || undefined,
+    iar_number: props.item?.iar_number || undefined,
+    po_number: props.item?.po_number || undefined,
+    control_number: props.item?.control_number || undefined,
+    inventory_type: props.item?.inventory_type || undefined,
+    date_issued: props.item?.date_issued
+      ? transformDbDate(props.item.date_issued)
+      : undefined,
     date_acquired: props.item?.date_acquired
       ? transformDbDate(props.item.date_acquired)
+      : undefined,
+    date_accepted: props.item?.date_accepted
+      ? transformDbDate(props.item.date_accepted)
+      : undefined,
+    date_installed: props.item?.date_installed
+      ? transformDbDate(props.item.date_installed)
       : undefined,
     ip_address: props.item?.ip_address || undefined,
     mac_address: props.item?.mac_address || undefined,
@@ -90,9 +116,16 @@ const fieldsToCompare: (keyof IUpdateItemForm)[] = [
   "serial_number",
   "property_number",
   "ics_number",
+  "iar_number",
+  "po_number",
+  "control_number",
+  "date_issued",
   "date_acquired",
+  "date_accepted",
+  "date_installed",
   "ip_address",
   "mac_address",
+  "inventory_type",
 ];
 
 const isChangedComputed = computed(() => {
@@ -153,6 +186,27 @@ const inventoryTypeValue = computed({
   },
 });
 
+const iarNumberValue = computed({
+  get: () => formState.value.iar_number ?? undefined,
+  set: (val) => {
+    formState.value.iar_number = capitalizeAll(val);
+  },
+});
+
+const poNumberValue = computed({
+  get: () => formState.value.po_number ?? undefined,
+  set: (val) => {
+    formState.value.po_number = capitalizeAll(val);
+  },
+});
+
+const controlNumberValue = computed({
+  get: () => formState.value.control_number ?? undefined,
+  set: (val) => {
+    formState.value.control_number = capitalizeAll(val);
+  },
+});
+
 const handleSubmit = async (
   event: IFormSubmitEvent<TUpdateItemValidationSchema>
 ) => {
@@ -202,7 +256,7 @@ const searchEmployees = async (q: string) => {
   <BaseModal
     :on-close="onClose"
     :title="`Update ${props.pageTitle}`"
-    :ui="{ width: 'md:max-w-3xl' }"
+    :ui="{ width: 'md:max-w-4xl' }"
   >
     <UForm
       :schema="UpdateItemValidationSchema"
@@ -238,7 +292,7 @@ const searchEmployees = async (q: string) => {
         </UFormGroup>
 
         <UFormGroup
-          label="Employee"
+          label="Employee (Issue To)"
           name="employee"
           :error="errorBag.employee"
           :ui="{ wrapper: 'md:w-full' }"
@@ -282,7 +336,9 @@ const searchEmployees = async (q: string) => {
         >
           <UInput v-model="formState.property_number" />
         </UFormGroup>
+      </div>
 
+      <div class="space-y-6 md:space-y-0 md:flex md:space-x-6">
         <UFormGroup
           label="ICS Number"
           name="ics_number"
@@ -290,6 +346,33 @@ const searchEmployees = async (q: string) => {
           :ui="{ wrapper: 'md:w-full' }"
         >
           <UInput v-model="icsNumberValue" />
+        </UFormGroup>
+
+        <UFormGroup
+          label="IAR Number"
+          name="iar_number"
+          :error="errorBag.iar_number"
+          :ui="{ wrapper: 'md:w-full' }"
+        >
+          <UInput v-model="iarNumberValue" />
+        </UFormGroup>
+
+        <UFormGroup
+          label="PO Number (Purchase Order)"
+          name="po_number"
+          :error="errorBag.po_number"
+          :ui="{ wrapper: 'md:w-full' }"
+        >
+          <UInput v-model="poNumberValue" />
+        </UFormGroup>
+
+        <UFormGroup
+          label="Control Number"
+          name="control_number"
+          :error="errorBag.control_number"
+          :ui="{ wrapper: 'md:w-full' }"
+        >
+          <UInput v-model="controlNumberValue" />
         </UFormGroup>
       </div>
 
@@ -310,6 +393,36 @@ const searchEmployees = async (q: string) => {
           :ui="{ wrapper: 'md:w-full' }"
         >
           <UInput v-model="inventoryTypeValue" />
+        </UFormGroup>
+      </div>
+
+      <div class="space-y-6 md:space-y-0 md:flex md:space-x-6">
+        <UFormGroup
+          label="Date Issued"
+          name="date_issued"
+          :error="errorBag.date_issued"
+          :ui="{ wrapper: 'md:w-full' }"
+        >
+          <UPopover :popper="{ placement: 'bottom-start' }">
+            <UButton
+              icon="i-heroicons-calendar-days-20-solid"
+              :label="
+                formState.date_issued
+                  ? format(formState.date_issued, 'yyyy/MM/dd')
+                  : 'Select Date'
+              "
+              :ui="{ base: 'w-full md:w-full' }"
+              variant="outline"
+            />
+
+            <template #panel="{ close }">
+              <BaseDatePicker
+                v-model="formState.date_issued"
+                is-required
+                @close="close"
+              />
+            </template>
+          </UPopover>
         </UFormGroup>
 
         <UFormGroup
@@ -333,6 +446,62 @@ const searchEmployees = async (q: string) => {
             <template #panel="{ close }">
               <BaseDatePicker
                 v-model="formState.date_acquired"
+                is-required
+                @close="close"
+              />
+            </template>
+          </UPopover>
+        </UFormGroup>
+
+        <UFormGroup
+          label="Date Accepted"
+          name="date_accepted"
+          :error="errorBag.date_accepted"
+          :ui="{ wrapper: 'md:w-full' }"
+        >
+          <UPopover :popper="{ placement: 'bottom-start' }">
+            <UButton
+              icon="i-heroicons-calendar-days-20-solid"
+              :label="
+                formState.date_accepted
+                  ? format(formState.date_accepted, 'yyyy/MM/dd')
+                  : 'Select Date'
+              "
+              :ui="{ base: 'w-full md:w-full' }"
+              variant="outline"
+            />
+
+            <template #panel="{ close }">
+              <BaseDatePicker
+                v-model="formState.date_accepted"
+                is-required
+                @close="close"
+              />
+            </template>
+          </UPopover>
+        </UFormGroup>
+
+        <UFormGroup
+          label="Date Installed"
+          name="date_installed"
+          :error="errorBag.date_installed"
+          :ui="{ wrapper: 'md:w-full' }"
+        >
+          <UPopover :popper="{ placement: 'bottom-start' }">
+            <UButton
+              icon="i-heroicons-calendar-days-20-solid"
+              :label="
+                formState.date_installed
+                  ? format(formState.date_installed, 'yyyy/MM/dd')
+                  : 'Select Date'
+              "
+              :ui="{ base: 'w-full md:w-full' }"
+              variant="outline"
+            />
+
+            <template #panel="{ close }">
+              <BaseDatePicker
+                v-model="formState.date_installed"
                 is-required
                 @close="close"
               />
@@ -366,7 +535,8 @@ const searchEmployees = async (q: string) => {
         name="description"
         :error="errorBag.description"
       >
-        <UInput v-model="descriptionValue" />
+        <!-- <UInput v-model="descriptionValue" /> -->
+        <UTextarea v-model="descriptionValue" autoresize />
       </UFormGroup>
 
       <UButton type="submit" :loading="loading" :disabled="!isChangedComputed">

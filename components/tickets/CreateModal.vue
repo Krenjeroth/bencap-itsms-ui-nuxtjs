@@ -39,7 +39,6 @@ const onError = () => {
 };
 
 const formState = ref<ICreateTicketForm>({
-  // employee: undefined,
   item: undefined,
   item_type: undefined,
   it_service: undefined,

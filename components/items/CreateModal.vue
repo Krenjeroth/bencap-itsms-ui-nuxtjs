@@ -32,6 +32,7 @@ const onError = () => {
 
 const formState = ref<ICreateItemForm>({
   brand_model: undefined,
+  employee: undefined,
   parent_component: undefined,
   code: undefined,
   barcode: undefined,
@@ -39,7 +40,13 @@ const formState = ref<ICreateItemForm>({
   serial_number: undefined,
   property_number: undefined,
   ics_number: undefined,
+  iar_number: undefined,
+  po_number: undefined,
+  control_number: undefined,
+  date_issued: undefined,
   date_acquired: undefined,
+  date_accepted: undefined,
+  date_installed: undefined,
   ip_address: undefined,
   mac_address: undefined,
 });
@@ -90,6 +97,27 @@ const inventoryTypeValue = computed({
   get: () => formState.value.inventory_type ?? undefined,
   set: (val) => {
     formState.value.inventory_type = capitalizeAll(val);
+  },
+});
+
+const iarNumberValue = computed({
+  get: () => formState.value.iar_number ?? undefined,
+  set: (val) => {
+    formState.value.iar_number = capitalizeAll(val);
+  },
+});
+
+const poNumberValue = computed({
+  get: () => formState.value.po_number ?? undefined,
+  set: (val) => {
+    formState.value.po_number = capitalizeAll(val);
+  },
+});
+
+const controlNumberValue = computed({
+  get: () => formState.value.control_number ?? undefined,
+  set: (val) => {
+    formState.value.control_number = capitalizeAll(val);
   },
 });
 
@@ -158,7 +186,7 @@ const searchEmployees = async (q: string) => {
   <BaseModal
     :on-close="onClose"
     :title="`Create ${props.pageTitle}`"
-    :ui="{ width: 'md:max-w-3xl' }"
+    :ui="{ width: 'md:max-w-4xl' }"
   >
     <UForm
       :schema="CreateItemValidationSchema"
@@ -194,7 +222,7 @@ const searchEmployees = async (q: string) => {
         </UFormGroup>
 
         <UFormGroup
-          label="Employee"
+          label="Employee (Issue To)"
           name="employee"
           :error="errorBag.employee"
           :ui="{ wrapper: 'md:w-full' }"
@@ -238,7 +266,9 @@ const searchEmployees = async (q: string) => {
         >
           <UInput v-model="formState.property_number" />
         </UFormGroup>
+      </div>
 
+      <div class="space-y-6 md:space-y-0 md:flex md:space-x-6">
         <UFormGroup
           label="ICS Number"
           name="ics_number"
@@ -246,6 +276,33 @@ const searchEmployees = async (q: string) => {
           :ui="{ wrapper: 'md:w-full' }"
         >
           <UInput v-model="icsNumberValue" />
+        </UFormGroup>
+
+        <UFormGroup
+          label="IAR Number"
+          name="iar_number"
+          :error="errorBag.iar_number"
+          :ui="{ wrapper: 'md:w-full' }"
+        >
+          <UInput v-model="iarNumberValue" />
+        </UFormGroup>
+
+        <UFormGroup
+          label="PO Number (Purchase Order)"
+          name="po_number"
+          :error="errorBag.po_number"
+          :ui="{ wrapper: 'md:w-full' }"
+        >
+          <UInput v-model="poNumberValue" />
+        </UFormGroup>
+
+        <UFormGroup
+          label="Control Number"
+          name="control_number"
+          :error="errorBag.control_number"
+          :ui="{ wrapper: 'md:w-full' }"
+        >
+          <UInput v-model="controlNumberValue" />
         </UFormGroup>
       </div>
 
@@ -266,6 +323,36 @@ const searchEmployees = async (q: string) => {
           :ui="{ wrapper: 'md:w-full' }"
         >
           <UInput v-model="inventoryTypeValue" />
+        </UFormGroup>
+      </div>
+
+      <div class="space-y-6 md:space-y-0 md:flex md:space-x-6">
+        <UFormGroup
+          label="Date Issued"
+          name="date_issued"
+          :error="errorBag.date_issued"
+          :ui="{ wrapper: 'md:w-full' }"
+        >
+          <UPopover :popper="{ placement: 'bottom-start' }">
+            <UButton
+              icon="i-heroicons-calendar-days-20-solid"
+              :label="
+                formState.date_issued
+                  ? format(formState.date_issued, 'yyyy/MM/dd')
+                  : 'Select Date'
+              "
+              :ui="{ base: 'w-full md:w-full' }"
+              variant="outline"
+            />
+
+            <template #panel="{ close }">
+              <BaseDatePicker
+                v-model="formState.date_issued"
+                is-required
+                @close="close"
+              />
+            </template>
+          </UPopover>
         </UFormGroup>
 
         <UFormGroup
@@ -289,6 +376,62 @@ const searchEmployees = async (q: string) => {
             <template #panel="{ close }">
               <BaseDatePicker
                 v-model="formState.date_acquired"
+                is-required
+                @close="close"
+              />
+            </template>
+          </UPopover>
+        </UFormGroup>
+
+        <UFormGroup
+          label="Date Accepted"
+          name="date_accepted"
+          :error="errorBag.date_accepted"
+          :ui="{ wrapper: 'md:w-full' }"
+        >
+          <UPopover :popper="{ placement: 'bottom-start' }">
+            <UButton
+              icon="i-heroicons-calendar-days-20-solid"
+              :label="
+                formState.date_accepted
+                  ? format(formState.date_accepted, 'yyyy/MM/dd')
+                  : 'Select Date'
+              "
+              :ui="{ base: 'w-full md:w-full' }"
+              variant="outline"
+            />
+
+            <template #panel="{ close }">
+              <BaseDatePicker
+                v-model="formState.date_accepted"
+                is-required
+                @close="close"
+              />
+            </template>
+          </UPopover>
+        </UFormGroup>
+
+        <UFormGroup
+          label="Date Installed"
+          name="date_installed"
+          :error="errorBag.date_installed"
+          :ui="{ wrapper: 'md:w-full' }"
+        >
+          <UPopover :popper="{ placement: 'bottom-start' }">
+            <UButton
+              icon="i-heroicons-calendar-days-20-solid"
+              :label="
+                formState.date_installed
+                  ? format(formState.date_installed, 'yyyy/MM/dd')
+                  : 'Select Date'
+              "
+              :ui="{ base: 'w-full md:w-full' }"
+              variant="outline"
+            />
+
+            <template #panel="{ close }">
+              <BaseDatePicker
+                v-model="formState.date_installed"
                 is-required
                 @close="close"
               />
@@ -322,7 +465,8 @@ const searchEmployees = async (q: string) => {
         name="description"
         :error="errorBag.description"
       >
-        <UInput v-model="descriptionValue" />
+        <!-- <UInput v-model="descriptionValue" /> -->
+        <UTextarea v-model="descriptionValue" autoresize />
       </UFormGroup>
 
       <UButton type="submit" :loading="loading"> Add </UButton>

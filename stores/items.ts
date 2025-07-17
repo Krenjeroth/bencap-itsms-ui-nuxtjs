@@ -67,6 +67,15 @@ export const useItemStore = defineStore("itemStore", () => {
       date_acquired: form.date_acquired
         ? transformDatePickerDate(form.date_acquired, "YYYY-MM-DD HH:mm:ss")
         : null,
+      date_issued: form.date_issued
+        ? transformDatePickerDate(form.date_issued, "YYYY-MM-DD HH:mm:ss")
+        : null,
+      date_accepted: form.date_accepted
+        ? transformDatePickerDate(form.date_accepted, "YYYY-MM-DD HH:mm:ss")
+        : null,
+      date_installed: form.date_installed
+        ? transformDatePickerDate(form.date_installed, "YYYY-MM-DD HH:mm:ss")
+        : null,
       status: "active",
     };
 
@@ -89,6 +98,15 @@ export const useItemStore = defineStore("itemStore", () => {
       brand_model_id: form.brand_model?.id,
       date_acquired: form.date_acquired
         ? transformDatePickerDate(form.date_acquired, "YYYY-MM-DD HH:mm:ss")
+        : null,
+      date_issued: form.date_issued
+        ? transformDatePickerDate(form.date_issued, "YYYY-MM-DD HH:mm:ss")
+        : null,
+      date_accepted: form.date_accepted
+        ? transformDatePickerDate(form.date_accepted, "YYYY-MM-DD HH:mm:ss")
+        : null,
+      date_installed: form.date_installed
+        ? transformDatePickerDate(form.date_installed, "YYYY-MM-DD HH:mm:ss")
         : null,
       status: "active",
     };

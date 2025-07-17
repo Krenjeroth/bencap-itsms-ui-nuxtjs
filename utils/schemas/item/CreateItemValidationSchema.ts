@@ -31,6 +31,12 @@ export const CreateItemValidationSchema = z.object({
   serial_number: z.string().nullable().optional(),
   property_number: z.string(),
   ics_number: z.string().nullable().optional(),
+  iar_number: z.string().nullable().optional(),
+  po_number: z.string().nullable().optional(),
+  control_number: z.string().nullable().optional(),
+  date_issued: z.date().nullable().optional(),
+  date_installed: z.date().nullable().optional(),
+  date_accepted: z.date().nullable().optional(),
   date_acquired: z.date().nullable().optional(),
   ip_address: z
     .string()
