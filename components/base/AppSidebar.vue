@@ -85,12 +85,12 @@ const links = [
       to: "/employees",
     },
     {
-      label: "Inventory Items",
+      label: "Inventory",
       icon: "material-symbols:inventory-2-outline-rounded",
       to: "/inventory-items",
     },
     {
-      label: "Items",
+      label: "Items (Issuance)",
       icon: "material-symbols:box-outline-rounded",
       to: "/items",
     },
