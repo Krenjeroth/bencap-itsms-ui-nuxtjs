@@ -329,6 +329,63 @@ declare global {
     description?: string | null;
   }
 
+  interface ICreateInventoryItemForm {
+    // measurement_unit?: {
+    //   id: number;
+    //   name: string;
+    //   abbreviation: string;
+    // };
+    measurement_unit?: string | number;
+    brand_model?: {
+      id?: number;
+      name?: string;
+      brand?: {
+        id?: number;
+        name?: string;
+      };
+      item_type?: {
+        id?: number;
+        type?: string;
+        classification?: string;
+        purpose?: string;
+        status?: string;
+      };
+      image?: string | null;
+      year_released?: string | null;
+      status?: string;
+    };
+    description?: string | null;
+    item_number?: string | null;
+    stock_number?: string | null;
+    quantity?: number;
+  }
+
+  interface IUpdateInventoryItemForm {
+    measurement_unit?: string | number;
+    brand_model?: {
+      id?: number;
+      name?: string;
+      brand?: {
+        id?: number;
+        name?: string;
+      };
+      item_type?: {
+        id?: number;
+        type?: string;
+        classification?: string;
+        purpose?: string;
+        status?: string;
+      };
+      image?: string | null;
+      year_released?: string | null;
+      status?: string;
+    };
+    description?: string | null;
+    item_number?: string | null;
+    stock_number?: string | null;
+    quantity?: number;
+  }
+
   type IFormSubmitEvent<T> = FormSubmitEvent<T>;
 }
 
@@ -364,5 +421,7 @@ export {
   IUpdateAgencyForm,
   ICreateMeasurementUnitForm,
   IUpdateMeasurementUnitForm,
+  ICreateInventoryItemForm,
+  IUpdateInventoryItemForm,
   IFormSubmitEvent,
 };

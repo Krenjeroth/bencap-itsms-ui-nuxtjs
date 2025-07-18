@@ -14,3 +14,4 @@ export * from "./ticket";
 export * from "./solution";
 export * from "./agency";
 export * from "./measurement-unit";
+export * from "./inventory-item";

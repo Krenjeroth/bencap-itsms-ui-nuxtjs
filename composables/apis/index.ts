@@ -15,3 +15,4 @@ export * from "./useTicketApi";
 export * from "./useSolutionApi";
 export * from "./useAgencyApi";
 export * from "./useMeasurementUnitApi";
+export * from "./useInventoryItemApi";
