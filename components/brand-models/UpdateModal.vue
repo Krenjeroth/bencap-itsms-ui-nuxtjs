@@ -45,6 +45,7 @@ const onNoDataChange = () => {
 
 const formState = ref<IUpdateBrandModelForm>({
   name: props.brandModel?.name || undefined,
+  specification: props.brandModel?.specification || undefined,
   item_type: props.brandModel?.item_type?.id || undefined,
   brand: props.brandModel?.brand.id || undefined,
   year_released: props.brandModel?.year_released || undefined,
@@ -53,6 +54,7 @@ const formState = ref<IUpdateBrandModelForm>({
 const originalState = ref<IUpdateBrandModelForm>({
   ...cloneDeep({
     name: props.brandModel?.name || undefined,
+    specification: props.brandModel?.specification || undefined,
     item_type: props.brandModel?.item_type?.id || undefined,
     brand: props.brandModel?.brand.id || undefined,
     year_released: props.brandModel?.year_released || undefined,
@@ -61,6 +63,7 @@ const originalState = ref<IUpdateBrandModelForm>({
 
 const fieldsToCompare: (keyof IUpdateBrandModelForm)[] = [
   "name",
+  "specification",
   "item_type",
   "brand",
   "year_released",
@@ -79,6 +82,13 @@ const nameComputed = computed({
   get: () => formState.value.name,
   set: (value) => {
     formState.value.name = capitalizeAll(value);
+  },
+});
+
+const specificationComputed = computed({
+  get: () => formState.value.specification ?? undefined,
+  set: (value) => {
+    formState.value.specification = capitalizeAll(value);
   },
 });
 
@@ -151,6 +161,15 @@ const searchBrands = async (q: string) => {
           <UInput v-model="formState.year_released" />
         </UFormGroup>
       </div>
+
+      <UFormGroup
+        label="Specification"
+        name="specification"
+        :error="errorBag.specification"
+        :ui="{ wrapper: 'md:w-full' }"
+      >
+        <UTextarea v-model="specificationComputed" autoresize />
+      </UFormGroup>
 
       <UFormGroup
         label="Item Type"

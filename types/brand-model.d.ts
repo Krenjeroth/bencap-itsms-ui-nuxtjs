@@ -4,6 +4,7 @@ declare global {
   interface IBrandModel {
     id: string;
     name: string;
+    specification: string | null;
     brand: string;
     image: string | null;
     year_released: string;

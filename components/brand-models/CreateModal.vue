@@ -32,6 +32,7 @@ const onError = () => {
 
 const formState = ref<ICreateBrandModelForm>({
   name: undefined,
+  specification: undefined,
   item_type: undefined,
   brand: undefined,
   year_released: undefined,
@@ -41,6 +42,13 @@ const nameComputed = computed({
   get: () => formState.value.name,
   set: (value) => {
     formState.value.name = capitalizeAll(value);
+  },
+});
+
+const specificationComputed = computed({
+  get: () => formState.value.specification ?? undefined,
+  set: (value) => {
+    formState.value.specification = capitalizeAll(value);
   },
 });
 
@@ -108,6 +116,15 @@ const searchBrands = async (q: string) => {
           <UInput v-model="formState.year_released" />
         </UFormGroup>
       </div>
+
+      <UFormGroup
+        label="Specification"
+        name="specification"
+        :error="errorBag.specification"
+        :ui="{ wrapper: 'md:w-full' }"
+      >
+        <UTextarea v-model="specificationComputed" autoresize />
+      </UFormGroup>
 
       <UFormGroup
         label="Item Type"

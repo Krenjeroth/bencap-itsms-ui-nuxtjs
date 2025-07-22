@@ -8,6 +8,7 @@ export const CreateBrandModelValidationSchema = z.object({
       invalid_type_error: "Brand model name is required",
     })
     .min(2, "Brand model name must be at least 2 characters long"),
+  specification: z.string().nullable().optional(),
   item_type: z.number(),
   brand: z.number(),
   // image: z
