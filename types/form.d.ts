@@ -95,6 +95,7 @@ declare global {
 
   interface ICreateBrandModelForm {
     name?: string;
+    specification?: string | null;
     item_type?: number;
     brand?: number;
     image?: string;
@@ -103,6 +104,7 @@ declare global {
 
   interface IUpdateBrandModelForm {
     name?: string;
+    specification?: string | null;
     item_type?: number;
     brand?: number;
     image?: string;
@@ -140,24 +142,57 @@ declare global {
       id: number;
       full_name: string;
     };
-    brand_model?: {
-      id?: number;
-      name?: string;
-      brand?: {
-        id?: number;
-        name?: string;
+    inventory_item?: {
+      id: number;
+      brand_model?: {
+        id: number;
+        name: string;
+        item_type: {
+          id: number;
+          type: string;
+          classification: string;
+          purpose: string;
+          status: string;
+        };
+        brand: {
+          id: number;
+          name: string;
+          status: string;
+        };
+        image?: string | null;
+        year_released?: string | null;
+        status: string;
       };
-      item_type?: {
-        id?: number;
-        type?: string;
-        classification?: string;
-        purpose?: string;
-        status?: string;
+      description?: string | null;
+      description_formatted?: string;
+      item_number: string;
+      measurement_unit?: {
+        id: number;
+        name: string;
+        abbreviation: string;
+        description?: string | null;
       };
-      image?: string | null;
-      year_released?: string | null;
-      status?: string;
+      quantity: number;
+      stock_number: string;
     };
+    // brand_model?: {
+    //   id?: number;
+    //   name?: string;
+    //   brand?: {
+    //     id?: number;
+    //     name?: string;
+    //   };
+    //   item_type?: {
+    //     id?: number;
+    //     type?: string;
+    //     classification?: string;
+    //     purpose?: string;
+    //     status?: string;
+    //   };
+    //   image?: string | null;
+    //   year_released?: string | null;
+    //   status?: string;
+    // };
     parent_component?: string | null;
     code?: string | null;
     barcode?: string | null;
@@ -182,24 +217,57 @@ declare global {
       id: number;
       full_name: string;
     };
-    brand_model?: {
-      id?: number;
-      name?: string;
-      brand?: {
-        id?: number;
-        name?: string;
+    inventory_item?: {
+      id: number;
+      brand_model?: {
+        id: number;
+        name: string;
+        item_type: {
+          id: number;
+          type: string;
+          classification: string;
+          purpose: string;
+          status: string;
+        };
+        brand: {
+          id: number;
+          name: string;
+          status: string;
+        };
+        image?: string | null;
+        year_released?: string | null;
+        status: string;
       };
-      item_type?: {
-        id?: number;
-        type?: string;
-        classification?: string;
-        purpose?: string;
-        status?: string;
+      description?: string | null;
+      description_formatted?: string;
+      item_number: string;
+      measurement_unit?: {
+        id: number;
+        name: string;
+        abbreviation: string;
+        description?: string | null;
       };
-      image?: string | null;
-      year_released?: string | null;
-      status?: string;
+      quantity: number;
+      stock_number: string;
     };
+    // brand_model?: {
+    //   id?: number;
+    //   name?: string;
+    //   brand?: {
+    //     id?: number;
+    //     name?: string;
+    //   };
+    //   item_type?: {
+    //     id?: number;
+    //     type?: string;
+    //     classification?: string;
+    //     purpose?: string;
+    //     status?: string;
+    //   };
+    //   image?: string | null;
+    //   year_released?: string | null;
+    //   status?: string;
+    // };
     parent_component?: string | null;
     code?: string | null;
     barcode?: string | null;
@@ -339,6 +407,7 @@ declare global {
     brand_model?: {
       id?: number;
       name?: string;
+      specification?: string | null;
       brand?: {
         id?: number;
         name?: string;
@@ -365,6 +434,7 @@ declare global {
     brand_model?: {
       id?: number;
       name?: string;
+      specification?: string | null;
       brand?: {
         id?: number;
         name?: string;
