@@ -232,13 +232,13 @@ const searchBrandModels = async (q: string) => {
         </UFormGroup>
       </div>
 
-      <UFormGroup
+      <!-- <UFormGroup
         label="Description"
         name="description"
         :error="errorBag.description"
       >
         <UTextarea v-model="descriptionComputed" autoresize />
-      </UFormGroup>
+      </UFormGroup> -->
 
       <UButton type="submit" :loading="loading" :disabled="!isChangedComputed">
         Update

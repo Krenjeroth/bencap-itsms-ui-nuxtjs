@@ -17,8 +17,8 @@ const columns: ITableColumns[] = [
     rowClass: "whitespace-pre-line max-w-fit",
   },
   {
-    key: "description_formatted",
-    label: "Item Description",
+    key: "description",
+    label: "Description",
     rowClass: "whitespace-pre-line max-w-fit",
   },
   {

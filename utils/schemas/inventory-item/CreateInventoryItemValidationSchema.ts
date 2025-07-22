@@ -10,6 +10,7 @@ export const CreateInventoryItemValidationSchema = z.object({
   brand_model: z.object({
     id: z.number(),
     name: z.string(),
+    specification: z.string().nullable().optional(),
     brand: z.object({
       id: z.number(),
       name: z.string(),

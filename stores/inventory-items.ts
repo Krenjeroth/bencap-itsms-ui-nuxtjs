@@ -44,13 +44,6 @@ export const useInventoryItemStore = defineStore("inventoryItemStore", () => {
 
       inventoryItems.value = response.data.map((inventoryItem: any) => ({
         ...inventoryItem,
-        brand_model_formatted: `${inventoryItem.brand_model.brand.name} ${inventoryItem.brand_model.name}`,
-
-        description_formatted: `${inventoryItem.brand_model.item_type.type}, ${
-          inventoryItem.description
-            ? `${inventoryItem.description}, ${inventoryItem.brand_model.brand.name} ${inventoryItem.brand_model.name}`
-            : `${inventoryItem.brand_model.brand.name} ${inventoryItem.brand_model.name}`
-        }`,
       }));
 
       totalItems.value = Number(response.meta.total) || 0;
