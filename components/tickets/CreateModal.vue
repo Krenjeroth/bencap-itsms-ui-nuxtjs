@@ -220,10 +220,15 @@ const searchAgencies = async (q: string) => {
           <template #option="{ option }">
             <span class="truncate"
               >{{ option.property_number }} ({{
-                option.brand_model.brand.name
-              }}
-              {{ option.brand_model.name }})</span
+                option.inventory_item.description
+              }})</span
             >
+            <!-- <span class="truncate"
+              >{{ option.property_number }} ({{
+                option.inventory_item.brand_model.brand.name
+              }}
+              {{ option.inventory_item.brand_model.name }})</span
+            > -->
             <!-- <span class="truncate"
               >{{ option.property_number }} ({{
                 option.brand_model.item_type.type

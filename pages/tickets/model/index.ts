@@ -222,4 +222,9 @@ const tabItems = [
     value: "closed",
     icon: "material-symbols-light:line-end-circle-outline-rounded",
   },
+  {
+    label: "Other Agency",
+    value: "other_agency",
+    icon: "material-symbols-light:line-end-circle-outline-rounded",
+  },
 ];

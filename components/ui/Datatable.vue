@@ -97,6 +97,8 @@ const filteredTableData = computed(() => {
       return props.tableData.filter((row) => row.is_accepted_by_others);
     case "accepted_by_me":
       return props.tableData.filter((row) => row.is_accepted_by_me);
+    case "other_agency":
+      return props.tableData.filter((row) => row.is_other_agency);
     // case "unaccepted":
     //   return props.tableData.filter((row) => !row.is_accepted_by_me);
     default:

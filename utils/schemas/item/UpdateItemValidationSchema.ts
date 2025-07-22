@@ -10,6 +10,7 @@ export const UpdateItemValidationSchema = z.object({
     brand_model: z.object({
       id: z.number(),
       name: z.string(),
+      specification: z.string().nullable().optional(),
       item_type: z.object({
         id: z.number(),
         type: z.string(),
@@ -27,7 +28,6 @@ export const UpdateItemValidationSchema = z.object({
       status: z.string(),
     }),
     description: z.string().nullable().optional(),
-    description_formatted: z.string(),
     item_number: z.string(),
     measurement_unit: z.object({
       id: z.number(),
