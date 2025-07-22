@@ -496,9 +496,9 @@ watch(activeTab, (e) => {
         <UAvatar
           size="3xl"
           :src="row.img_path"
-          :alt="`${capitalizeWord(row.name.firstname)} ${capitalizeWord(
-            row.name.lastname
-          )}`"
+          :alt="`${capitalizeWord(
+            row.profile.name.firstname.match(/^\S+/)?.[0]
+          )} ${capitalizeWord(row.profile.name.lastname)}`"
         />
       </template>
 

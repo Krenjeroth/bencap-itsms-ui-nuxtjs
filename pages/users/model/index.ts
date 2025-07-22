@@ -2,10 +2,18 @@ export { columns, items, statusOptions };
 
 const columns: ITableColumns[] = [
   {
-    key: "name",
-    label: "Name",
+    key: "photo",
+  },
+  {
+    key: "username",
+    label: "Username",
     sortable: true,
     direction: "desc",
+    rowClass: "whitespace-pre-line max-w-fit",
+  },
+  {
+    key: "profile.display_name",
+    label: "Display Name",
     rowClass: "whitespace-pre-line max-w-fit",
   },
   {

@@ -7,17 +7,32 @@ declare global {
   }
 
   interface ICreateUserForm {
-    name?: string;
+    prefix?: string | null;
+    firstname?: string;
+    middlename?: string;
+    lastname?: string;
+    suffix?: string | null;
+    gender?: string;
+    designation?: string;
     email?: string;
     password?: string;
     role?: string;
+    photo_id?: File | null;
   }
 
   interface IUpdateUserForm {
-    name?: string;
+    prefix?: string | null;
+    firstname?: string;
+    middlename?: string;
+    lastname?: string;
+    suffix?: string | null;
+    gender?: string;
+    designation?: string;
     email?: string;
     role_id?: number;
     role?: number | string;
+    img_path?: string | null;
+    photo_id?: File | null;
   }
 
   interface ICreateDepartmentForm {

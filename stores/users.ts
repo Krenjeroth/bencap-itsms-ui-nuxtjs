@@ -3,7 +3,7 @@ export const useUserStore = defineStore("userStore", () => {
     useUserApi();
   const { hasError, errorBag, transformValidationErrors, resetErrorBag } =
     useErrorHandler();
-  const { capitalizeWords } = useStringHandler();
+  const { capitalizeWords, strSanitize } = useStringHandler();
   // const { transformUtcDatetime } = useDateHandler();
   enum SortDirection {
     ASC = "asc",
@@ -20,6 +20,24 @@ export const useUserStore = defineStore("userStore", () => {
   });
   const totalUsers = ref(0);
   const selectedStatus = ref("");
+
+  const genderOptions = ref([
+    { label: "Male", value: "male" },
+    { label: "Female", value: "female" },
+  ]);
+
+  const WITH_DOT_PREFIX = [
+    "mr",
+    "ms",
+    "mrs",
+    "dr",
+    "prof",
+    "mx",
+    "atty",
+    "engr",
+    "hon",
+  ];
+  const WITH_DOT_SUFFIX = ["jr", "sr"];
 
   const fetchUsers = async () => {
     loading.value = true;
@@ -52,7 +70,44 @@ export const useUserStore = defineStore("userStore", () => {
   const addUser = async (form: ICreateUserForm) => {
     loading.value = true;
     resetErrorBag();
-    await addUserApi(form)
+    const name_prefix = form.prefix
+      ? WITH_DOT_PREFIX.includes(form.prefix.toLowerCase())
+        ? capitalizeWords(form.prefix).concat(". ")
+        : capitalizeWords(form.prefix).concat(" ")
+      : null;
+
+    const name_suffix = form.suffix
+      ? WITH_DOT_SUFFIX.includes(form.suffix.toLowerCase())
+        ? " ".concat(capitalizeWords(form.suffix)).concat(".")
+        : " ".concat(capitalizeWords(form.suffix))
+      : null;
+
+    const name = {
+      prefix: name_prefix,
+      firstname: capitalizeWords(form.firstname),
+      middlename: capitalizeWords(form.middlename),
+      lastname: capitalizeWords(form.lastname),
+      suffix: name_suffix,
+    };
+
+    const display_name = `${name_prefix ? name.prefix : ""}${name.firstname} ${
+      name.middlename
+    } ${name.lastname}${name_suffix ? name.suffix : ""}`;
+
+    const username = `${name.firstname.match(/^\S+/)?.[0]}${name.middlename
+      .charAt(0)
+      .toUpperCase()}${strSanitize(name.lastname).charAt(0).toUpperCase()}`;
+
+    const formattedForm = {
+      ...form,
+      username,
+      display_name,
+      name: JSON.stringify(name),
+    };
+
+    console.log(formattedForm);
+
+    await addUserApi(formattedForm)
       .catch((err) => {
         transformValidationErrors(err);
       })
@@ -64,10 +119,39 @@ export const useUserStore = defineStore("userStore", () => {
   const updateUser = async (id: string, form: IUpdateUserForm) => {
     loading.value = true;
     resetErrorBag();
-    const name = capitalizeWords(form.name);
+    const name_prefix = form.prefix
+      ? WITH_DOT_PREFIX.includes(form.prefix.toLowerCase())
+        ? capitalizeWords(form.prefix).concat(". ")
+        : capitalizeWords(form.prefix).concat(" ")
+      : null;
+
+    const name_suffix = form.suffix
+      ? WITH_DOT_SUFFIX.includes(form.suffix.toLowerCase())
+        ? " ".concat(capitalizeWords(form.suffix)).concat(".")
+        : " ".concat(capitalizeWords(form.suffix))
+      : null;
+
+    const name = {
+      prefix: name_prefix,
+      firstname: capitalizeWords(form.firstname),
+      middlename: capitalizeWords(form.middlename),
+      lastname: capitalizeWords(form.lastname),
+      suffix: name_suffix,
+    };
+
+    const display_name = `${name_prefix ? name.prefix : ""}${name.firstname} ${
+      name.middlename
+    } ${name.lastname}${name_suffix ? name.suffix : ""}`;
+
+    const username = `${name.firstname.match(/^\S+/)?.[0]}${name.middlename
+      .charAt(0)
+      .toUpperCase()}${strSanitize(name.lastname).charAt(0).toUpperCase()}`;
+
     const formattedForm = {
       ...form,
-      name,
+      username,
+      display_name,
+      name: JSON.stringify(name),
     };
     await updateUserApi(id, formattedForm)
       .catch((err) => {
@@ -101,6 +185,7 @@ export const useUserStore = defineStore("userStore", () => {
     sort,
     totalUsers,
     selectedStatus,
+    genderOptions,
     fetchUsers,
     addUser,
     updateUser,
