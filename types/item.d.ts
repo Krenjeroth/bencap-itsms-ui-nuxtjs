@@ -5,7 +5,8 @@ declare global {
     id: string;
     // item_type: string;
     employee: string;
-    brand_model: string;
+    inventory_item: string;
+    // brand_model: string;
     parent_component: string | null;
     code: string | null;
     barcode: string;
@@ -24,7 +25,8 @@ declare global {
     id: number | string;
     // item_type: string;
     employee: string;
-    brand_model: string;
+    inventory_item: string;
+    // brand_model: string;
     parent_component: string | null;
     code: string | null;
     barcode: string;

@@ -7,6 +7,11 @@ const columns: ITableColumns[] = [
     rowClass: "whitespace-pre-line max-w-fit",
   },
   {
+    key: "employee.full_name",
+    label: "Issued To",
+    rowClass: "whitespace-pre-line max-w-fit",
+  },
+  {
     key: "parent_component",
     label: "Parent Component",
     rowClass: "whitespace-pre-line max-w-fit",
@@ -80,15 +85,15 @@ const expandableDetails: ITableExpandableDetails = (row: any) => [
   //   label: "Purpose",
   //   value: row.brand_model.item_type.purpose,
   // },
+  // {
+  //   key: "employee.full_name",
+  //   label: "Issued To",
+  //   value: row.employee.full_name,
+  // },
   {
-    key: "employee.full_name",
-    label: "Issued To",
-    value: row.employee.full_name,
-  },
-  {
-    key: "description",
+    key: "inventory_item.description",
     label: "Description",
-    value: row.description,
+    value: row.inventory_item.description,
   },
   {
     key: "serial_number",

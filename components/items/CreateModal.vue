@@ -3,12 +3,11 @@ import { format } from "date-fns";
 const itemStore = useItemStore();
 const { loading, errorBag, hasError } = storeToRefs(itemStore);
 
-const brandModelStore = useBrandModelStore();
-const { loading: loadingBrandModels, brandModelSelect } =
-  storeToRefs(brandModelStore);
-
 const employeeStore = useEmployeeStore();
 const { loading: loadingEmployees } = storeToRefs(employeeStore);
+
+const inventoryItemStore = useInventoryItemStore();
+const { loading: loadingInventoryItems } = storeToRefs(inventoryItemStore);
 
 const emit = defineEmits(["reloadTable", "success", "error", "close"]);
 
@@ -31,8 +30,9 @@ const onError = () => {
 };
 
 const formState = ref<ICreateItemForm>({
-  brand_model: undefined,
+  // brand_model: undefined,
   employee: undefined,
+  inventory_item: undefined,
   parent_component: undefined,
   code: undefined,
   barcode: undefined,
@@ -156,14 +156,20 @@ const handleSubmit = async (
   return;
 };
 
-const brandModelOptions = ref<TBrandModelSelectOption[]>([]);
-const searchQuery = ref("");
+const inventoryItemOptions = ref<TInventoryItemSelectOption[]>([]);
+const inventoryItemSearchQuery = ref("");
 
-const searchBrandModels = async (q: string) => {
-  searchQuery.value = q;
-  if (!searchQuery.value || searchQuery.value.length < 2) return [];
-  const result = await brandModelStore.fetchBrandModelSelect(searchQuery.value);
-  brandModelOptions.value = result;
+const searchInventoryItems = async (q: string) => {
+  inventoryItemSearchQuery.value = q;
+  if (
+    !inventoryItemSearchQuery.value ||
+    inventoryItemSearchQuery.value.length < 2
+  )
+    return [];
+  const result = await inventoryItemStore.fetchInventoryItemSearch(
+    inventoryItemSearchQuery.value
+  );
+  inventoryItemOptions.value = result;
   return result;
 };
 
@@ -194,33 +200,35 @@ const searchEmployees = async (q: string) => {
       @submit.prevent="handleSubmit"
       class="space-y-6"
     >
-      <div class="space-y-6 md:space-y-0 md:flex md:space-x-6">
-        <UFormGroup
-          label="Brand Model"
-          name="brand_model"
-          :error="errorBag.brand_model"
-          :ui="{ wrapper: 'md:w-full' }"
+      <UFormGroup
+        label="Inventory Item"
+        name="inventory_item"
+        :error="errorBag.inventory_item"
+        :ui="{ wrapper: 'md:w-full' }"
+      >
+        <UInputMenu
+          v-model="formState.inventory_item"
+          :search="searchInventoryItems"
+          :loading="loadingInventoryItems"
+          placeholder="Type to search..."
+          option-attribute="description"
         >
-          <UInputMenu
-            v-model="formState.brand_model"
-            :search="searchBrandModels"
-            :loading="loadingBrandModels"
-            placeholder="Type to search..."
-            option-attribute="name"
-          >
-            <template #option="{ option }">
-              <span class="truncate">{{ option.name }}</span>
-            </template>
+          <template #option="{ option }">
+            <span class="truncate">{{ option.description }}</span>
+          </template>
 
-            <template #empty>
-              <span v-if="searchQuery.length < 2" class="text-gray-400"
-                >Type at least 2 characters...</span
-              >
-              <span v-else class="text-gray-400">No Brand Model found</span>
-            </template>
-          </UInputMenu>
-        </UFormGroup>
+          <template #empty>
+            <span
+              v-if="inventoryItemSearchQuery.length < 2"
+              class="text-gray-400"
+              >Type at least 2 characters...</span
+            >
+            <span v-else class="text-gray-400">No Inventory Item found</span>
+          </template>
+        </UInputMenu>
+      </UFormGroup>
 
+      <div class="space-y-6 md:space-y-0 md:flex md:space-x-6">
         <UFormGroup
           label="Employee (Issue To)"
           name="employee"

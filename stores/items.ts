@@ -44,7 +44,14 @@ export const useItemStore = defineStore("itemStore", () => {
 
       items.value = response.data.map((item: any) => ({
         ...item,
-        brand_model_formatted: `${item.brand_model.brand.name} ${item.brand_model.name}`,
+        brand_model_formatted: `${item.inventory_item.brand_model.brand.name} ${item.inventory_item.brand_model.name}`,
+        // inventory_item_formatted: `${
+        //   item.inventory_item.brand_model.item_type.type
+        // }, ${
+        //   item.inventory_item.description
+        //     ? `${item.inventory_item.description}, ${item.inventory_item.brand_model.brand.name} ${item.inventory_item.brand_model.name}`
+        //     : `${item.inventory_item.brand_model.brand.name} ${item.inventory_item.brand_model.name}`
+        // }`,
         // item_type_formatted: `TYPE: ${item.item_type.type}\r\nClassification: ${item.item_type.classification}\r\nPurpose: ${item.item_type.purpose}`,
       }));
 
@@ -63,7 +70,8 @@ export const useItemStore = defineStore("itemStore", () => {
     const formattedForm = {
       ...form,
       employee_id: form.employee?.id,
-      brand_model_id: form.brand_model?.id,
+      // brand_model_id: form.brand_model?.id,
+      inventory_item_id: form.inventory_item?.id,
       date_acquired: form.date_acquired
         ? transformDatePickerDate(form.date_acquired, "YYYY-MM-DD HH:mm:ss")
         : null,
@@ -78,6 +86,8 @@ export const useItemStore = defineStore("itemStore", () => {
         : null,
       status: "active",
     };
+
+    console.log(formattedForm);
 
     await addItemApi(formattedForm)
       .catch((err: any) => {
@@ -95,7 +105,8 @@ export const useItemStore = defineStore("itemStore", () => {
     const formattedForm = {
       ...form,
       employee_id: form.employee?.id,
-      brand_model_id: form.brand_model?.id,
+      // brand_model_id: form.brand_model?.id,
+      inventory_item_id: form.inventory_item?.id,
       date_acquired: form.date_acquired
         ? transformDatePickerDate(form.date_acquired, "YYYY-MM-DD HH:mm:ss")
         : null,
