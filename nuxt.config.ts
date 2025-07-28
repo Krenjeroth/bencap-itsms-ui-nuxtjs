@@ -37,6 +37,7 @@ export default defineNuxtConfig({
     // baseUrl: "http://itsms:80", // Laravel API: Local
     baseUrl: "http://192.168.6.169", // Laravel API: Remote
     redirect: {
+      keepRequestedRoute: true,
       onAuthOnly: "/auth/login",
       onLogout: "/auth/login",
     },
