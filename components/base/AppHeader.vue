@@ -48,18 +48,18 @@ const toggleColorMode = () => {
 };
 
 const userMenuItems = [
-  [
-    {
-      label: "Profile",
-      icon: "i-heroicons-user",
-      to: "/profile",
-    },
-    {
-      label: "Settings",
-      icon: "i-heroicons-cog-6-tooth",
-      to: "/settings",
-    },
-  ],
+  // [
+  //   {
+  //     label: "Profile",
+  //     icon: "i-heroicons-user",
+  //     to: "/profile",
+  //   },
+  //   {
+  //     label: "Settings",
+  //     icon: "i-heroicons-cog-6-tooth",
+  //     to: "/settings",
+  //   },
+  // ],
   [
     {
       label: "Logout",
@@ -162,12 +162,9 @@ const userMenuItems = [
             variant="ghost"
             class="text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800"
           >
-            <UAvatar
-              src="https://avatars.githubusercontent.com/u/196264106?s=96&v=4"
-              size="sm"
-            />
+            <!-- <UAvatar :src="user?.profile?.img_path" size="sm" /> -->
             <span class="text-sm text-gray-700 dark:text-gray-300">{{
-              user?.name
+              user?.profile?.display_name
             }}</span>
           </UButton>
         </UDropdown>
