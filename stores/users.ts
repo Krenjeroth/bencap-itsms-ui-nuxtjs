@@ -3,7 +3,7 @@ export const useUserStore = defineStore("userStore", () => {
     useUserApi();
   const { hasError, errorBag, transformValidationErrors, resetErrorBag } =
     useErrorHandler();
-  const { capitalizeWords, strSanitize } = useStringHandler();
+  const { capitalizeWords, capitalizeAll, strSanitize } = useStringHandler();
   // const { transformUtcDatetime } = useDateHandler();
   enum SortDirection {
     ASC = "asc",
@@ -103,9 +103,8 @@ export const useUserStore = defineStore("userStore", () => {
       username,
       display_name,
       name: JSON.stringify(name),
+      designation: capitalizeAll(form.designation),
     };
-
-    console.log(formattedForm);
 
     await addUserApi(formattedForm)
       .catch((err) => {
@@ -152,7 +151,9 @@ export const useUserStore = defineStore("userStore", () => {
       username,
       display_name,
       name: JSON.stringify(name),
+      designation: capitalizeAll(form.designation),
     };
+
     await updateUserApi(id, formattedForm)
       .catch((err) => {
         transformValidationErrors(err);

@@ -12,16 +12,44 @@ export const useUserApi = () => {
   };
 
   const addUserApi = async (form: ICreateUserForm) => {
+    const formData = new FormData();
+
+    for (const key in form) {
+      if (
+        form[key as keyof ICreateUserForm] !== null &&
+        form[key as keyof ICreateUserForm] !== undefined
+      ) {
+        formData.append(key, form[key as keyof ICreateUserForm] as any);
+      }
+    }
+
     return await sanctumFetch(`${usersUrl.value}`, {
       method: "POST",
-      body: form,
+      body: formData,
+      headers: {
+        Accept: "application/json",
+      },
     });
   };
 
   const updateUserApi = async (id: string, form: IUpdateUserForm) => {
+    const formData = new FormData();
+
+    for (const key in form) {
+      if (
+        form[key as keyof IUpdateUserForm] !== null &&
+        form[key as keyof IUpdateUserForm] !== undefined
+      ) {
+        formData.append(key, form[key as keyof IUpdateUserForm] as any);
+      }
+    }
+
     return await sanctumFetch(`${usersUrl.value}/${id}`, {
       method: "PUT",
-      body: form,
+      body: formData,
+      headers: {
+        Accept: "application/json",
+      },
     });
   };
 

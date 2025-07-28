@@ -3,11 +3,6 @@ const acceptedFileTypes = ["image/png", "image/jpeg", "image/jpg"];
 const fileSizeLimit = 2 * 1024 * 1024; // 2MB
 
 export const UpdateUserValidationSchema = z.object({
-  name: z
-    .string({
-      invalid_type_error: "Name is required",
-    })
-    .min(3, "Name must be at least 3 characters long"),
   email: z
     .string({
       invalid_type_error: "Email is required",
@@ -58,11 +53,6 @@ export const UpdateUserValidationSchema = z.object({
     .refine((file) => !file || file?.size <= fileSizeLimit!, {
       message: "Photo ID must be less than 2MB",
     }),
-  // password: z
-  //   .string({
-  //     invalid_type_error: "Password is required",
-  //   })
-  //   .min(8, "Password must be at least 8 characters long"),
 });
 
 export const updatePhotoIdSchema = z

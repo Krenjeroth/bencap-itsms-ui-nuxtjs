@@ -3,6 +3,7 @@ const userStore = useUserStore();
 const { loading, errorBag, hasError, genderOptions } = storeToRefs(userStore);
 const roleStore = useRoleStore();
 const { roleSelect } = storeToRefs(roleStore);
+const { capitalizeAll } = useStringHandler();
 roleStore.getRoleSelect();
 const emit = defineEmits(["reloadTable", "success", "error", "close"]);
 
@@ -48,6 +49,12 @@ const suffixComputed = computed({
 const genderComputed = computed({
   get: () => formState.value.gender ?? undefined,
   set: (value) => (formState.value.gender = value || undefined),
+});
+
+const designationComputed = computed({
+  get: () => formState.value.designation ?? undefined,
+  set: (value) =>
+    (formState.value.designation = capitalizeAll(value) || undefined),
 });
 
 const handlePhotoUpload = (files: FileList | null) => {
@@ -133,7 +140,7 @@ const handleSubmit = async (
           :error="errorBag.designation"
           :ui="{ wrapper: 'md:w-full' }"
         >
-          <UInput v-model="formState.designation" />
+          <UInput v-model="designationComputed" />
         </UFormGroup>
 
         <UFormGroup

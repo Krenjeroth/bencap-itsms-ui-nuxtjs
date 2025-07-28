@@ -4,7 +4,7 @@ const userStore = useUserStore();
 const { loading, errorBag, hasError, genderOptions } = storeToRefs(userStore);
 const roleStore = useRoleStore();
 const { roleSelect } = storeToRefs(roleStore);
-const { strDeepSanitize } = useStringHandler();
+const { strDeepSanitize, capitalizeAll } = useStringHandler();
 roleStore.getRoleSelect();
 const props = defineProps({
   user: Object,
@@ -43,6 +43,7 @@ const formState = ref<IUpdateUserForm>({
   suffix: strDeepSanitize(props.user?.profile?.name?.suffix) || undefined,
   gender: props.user?.profile?.gender ?? undefined,
   designation: props.user?.profile?.designation ?? undefined,
+  img_path: props.user?.profile?.img_path ?? undefined,
   photo_id: null,
 });
 
@@ -57,6 +58,7 @@ const originalState = ref<IUpdateUserForm>(
     suffix: strDeepSanitize(props.user?.profile?.name?.suffix) || undefined,
     gender: props.user?.profile?.gender ?? undefined,
     designation: props.user?.profile?.designation ?? undefined,
+    img_path: props.user?.profile?.img_path ?? undefined,
     photo_id: null,
   })
 );
@@ -77,6 +79,12 @@ const suffixComputed = computed({
 const genderComputed = computed({
   get: () => formState.value.gender ?? undefined,
   set: (value) => (formState.value.gender = value || undefined),
+});
+
+const designationComputed = computed({
+  get: () => formState.value.designation ?? undefined,
+  set: (value) =>
+    (formState.value.designation = capitalizeAll(value) || undefined),
 });
 
 filePreview.value = props.user?.profile?.img_path ?? null;
@@ -116,6 +124,7 @@ const fieldsToCompare: (keyof IUpdateUserForm)[] = [
   "suffix",
   "gender",
   "designation",
+  "img_path",
   "photo_id",
 ];
 
@@ -178,7 +187,7 @@ const handleSubmit = async (
           :error="errorBag.designation"
           :ui="{ wrapper: 'md:w-full' }"
         >
-          <UInput v-model="formState.designation" />
+          <UInput v-model="designationComputed" />
         </UFormGroup>
 
         <UFormGroup
