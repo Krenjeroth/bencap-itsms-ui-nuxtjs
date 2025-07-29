@@ -15,7 +15,6 @@ useHead({
 const { strSingular } = useStringHandler();
 
 const pageTitleSingular = strSingular(route.meta.title as string);
-console.log(pageTitleSingular);
 
 import {
   AgenciesCreateModal,
