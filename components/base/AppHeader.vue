@@ -162,7 +162,7 @@ const userMenuItems = [
             variant="ghost"
             class="text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800"
           >
-            <!-- <UAvatar :src="user?.profile?.img_path" size="sm" /> -->
+            <UAvatar :src="user?.profile?.img_path" size="sm" />
             <span class="text-sm text-gray-700 dark:text-gray-300">{{
               user?.profile?.display_name
             }}</span>
