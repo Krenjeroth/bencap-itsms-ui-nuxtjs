@@ -82,8 +82,8 @@ const { capitalizeWord } = useStringHandler();
 const searchQuery = ref(props.search);
 const dropdownFilter = ref(props.selectedDropdownFilter);
 
-const localPage = ref(1);
-const localPageCount = ref(5);
+const localPage = ref(props.pagination.page);
+const localPageCount = ref(Number(props.pagination.pageCount));
 
 // Start Tab Items
 
@@ -227,6 +227,19 @@ const expand = ref({
 watch(activeTab, (e) => {
   emit("update:active-tab", e);
 });
+
+watch(localPageCount, (newCount) => {
+  localPage.value = 1;
+  emit("update:pageCount", Number(newCount));
+});
+
+watch(localPage, (newPage) => {
+  emit("update:page", newPage);
+});
+
+watch([currentTab, dropdownFilter, searchQuery], () => {
+  localPage.value = 1;
+});
 </script>
 
 <template>
@@ -284,7 +297,7 @@ watch(activeTab, (e) => {
       <div class="flex items-center gap-1.5">
         <span class="text-sm leading-5">Rows per page:</span>
 
-        <USelect
+        <!-- <USelect
           v-model="props.pagination.pageCount"
           :options="[5, 10, 20, 50]"
           class="me-2 w-20"
@@ -292,6 +305,12 @@ watch(activeTab, (e) => {
           @update:modelValue="
             emit('update:pageCount', props.pagination.pageCount)
           "
+        /> -->
+        <USelect
+          v-model.number="localPageCount"
+          :options="[5, 10, 20, 50]"
+          class="me-2 w-20"
+          size="xs"
         />
       </div>
 
@@ -585,11 +604,25 @@ watch(activeTab, (e) => {
         <span class="font-medium">{{ paginationTotal }}</span>
         results
       </p>
-      <UPagination
+      <!-- <UPagination
         v-model="localPage"
         :total="paginationTotal"
         :page-count="localPageCount"
         @update:modelValue="emit('update:page', $event)"
+        :ui="{
+          wrapper: 'flex items-center gap-1',
+          rounded: '!rounded-full min-w-[32px] justify-center',
+          default: {
+            activeButton: {
+              variant: 'outline',
+            },
+          },
+        }"
+      /> -->
+      <UPagination
+        v-model="localPage"
+        :total="paginationTotal"
+        :page-count="localPageCount"
         :ui="{
           wrapper: 'flex items-center gap-1',
           rounded: '!rounded-full min-w-[32px] justify-center',
