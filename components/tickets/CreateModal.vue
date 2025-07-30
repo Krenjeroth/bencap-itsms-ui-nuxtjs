@@ -2,8 +2,8 @@
 const ticketStore = useTicketStore();
 const { loading, errorBag, hasError, priorities } = storeToRefs(ticketStore);
 
-const itemStore = useItemStore();
-const { loading: loadingItems } = storeToRefs(itemStore);
+const inventoryStore = useInventoryStore();
+const { loading: loadingInventories } = storeToRefs(inventoryStore);
 
 const itemTypeStore = useItemTypeStore();
 const { loading: loadingItemTypes, itemTypeSelect } =
@@ -39,7 +39,7 @@ const onError = () => {
 };
 
 const formState = ref<ICreateTicketForm>({
-  item: undefined,
+  inventory: undefined,
   item_type: undefined,
   it_service: undefined,
   concern: undefined,
@@ -85,14 +85,17 @@ const handleSubmit = async (
   return;
 };
 
-const itemOptions = ref<TItemSelectOption[]>([]);
-const itemSearchQuery = ref("");
+const inventoryOptions = ref<TInventorySelectOption[]>([]);
+const inventorySearchQuery = ref("");
 
-const searchItems = async (q: string) => {
-  itemSearchQuery.value = q;
-  if (!itemSearchQuery.value || itemSearchQuery.value.length < 2) return [];
-  const result = await itemStore.fetchItemSearch(itemSearchQuery.value);
-  itemOptions.value = result;
+const searchInventories = async (q: string) => {
+  inventorySearchQuery.value = q;
+  if (!inventorySearchQuery.value || inventorySearchQuery.value.length < 2)
+    return [];
+  const result = await inventoryStore.fetchInventorySearch(
+    inventorySearchQuery.value
+  );
+  inventoryOptions.value = result;
   return result;
 };
 
@@ -205,23 +208,21 @@ const searchAgencies = async (q: string) => {
 
       <UFormGroup
         v-if="!formState.is_other_agency"
-        label="Item"
-        name="item"
-        :error="errorBag.item"
+        label="Inventory"
+        name="inventory"
+        :error="errorBag.inventory"
         :ui="{ wrapper: 'md:w-full' }"
       >
         <UInputMenu
-          v-model="formState.item"
-          :search="searchItems"
-          :loading="loadingItems"
+          v-model="formState.inventory"
+          :search="searchInventories"
+          :loading="loadingInventories"
           placeholder="Search by property number..."
           option-attribute="property_number"
         >
           <template #option="{ option }">
             <span class="truncate"
-              >{{ option.property_number }} ({{
-                option.inventory_item.description
-              }})</span
+              >{{ option.property_number }} ({{ option.description }})</span
             >
             <!-- <span class="truncate"
               >{{ option.property_number }} ({{
@@ -238,10 +239,10 @@ const searchAgencies = async (q: string) => {
           </template>
 
           <template #empty>
-            <span v-if="itemSearchQuery.length < 2" class="text-gray-400"
+            <span v-if="inventorySearchQuery.length < 2" class="text-gray-400"
               >Type at least 2 characters...</span
             >
-            <span v-else class="text-gray-400">No Item found</span>
+            <span v-else class="text-gray-400">No Inventory found</span>
           </template>
         </UInputMenu>
       </UFormGroup>
