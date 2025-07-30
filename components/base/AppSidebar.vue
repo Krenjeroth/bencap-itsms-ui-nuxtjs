@@ -85,15 +85,20 @@ const links = [
       to: "/employees",
     },
     {
-      label: "Inventory",
+      label: "IT Supplies",
       icon: "material-symbols:inventory-2-outline-rounded",
       to: "/inventory-items",
     },
     {
-      label: "Items (Issuance)",
-      icon: "material-symbols:box-outline-rounded",
-      to: "/items",
+      label: "Inventory",
+      icon: "material-symbols:inventory-2-outline-rounded",
+      to: "/inventories",
     },
+    // {
+    //   label: "Items (Issuance)",
+    //   icon: "material-symbols:box-outline-rounded",
+    //   to: "/items",
+    // },
     {
       label: "Solutions",
       icon: "material-symbols:search-check-2-outline-rounded",

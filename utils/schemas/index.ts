@@ -8,6 +8,7 @@ export * from "./brand";
 export * from "./brand-model";
 export * from "./item-type";
 export * from "./common-problem";
+export * from "./inventory";
 export * from "./item";
 export * from "./it-service";
 export * from "./ticket";

@@ -152,6 +152,90 @@ declare global {
     item_type?: number;
   }
 
+  interface ICreateInventoryForm {
+    employee?: {
+      id: number;
+      full_name: string;
+    };
+    brand_model?: {
+      id?: number;
+      name?: string;
+      brand?: {
+        id?: number;
+        name?: string;
+      };
+      item_type?: {
+        id?: number;
+        type?: string;
+        classification?: string;
+        purpose?: string;
+        status?: string;
+      };
+      image?: string | null;
+      year_released?: string | null;
+      status?: string;
+    };
+    parent_component?: string | null;
+    code?: string | null;
+    barcode?: string | null;
+    description?: string | null;
+    serial_number?: string | null;
+    property_number?: string;
+    ics_number?: string | null;
+    date_acquired?: TDatePickerDate;
+    ip_address?: string | null;
+    mac_address?: string | null;
+    inventory_type?: string | null;
+    iar_number?: string | null;
+    po_number?: string | null;
+    control_number?: string | null;
+    date_issued?: TDatePickerDate;
+    date_accepted?: TDatePickerDate;
+    date_installed?: TDatePickerDate;
+  }
+
+  interface IUpdateInventoryForm {
+    employee?: {
+      id: number;
+      full_name: string;
+    };
+    brand_model?: {
+      id?: number;
+      name?: string;
+      brand?: {
+        id?: number;
+        name?: string;
+      };
+      item_type?: {
+        id?: number;
+        type?: string;
+        classification?: string;
+        purpose?: string;
+        status?: string;
+      };
+      image?: string | null;
+      year_released?: string | null;
+      status?: string;
+    };
+    parent_component?: string | null;
+    code?: string | null;
+    barcode?: string | null;
+    description?: string | null;
+    serial_number?: string | null;
+    property_number?: string;
+    ics_number?: string | null;
+    date_acquired?: TDatePickerDate;
+    ip_address?: string | null;
+    mac_address?: string | null;
+    inventory_type?: string | null;
+    iar_number?: string | null;
+    po_number?: string | null;
+    control_number?: string | null;
+    date_issued?: TDatePickerDate;
+    date_accepted?: TDatePickerDate;
+    date_installed?: TDatePickerDate;
+  }
+
   interface ICreateItemForm {
     employee?: {
       id: number;
@@ -495,6 +579,8 @@ export {
   IUpdateItemTypeForm,
   ICreateCommonProblemForm,
   IUpdateCommonProblemForm,
+  ICreateInventoryForm,
+  IUpdateInventoryForm,
   ICreateTicketForm,
   IUpdateTicketForm,
   ICreateSolutionForm,
