@@ -404,7 +404,7 @@ declare global {
       id: number;
       full_name: string;
     };
-    item?: Item | null;
+    inventory?: Inventory | null;
     item_type?: number;
     it_service?: string;
     ticket_number?: string;
@@ -430,7 +430,7 @@ declare global {
       id: number;
       full_name: string;
     };
-    item?: Item | null;
+    inventory?: Inventory | null;
     item_type?: number;
     it_service?: string | number;
     // ticket_number?: string;
