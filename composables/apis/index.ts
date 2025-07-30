@@ -10,6 +10,7 @@ export * from "./useBrandModelApi";
 export * from "./useItemTypeApi";
 export * from "./useCommonProblemApi";
 export * from "./useInventoryApi";
+export * from "./useItSupplyApi";
 export * from "./useItemApi";
 export * from "./useItServiceApi";
 export * from "./useTicketApi";

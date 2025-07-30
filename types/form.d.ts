@@ -496,6 +496,65 @@ declare global {
     description?: string | null;
   }
 
+  interface ICreateItSupplyForm {
+    // measurement_unit?: {
+    //   id: number;
+    //   name: string;
+    //   abbreviation: string;
+    // };
+    measurement_unit?: string | number;
+    brand_model?: {
+      id?: number;
+      name?: string;
+      specification?: string | null;
+      brand?: {
+        id?: number;
+        name?: string;
+      };
+      item_type?: {
+        id?: number;
+        type?: string;
+        classification?: string;
+        purpose?: string;
+        status?: string;
+      };
+      image?: string | null;
+      year_released?: string | null;
+      status?: string;
+    };
+    description?: string | null;
+    item_number?: string | null;
+    stock_number?: string | null;
+    quantity?: number;
+  }
+
+  interface IUpdateItSupplyForm {
+    measurement_unit?: string | number;
+    brand_model?: {
+      id?: number;
+      name?: string;
+      specification?: string | null;
+      brand?: {
+        id?: number;
+        name?: string;
+      };
+      item_type?: {
+        id?: number;
+        type?: string;
+        classification?: string;
+        purpose?: string;
+        status?: string;
+      };
+      image?: string | null;
+      year_released?: string | null;
+      status?: string;
+    };
+    description?: string | null;
+    item_number?: string | null;
+    stock_number?: string | null;
+    quantity?: number;
+  }
+
   interface ICreateInventoryItemForm {
     // measurement_unit?: {
     //   id: number;
@@ -594,5 +653,7 @@ export {
   IUpdateMeasurementUnitForm,
   ICreateInventoryItemForm,
   IUpdateInventoryItemForm,
+  ICreateItSupplyForm,
+  IUpdateItSupplyForm,
   IFormSubmitEvent,
 };

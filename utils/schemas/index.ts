@@ -16,3 +16,4 @@ export * from "./solution";
 export * from "./agency";
 export * from "./measurement-unit";
 export * from "./inventory-item";
+export * from "./it-supply";

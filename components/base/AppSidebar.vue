@@ -86,8 +86,8 @@ const links = [
     },
     {
       label: "IT Supplies",
-      icon: "material-symbols:inventory-2-outline-rounded",
-      to: "/inventory-items",
+      icon: "i-heroicons-cpu-chip",
+      to: "/it-supplies",
     },
     {
       label: "Inventory",
