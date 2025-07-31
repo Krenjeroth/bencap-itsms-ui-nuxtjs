@@ -16,7 +16,7 @@ export const useInventoryStore = defineStore("inventoryStore", () => {
   }
   const inventories = ref([]);
 
-  const inventorySelect = ref<TItemSelectOption[]>([]);
+  const inventorySelect = ref<TInventorySelectOption[]>([]);
   const loading = ref(false);
   const page = ref(1);
   const pageCount = ref(5);

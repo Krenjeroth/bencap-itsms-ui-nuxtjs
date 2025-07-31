@@ -16,7 +16,7 @@ export const useItSupplyStore = defineStore("itSupplyStore", () => {
   }
   const itSupplies = ref([]);
 
-  const itSupplySelect = ref<TItemSelectOption[]>([]);
+  const itSupplySelect = ref<TItSupplySelectOption[]>([]);
   const loading = ref(false);
   const page = ref(1);
   const pageCount = ref(5);
