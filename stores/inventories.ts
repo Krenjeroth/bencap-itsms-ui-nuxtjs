@@ -44,7 +44,9 @@ export const useInventoryStore = defineStore("inventoryStore", () => {
 
       inventories.value = response.data.map((item: any) => ({
         ...item,
-        brand_model_formatted: `${item.brand_model.brand.name} ${item.brand_model.name}`,
+        // brand_model_formatted: `${item.brand_model.brand.name} ${item.brand_model.name}`,
+        brand_model_formatted: `${item.description}`,
+        option_attribute: `${item.property_number} (${item.description})`,
         // inventory_item_formatted: `${
         //   item.inventory_item.brand_model.item_type.type
         // }, ${
