@@ -2,7 +2,7 @@ import { z } from "zod";
 
 export const UpdateTicketValidationSchema = z
   .object({
-    item: z
+    inventory: z
       .object({
         id: z.number(),
         property_number: z.string(),

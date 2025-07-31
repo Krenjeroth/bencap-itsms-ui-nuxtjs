@@ -3,8 +3,8 @@ import { cloneDeep } from "lodash";
 const ticketStore = useTicketStore();
 const { loading, errorBag, hasError, priorities } = storeToRefs(ticketStore);
 
-const itemStore = useItemStore();
-const { loading: loadingItems } = storeToRefs(itemStore);
+const inventoryStore = useInventoryStore();
+const { loading: loadingInventories } = storeToRefs(inventoryStore);
 
 const itemTypeStore = useItemTypeStore();
 const { loading: loadingItemTypes, itemTypeSelect } =
@@ -52,7 +52,7 @@ const onNoDataChange = () => {
 
 const formState = ref<IUpdateTicketForm>({
   employee: props.ticket?.employee || undefined,
-  item: props.ticket?.item || undefined,
+  inventory: props.ticket?.inventory || undefined,
   item_type: props.ticket?.item_type?.id || undefined,
   it_service: props.ticket?.it_service.id || undefined,
   concern: props.ticket?.concern || undefined,
@@ -66,7 +66,7 @@ const formState = ref<IUpdateTicketForm>({
 const originalState = ref<IUpdateTicketForm>({
   ...cloneDeep({
     employee: props.ticket?.employee || undefined,
-    item: props.ticket?.item || undefined,
+    inventory: props.ticket?.inventory || undefined,
     item_type: props.ticket?.item_type?.id || undefined,
     it_service: props.ticket?.it_service.id || undefined,
     concern: props.ticket?.concern || undefined,
@@ -80,7 +80,7 @@ const originalState = ref<IUpdateTicketForm>({
 
 const fieldsToCompare: (keyof IUpdateTicketForm)[] = [
   "employee",
-  "item",
+  "inventory",
   "item_type",
   "it_service",
   "concern",
@@ -147,14 +147,17 @@ const handleSubmit = async (
   return;
 };
 
-const itemOptions = ref<TItemSelectOption[]>([]);
-const itemSearchQuery = ref("");
+const inventoryOptions = ref<TInventorySelectOption[]>([]);
+const inventorySearchQuery = ref("");
 
-const searchItems = async (q: string) => {
-  itemSearchQuery.value = q;
-  if (!itemSearchQuery.value || itemSearchQuery.value.length < 2) return [];
-  const result = await itemStore.fetchItemSearch(itemSearchQuery.value);
-  itemOptions.value = result;
+const searchInventories = async (q: string) => {
+  inventorySearchQuery.value = q;
+  if (!inventorySearchQuery.value || inventorySearchQuery.value.length < 2)
+    return [];
+  const result = await inventoryStore.fetchInventorySearch(
+    inventorySearchQuery.value
+  );
+  inventoryOptions.value = result;
   return result;
 };
 
@@ -267,24 +270,28 @@ const searchAgencies = async (q: string) => {
 
       <UFormGroup
         v-if="!formState.is_other_agency"
-        label="Item"
-        name="item"
-        :error="errorBag.item"
+        label="Inventory"
+        name="inventory"
+        :error="errorBag.inventory"
         :ui="{ wrapper: 'md:w-full' }"
       >
         <UInputMenu
-          v-model="formState.item"
-          :search="searchItems"
-          :loading="loadingItems"
+          v-model="formState.inventory"
+          :search="searchInventories"
+          :loading="loadingInventories"
           placeholder="Search by property number..."
-          option-attribute="property_number"
+          option-attribute="inventory_option_attribute"
         >
           <template #option="{ option }">
-            <span class="truncate"
+            <span class="truncate">{{
+              option.inventory_option_attribute
+            }}</span>
+            <!-- <span class="truncate"
               >{{ option.property_number }} ({{
-                option.inventory_item.description
-              }})</span
-            >
+                option.inventory_item.brand_model.brand.name
+              }}
+              {{ option.inventory_item.brand_model.name }})</span
+            > -->
             <!-- <span class="truncate"
               >{{ option.property_number }} ({{
                 option.brand_model.item_type.type
@@ -294,10 +301,10 @@ const searchAgencies = async (q: string) => {
           </template>
 
           <template #empty>
-            <span v-if="itemSearchQuery.length < 2" class="text-gray-400"
+            <span v-if="inventorySearchQuery.length < 2" class="text-gray-400"
               >Type at least 2 characters...</span
             >
-            <span v-else class="text-gray-400">No Item found</span>
+            <span v-else class="text-gray-400">No Inventory found</span>
           </template>
         </UInputMenu>
       </UFormGroup>

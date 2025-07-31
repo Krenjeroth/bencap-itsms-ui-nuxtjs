@@ -218,12 +218,12 @@ const searchAgencies = async (q: string) => {
           :search="searchInventories"
           :loading="loadingInventories"
           placeholder="Search by property number..."
-          option-attribute="property_number"
+          option-attribute="inventory_option_attribute"
         >
           <template #option="{ option }">
-            <span class="truncate"
-              >{{ option.property_number }} ({{ option.description }})</span
-            >
+            <span class="truncate">{{
+              option.inventory_option_attribute
+            }}</span>
             <!-- <span class="truncate"
               >{{ option.property_number }} ({{
                 option.inventory_item.brand_model.brand.name
