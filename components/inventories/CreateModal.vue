@@ -38,10 +38,6 @@ const formState = ref<ICreateInventoryForm>({
   description: undefined,
   serial_number: undefined,
   property_number: undefined,
-  ics_number: undefined,
-  iar_number: undefined,
-  po_number: undefined,
-  control_number: undefined,
   date_issued: undefined,
   date_acquired: undefined,
   date_accepted: undefined,
@@ -71,13 +67,6 @@ const serialNumberValue = computed({
   },
 });
 
-const icsNumberValue = computed({
-  get: () => formState.value.ics_number ?? undefined,
-  set: (val) => {
-    formState.value.ics_number = capitalizeAll(val);
-  },
-});
-
 const ipAddressValue = computed({
   get: () => formState.value.ip_address ?? undefined,
   set: (val) => {
@@ -96,27 +85,6 @@ const inventoryTypeValue = computed({
   get: () => formState.value.inventory_type ?? undefined,
   set: (val) => {
     formState.value.inventory_type = capitalizeAll(val);
-  },
-});
-
-const iarNumberValue = computed({
-  get: () => formState.value.iar_number ?? undefined,
-  set: (val) => {
-    formState.value.iar_number = capitalizeAll(val);
-  },
-});
-
-const poNumberValue = computed({
-  get: () => formState.value.po_number ?? undefined,
-  set: (val) => {
-    formState.value.po_number = capitalizeAll(val);
-  },
-});
-
-const controlNumberValue = computed({
-  get: () => formState.value.control_number ?? undefined,
-  set: (val) => {
-    formState.value.control_number = capitalizeAll(val);
   },
 });
 
@@ -195,21 +163,21 @@ const searchEmployees = async (q: string) => {
     >
       <div class="space-y-6 md:space-y-0 md:flex md:space-x-6">
         <UFormGroup
-          label="Parent Component"
-          name="parent_component"
-          :error="errorBag.parent_component"
-          :ui="{ wrapper: 'md:w-full' }"
-        >
-          <UInput v-model="parentComponentValue" />
-        </UFormGroup>
-
-        <UFormGroup
           label="Property Number"
           name="property_number"
           :error="errorBag.property_number"
           :ui="{ wrapper: 'md:w-full' }"
         >
           <UInput v-model="formState.property_number" />
+        </UFormGroup>
+
+        <UFormGroup
+          label="Parent Component"
+          name="parent_component"
+          :error="errorBag.parent_component"
+          :ui="{ wrapper: 'md:w-full' }"
+        >
+          <UInput v-model="parentComponentValue" />
         </UFormGroup>
       </div>
 
@@ -264,44 +232,6 @@ const searchEmployees = async (q: string) => {
               <span v-else class="text-gray-400">No Employee found</span>
             </template>
           </UInputMenu>
-        </UFormGroup>
-      </div>
-
-      <div class="space-y-6 md:space-y-0 md:flex md:space-x-6">
-        <UFormGroup
-          label="ICS Number"
-          name="ics_number"
-          :error="errorBag.ics_number"
-          :ui="{ wrapper: 'md:w-full' }"
-        >
-          <UInput v-model="icsNumberValue" />
-        </UFormGroup>
-
-        <UFormGroup
-          label="IAR Number"
-          name="iar_number"
-          :error="errorBag.iar_number"
-          :ui="{ wrapper: 'md:w-full' }"
-        >
-          <UInput v-model="iarNumberValue" />
-        </UFormGroup>
-
-        <UFormGroup
-          label="PO Number (Purchase Order)"
-          name="po_number"
-          :error="errorBag.po_number"
-          :ui="{ wrapper: 'md:w-full' }"
-        >
-          <UInput v-model="poNumberValue" />
-        </UFormGroup>
-
-        <UFormGroup
-          label="Control Number"
-          name="control_number"
-          :error="errorBag.control_number"
-          :ui="{ wrapper: 'md:w-full' }"
-        >
-          <UInput v-model="controlNumberValue" />
         </UFormGroup>
       </div>
 

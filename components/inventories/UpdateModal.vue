@@ -52,10 +52,6 @@ const formState = ref<IUpdateInventoryForm>({
   description: props.item?.description || undefined,
   serial_number: props.item?.serial_number || undefined,
   property_number: props.item?.property_number || undefined,
-  ics_number: props.item?.ics_number || undefined,
-  iar_number: props.item?.iar_number || undefined,
-  po_number: props.item?.po_number || undefined,
-  control_number: props.item?.control_number || undefined,
   date_issued: props.item?.date_issued
     ? transformDbDate(props.item.date_issued)
     : undefined,
@@ -83,10 +79,6 @@ const originalState = ref<IUpdateInventoryForm>({
     description: props.item?.description || undefined,
     serial_number: props.item?.serial_number || undefined,
     property_number: props.item?.property_number || undefined,
-    ics_number: props.item?.ics_number || undefined,
-    iar_number: props.item?.iar_number || undefined,
-    po_number: props.item?.po_number || undefined,
-    control_number: props.item?.control_number || undefined,
     inventory_type: props.item?.inventory_type || undefined,
     date_issued: props.item?.date_issued
       ? transformDbDate(props.item.date_issued)
@@ -114,10 +106,6 @@ const fieldsToCompare: (keyof IUpdateInventoryForm)[] = [
   "description",
   "serial_number",
   "property_number",
-  "ics_number",
-  "iar_number",
-  "po_number",
-  "control_number",
   "date_issued",
   "date_acquired",
   "date_accepted",
@@ -157,13 +145,6 @@ const serialNumberValue = computed({
   },
 });
 
-const icsNumberValue = computed({
-  get: () => formState.value.ics_number ?? undefined,
-  set: (val) => {
-    formState.value.ics_number = capitalizeAll(val);
-  },
-});
-
 const ipAddressValue = computed({
   get: () => formState.value.ip_address ?? undefined,
   set: (val) => {
@@ -182,27 +163,6 @@ const inventoryTypeValue = computed({
   get: () => formState.value.inventory_type ?? undefined,
   set: (val) => {
     formState.value.inventory_type = capitalizeAll(val);
-  },
-});
-
-const iarNumberValue = computed({
-  get: () => formState.value.iar_number ?? undefined,
-  set: (val) => {
-    formState.value.iar_number = capitalizeAll(val);
-  },
-});
-
-const poNumberValue = computed({
-  get: () => formState.value.po_number ?? undefined,
-  set: (val) => {
-    formState.value.po_number = capitalizeAll(val);
-  },
-});
-
-const controlNumberValue = computed({
-  get: () => formState.value.control_number ?? undefined,
-  set: (val) => {
-    formState.value.control_number = capitalizeAll(val);
   },
 });
 
@@ -336,44 +296,6 @@ const searchEmployees = async (q: string) => {
               <span v-else class="text-gray-400">No Employee found</span>
             </template>
           </UInputMenu>
-        </UFormGroup>
-      </div>
-
-      <div class="space-y-6 md:space-y-0 md:flex md:space-x-6">
-        <UFormGroup
-          label="ICS Number"
-          name="ics_number"
-          :error="errorBag.ics_number"
-          :ui="{ wrapper: 'md:w-full' }"
-        >
-          <UInput v-model="icsNumberValue" />
-        </UFormGroup>
-
-        <UFormGroup
-          label="IAR Number"
-          name="iar_number"
-          :error="errorBag.iar_number"
-          :ui="{ wrapper: 'md:w-full' }"
-        >
-          <UInput v-model="iarNumberValue" />
-        </UFormGroup>
-
-        <UFormGroup
-          label="PO Number (Purchase Order)"
-          name="po_number"
-          :error="errorBag.po_number"
-          :ui="{ wrapper: 'md:w-full' }"
-        >
-          <UInput v-model="poNumberValue" />
-        </UFormGroup>
-
-        <UFormGroup
-          label="Control Number"
-          name="control_number"
-          :error="errorBag.control_number"
-          :ui="{ wrapper: 'md:w-full' }"
-        >
-          <UInput v-model="controlNumberValue" />
         </UFormGroup>
       </div>
 
