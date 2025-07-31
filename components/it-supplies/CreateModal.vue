@@ -41,6 +41,9 @@ const formState = ref<ICreateItSupplyForm>({
   description: undefined,
   item_number: undefined,
   stock_number: undefined,
+  ics_number: undefined,
+  iar_number: undefined,
+  po_number: undefined,
   quantity: undefined,
 });
 
@@ -69,6 +72,27 @@ const quantityComputed = computed({
   get: () => formState.value.quantity,
   set: (value) => {
     formState.value.quantity = value;
+  },
+});
+
+const icsNumberValue = computed({
+  get: () => formState.value.ics_number ?? undefined,
+  set: (val) => {
+    formState.value.ics_number = capitalizeAll(val);
+  },
+});
+
+const iarNumberValue = computed({
+  get: () => formState.value.iar_number ?? undefined,
+  set: (val) => {
+    formState.value.iar_number = capitalizeAll(val);
+  },
+});
+
+const poNumberValue = computed({
+  get: () => formState.value.po_number ?? undefined,
+  set: (val) => {
+    formState.value.po_number = capitalizeAll(val);
   },
 });
 
@@ -184,6 +208,35 @@ const searchBrandModels = async (q: string) => {
             :max="10000"
             v-model="quantityComputed"
           />
+        </UFormGroup>
+      </div>
+
+      <div class="space-y-6 md:space-y-0 md:flex md:space-x-6">
+        <UFormGroup
+          label="ICS Number"
+          name="ics_number"
+          :error="errorBag.ics_number"
+          :ui="{ wrapper: 'md:w-full' }"
+        >
+          <UInput v-model="icsNumberValue" />
+        </UFormGroup>
+
+        <UFormGroup
+          label="IAR Number"
+          name="iar_number"
+          :error="errorBag.iar_number"
+          :ui="{ wrapper: 'md:w-full' }"
+        >
+          <UInput v-model="iarNumberValue" />
+        </UFormGroup>
+
+        <UFormGroup
+          label="PO Number (Purchase Order)"
+          name="po_number"
+          :error="errorBag.po_number"
+          :ui="{ wrapper: 'md:w-full' }"
+        >
+          <UInput v-model="poNumberValue" />
         </UFormGroup>
       </div>
 

@@ -33,6 +33,9 @@ declare global {
     item_number?: string;
     quantity?: number;
     stock_number: string;
+    ics_number?: string;
+    iar_number?: string;
+    po_number?: string;
   }
 
   type TItSupplySelectOption = {
@@ -43,6 +46,9 @@ declare global {
     item_number: string | null;
     stock_number: string | null;
     quantity: number;
+    ics_number?: string;
+    iar_number?: string;
+    po_number?: string;
   };
 
   type TCreateItSupplyValidationSchema = z.output<

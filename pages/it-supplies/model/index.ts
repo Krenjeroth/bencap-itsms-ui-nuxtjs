@@ -12,6 +12,21 @@ const columns: ITableColumns[] = [
     rowClass: "whitespace-pre-line max-w-fit",
   },
   {
+    key: "ics_number",
+    label: "ICS #",
+    rowClass: "whitespace-pre-line max-w-fit",
+  },
+  {
+    key: "iar_number",
+    label: "IAR #",
+    rowClass: "whitespace-pre-line max-w-fit",
+  },
+  {
+    key: "po_number",
+    label: "PO #",
+    rowClass: "whitespace-pre-line max-w-fit",
+  },
+  {
     key: "measurement_unit.abbreviation",
     label: "Unit",
     rowClass: "whitespace-pre-line max-w-fit",
