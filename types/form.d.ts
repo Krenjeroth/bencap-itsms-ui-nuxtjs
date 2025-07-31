@@ -169,11 +169,11 @@ declare global {
         type?: string;
         classification?: string;
         purpose?: string;
-        status?: string;
+        status?: string | null;
       };
       image?: string | null;
       year_released?: string | null;
-      status?: string;
+      status?: string | null;
     };
     parent_component?: string | null;
     code?: string | null;
@@ -181,14 +181,10 @@ declare global {
     description?: string | null;
     serial_number?: string | null;
     property_number?: string;
-    ics_number?: string | null;
     date_acquired?: TDatePickerDate;
     ip_address?: string | null;
     mac_address?: string | null;
     inventory_type?: string | null;
-    iar_number?: string | null;
-    po_number?: string | null;
-    control_number?: string | null;
     date_issued?: TDatePickerDate;
     date_accepted?: TDatePickerDate;
     date_installed?: TDatePickerDate;
@@ -211,11 +207,11 @@ declare global {
         type?: string;
         classification?: string;
         purpose?: string;
-        status?: string;
+        status?: string | null;
       };
       image?: string | null;
       year_released?: string | null;
-      status?: string;
+      status?: string | null;
     };
     parent_component?: string | null;
     code?: string | null;
@@ -223,14 +219,10 @@ declare global {
     description?: string | null;
     serial_number?: string | null;
     property_number?: string;
-    ics_number?: string | null;
     date_acquired?: TDatePickerDate;
     ip_address?: string | null;
     mac_address?: string | null;
     inventory_type?: string | null;
-    iar_number?: string | null;
-    po_number?: string | null;
-    control_number?: string | null;
     date_issued?: TDatePickerDate;
     date_accepted?: TDatePickerDate;
     date_installed?: TDatePickerDate;
@@ -516,15 +508,18 @@ declare global {
         type?: string;
         classification?: string;
         purpose?: string;
-        status?: string;
+        status?: string | null;
       };
       image?: string | null;
       year_released?: string | null;
-      status?: string;
+      status?: string | null;
     };
     description?: string | null;
     item_number?: string | null;
     stock_number?: string | null;
+    ics_number?: string | null;
+    iar_number?: string | null;
+    po_number?: string | null;
     quantity?: number;
   }
 
@@ -543,15 +538,18 @@ declare global {
         type?: string;
         classification?: string;
         purpose?: string;
-        status?: string;
+        status?: string | null;
       };
       image?: string | null;
       year_released?: string | null;
-      status?: string;
+      status?: string | null;
     };
     description?: string | null;
     item_number?: string | null;
     stock_number?: string | null;
+    ics_number?: string | null;
+    iar_number?: string | null;
+    po_number?: string | null;
     quantity?: number;
   }
 
