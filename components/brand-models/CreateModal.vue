@@ -35,7 +35,7 @@ const formState = ref<ICreateBrandModelForm>({
   specification: undefined,
   item_type: undefined,
   brand: undefined,
-  year_released: undefined,
+  // year_released: undefined,
 });
 
 const nameComputed = computed({
@@ -51,6 +51,13 @@ const specificationComputed = computed({
     formState.value.specification = capitalizeAll(value);
   },
 });
+
+// const yearReleasedComputed = computed({
+//   get: () => formState.value.year_released ?? undefined,
+//   set: (value) => {
+//     formState.value.year_released = value;
+//   },
+// });
 
 const handleSubmit = async (
   event: IFormSubmitEvent<TCreateBrandModelValidationSchema>
@@ -107,14 +114,14 @@ const searchBrands = async (q: string) => {
           <UInput v-model="nameComputed" />
         </UFormGroup>
 
-        <UFormGroup
+        <!-- <UFormGroup
           label="Year Released"
           name="year_released"
           :error="errorBag.year_released"
           :ui="{ wrapper: 'md:w-full' }"
         >
-          <UInput v-model="formState.year_released" />
-        </UFormGroup>
+          <UInput v-model="yearReleasedComputed" />
+        </UFormGroup> -->
       </div>
 
       <UFormGroup

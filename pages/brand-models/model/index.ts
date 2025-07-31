@@ -2,6 +2,13 @@ export { columns, items };
 
 const columns: ITableColumns[] = [
   {
+    key: "brand.name",
+    label: "Brand",
+    sortable: true,
+    direction: "desc",
+    rowClass: "whitespace-pre-line max-w-fit",
+  },
+  {
     key: "name",
     label: "Model",
     sortable: true,
@@ -13,16 +20,11 @@ const columns: ITableColumns[] = [
     label: "Specification",
     rowClass: "whitespace-pre-line max-w-fit",
   },
-  {
-    key: "brand.name",
-    label: "Brand",
-    rowClass: "whitespace-pre-line max-w-fit",
-  },
-  {
-    key: "year_released",
-    label: "Year Released",
-    rowClass: "whitespace-pre-line max-w-fit",
-  },
+  // {
+  //   key: "year_released",
+  //   label: "Year Released",
+  //   rowClass: "whitespace-pre-line max-w-fit",
+  // },
   {
     key: "item_type.type",
     label: "Type",

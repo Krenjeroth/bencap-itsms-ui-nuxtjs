@@ -48,7 +48,7 @@ const formState = ref<IUpdateBrandModelForm>({
   specification: props.brandModel?.specification || undefined,
   item_type: props.brandModel?.item_type?.id || undefined,
   brand: props.brandModel?.brand.id || undefined,
-  year_released: props.brandModel?.year_released || undefined,
+  // year_released: props.brandModel?.year_released || undefined,
 });
 
 const originalState = ref<IUpdateBrandModelForm>({
@@ -57,7 +57,7 @@ const originalState = ref<IUpdateBrandModelForm>({
     specification: props.brandModel?.specification || undefined,
     item_type: props.brandModel?.item_type?.id || undefined,
     brand: props.brandModel?.brand.id || undefined,
-    year_released: props.brandModel?.year_released || undefined,
+    // year_released: props.brandModel?.year_released || undefined,
   }),
 });
 
@@ -66,7 +66,7 @@ const fieldsToCompare: (keyof IUpdateBrandModelForm)[] = [
   "specification",
   "item_type",
   "brand",
-  "year_released",
+  // "year_released",
 ];
 
 const isChangedComputed = computed(() => {
@@ -91,6 +91,13 @@ const specificationComputed = computed({
     formState.value.specification = capitalizeAll(value);
   },
 });
+
+// const yearReleasedComputed = computed({
+//   get: () => formState.value.year_released ?? undefined,
+//   set: (value) => {
+//     formState.value.year_released = value;
+//   },
+// });
 
 const handleSubmit = async (
   event: IFormSubmitEvent<TUpdateBrandValidationSchema>
@@ -133,7 +140,7 @@ const searchBrands = async (q: string) => {
 </script>
 
 <template>
-  <BaseModal :on-close="onClose" :title="`Create ${props.pageTitle}`">
+  <BaseModal :on-close="onClose" :title="`Update ${props.pageTitle}`">
     <UForm
       :schema="UpdateBrandModelValidationSchema"
       :state="formState"
@@ -152,14 +159,14 @@ const searchBrands = async (q: string) => {
           <UInput v-model="nameComputed" />
         </UFormGroup>
 
-        <UFormGroup
+        <!-- <UFormGroup
           label="Year Released"
           name="year_released"
           :error="errorBag.year_released"
           :ui="{ wrapper: 'md:w-full' }"
         >
-          <UInput v-model="formState.year_released" />
-        </UFormGroup>
+          <UInput v-model="yearReleasedComputed" />
+        </UFormGroup> -->
       </div>
 
       <UFormGroup
