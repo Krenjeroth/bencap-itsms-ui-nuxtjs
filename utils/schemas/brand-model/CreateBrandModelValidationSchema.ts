@@ -3,12 +3,17 @@ import { z } from "zod";
 const currentYear = new Date().getFullYear();
 
 export const CreateBrandModelValidationSchema = z.object({
-  name: z
+  name: z.string().nullable().optional(),
+  // name: z
+  //   .string({
+  //     invalid_type_error: "Brand model name is required",
+  //   })
+  //   .min(2, "Brand model name must be at least 2 characters long"),
+  specification: z
     .string({
-      invalid_type_error: "Brand model name is required",
+      invalid_type_error: "Brand model specification is required",
     })
-    .min(2, "Brand model name must be at least 2 characters long"),
-  specification: z.string().nullable().optional(),
+    .min(2, "Brand model specification must be at least 2 characters long"),
   item_type: z.number(),
   brand: z.number(),
   // image: z

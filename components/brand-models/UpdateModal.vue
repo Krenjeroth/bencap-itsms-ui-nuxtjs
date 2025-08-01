@@ -79,9 +79,9 @@ const isChangedComputed = computed(() => {
 });
 
 const nameComputed = computed({
-  get: () => formState.value.name,
+  get: () => formState.value.name ?? undefined,
   set: (value) => {
-    formState.value.name = capitalizeAll(value);
+    formState.value.name = value ? capitalizeAll(value) : undefined;
   },
 });
 
@@ -147,11 +147,20 @@ const searchBrands = async (q: string) => {
       @submit.prevent="handleSubmit"
       class="space-y-6"
     >
+      <UFormGroup
+        label="Specification"
+        name="specification"
+        :error="errorBag.specification"
+        :ui="{ wrapper: 'md:w-full' }"
+      >
+        <UTextarea v-model="specificationComputed" autoresize />
+      </UFormGroup>
+
       <div
         class="space-y-6 space-x-0 md:space-y-0 md:space-x-6 md:flex md:justify-between md:grid-cols-3"
       >
         <UFormGroup
-          label="Model Name"
+          label="Model Name (Optional)"
           name="name"
           :error="errorBag.name"
           :ui="{ wrapper: 'md:w-full' }"
@@ -168,15 +177,6 @@ const searchBrands = async (q: string) => {
           <UInput v-model="yearReleasedComputed" />
         </UFormGroup> -->
       </div>
-
-      <UFormGroup
-        label="Specification"
-        name="specification"
-        :error="errorBag.specification"
-        :ui="{ wrapper: 'md:w-full' }"
-      >
-        <UTextarea v-model="specificationComputed" autoresize />
-      </UFormGroup>
 
       <UFormGroup
         label="Item Type"

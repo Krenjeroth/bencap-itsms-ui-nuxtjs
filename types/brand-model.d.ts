@@ -3,8 +3,8 @@ import type { z } from "zod";
 declare global {
   interface IBrandModel {
     id: string;
-    name: string;
-    specification: string | null;
+    name: string | null;
+    specification: string;
     brand: string;
     image: string | null;
     year_released: string;
