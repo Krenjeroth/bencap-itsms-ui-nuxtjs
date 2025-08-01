@@ -161,6 +161,69 @@ const searchEmployees = async (q: string) => {
       @submit.prevent="handleSubmit"
       class="space-y-6"
     >
+      <div class="space-y-6">
+        <UDivider label="Basic Information" />
+        <div class="space-y-6 md:space-y-0 md:flex md:space-x-6">
+          <UFormGroup
+            label="Employee (Actual End-User)"
+            name="employee"
+            :error="errorBag.employee"
+            :ui="{ wrapper: 'md:w-full' }"
+          >
+            <UInputMenu
+              v-model="formState.employee"
+              :search="searchEmployees"
+              :loading="loadingEmployees"
+              placeholder="Type to search..."
+              option-attribute="full_name"
+            >
+              <template #option="{ option }">
+                <span class="truncate">{{ option.full_name }}</span>
+              </template>
+
+              <template #empty>
+                <span
+                  v-if="employeeSearchQuery.length < 2"
+                  class="text-gray-400"
+                  >Type at least 2 characters...</span
+                >
+                <span v-else class="text-gray-400">No Employee found</span>
+              </template>
+            </UInputMenu>
+          </UFormGroup>
+        </div>
+
+        <div class="space-y-6 md:space-y-0 md:flex md:space-x-6">
+          <UFormGroup
+            label="IP Address"
+            name="ip_address"
+            :error="errorBag.ip_address"
+            :ui="{ wrapper: 'md:w-full' }"
+          >
+            <UInput v-model="ipAddressValue" />
+          </UFormGroup>
+
+          <UFormGroup
+            label="MAC Address"
+            name="mac_address"
+            :error="errorBag.mac_address"
+            :ui="{ wrapper: 'md:w-full' }"
+          >
+            <UInput v-model="macAddressValue" />
+          </UFormGroup>
+        </div>
+        <UFormGroup
+          label="Remarks"
+          name="description"
+          :error="errorBag.description"
+        >
+          <!-- <UInput v-model="descriptionValue" /> -->
+          <UTextarea v-model="descriptionValue" autoresize />
+        </UFormGroup>
+      </div>
+
+      <UDivider label="Computer Specification" />
+
       <div class="space-y-6 md:space-y-0 md:flex md:space-x-6">
         <UFormGroup
           label="Property Number"
@@ -206,34 +269,6 @@ const searchEmployees = async (q: string) => {
           </template>
         </UInputMenu>
       </UFormGroup>
-
-      <div class="space-y-6 md:space-y-0 md:flex md:space-x-6">
-        <UFormGroup
-          label="Employee (Actual End-User)"
-          name="employee"
-          :error="errorBag.employee"
-          :ui="{ wrapper: 'md:w-full' }"
-        >
-          <UInputMenu
-            v-model="formState.employee"
-            :search="searchEmployees"
-            :loading="loadingEmployees"
-            placeholder="Type to search..."
-            option-attribute="full_name"
-          >
-            <template #option="{ option }">
-              <span class="truncate">{{ option.full_name }}</span>
-            </template>
-
-            <template #empty>
-              <span v-if="employeeSearchQuery.length < 2" class="text-gray-400"
-                >Type at least 2 characters...</span
-              >
-              <span v-else class="text-gray-400">No Employee found</span>
-            </template>
-          </UInputMenu>
-        </UFormGroup>
-      </div>
 
       <div class="space-y-6 md:space-y-0 md:flex md:space-x-6">
         <UFormGroup
@@ -368,35 +403,6 @@ const searchEmployees = async (q: string) => {
           </UPopover>
         </UFormGroup>
       </div>
-
-      <div class="space-y-6 md:space-y-0 md:flex md:space-x-6">
-        <UFormGroup
-          label="IP Address"
-          name="ip_address"
-          :error="errorBag.ip_address"
-          :ui="{ wrapper: 'md:w-full' }"
-        >
-          <UInput v-model="ipAddressValue" />
-        </UFormGroup>
-
-        <UFormGroup
-          label="MAC Address"
-          name="mac_address"
-          :error="errorBag.mac_address"
-          :ui="{ wrapper: 'md:w-full' }"
-        >
-          <UInput v-model="macAddressValue" />
-        </UFormGroup>
-      </div>
-
-      <UFormGroup
-        label="Description"
-        name="description"
-        :error="errorBag.description"
-      >
-        <!-- <UInput v-model="descriptionValue" /> -->
-        <UTextarea v-model="descriptionValue" autoresize />
-      </UFormGroup>
 
       <UButton type="submit" :loading="loading"> Add </UButton>
     </UForm>
