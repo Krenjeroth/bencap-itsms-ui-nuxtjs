@@ -31,7 +31,7 @@ export default defineNuxtConfig({
     "@nuxtjs/color-mode",
     "nuxt-lodash",
     "@nuxt/image",
-    "@vueuse/nuxt",
+    // "@vueuse/nuxt",
   ],
   sanctum: {
     // baseUrl: "http://itsms:80", // Laravel API: Local

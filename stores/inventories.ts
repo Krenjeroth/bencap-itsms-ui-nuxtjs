@@ -5,6 +5,7 @@ export const useInventoryStore = defineStore("inventoryStore", () => {
     updateInventoryApi,
     deleteInventoryApi,
     fetchInventorySearchApi,
+    fetchInventoryMainAssetSearchApi,
   } = useInventoryApi();
   const { hasError, errorBag, transformValidationErrors, resetErrorBag } =
     useErrorHandler();
@@ -76,15 +77,6 @@ export const useInventoryStore = defineStore("inventoryStore", () => {
       date_acquired: form.date_acquired
         ? transformDatePickerDate(form.date_acquired, "YYYY-MM-DD HH:mm:ss")
         : null,
-      date_issued: form.date_issued
-        ? transformDatePickerDate(form.date_issued, "YYYY-MM-DD HH:mm:ss")
-        : null,
-      date_accepted: form.date_accepted
-        ? transformDatePickerDate(form.date_accepted, "YYYY-MM-DD HH:mm:ss")
-        : null,
-      date_installed: form.date_installed
-        ? transformDatePickerDate(form.date_installed, "YYYY-MM-DD HH:mm:ss")
-        : null,
       status: "active",
     };
 
@@ -107,15 +99,6 @@ export const useInventoryStore = defineStore("inventoryStore", () => {
       brand_model_id: form.brand_model?.id,
       date_acquired: form.date_acquired
         ? transformDatePickerDate(form.date_acquired, "YYYY-MM-DD HH:mm:ss")
-        : null,
-      date_issued: form.date_issued
-        ? transformDatePickerDate(form.date_issued, "YYYY-MM-DD HH:mm:ss")
-        : null,
-      date_accepted: form.date_accepted
-        ? transformDatePickerDate(form.date_accepted, "YYYY-MM-DD HH:mm:ss")
-        : null,
-      date_installed: form.date_installed
-        ? transformDatePickerDate(form.date_installed, "YYYY-MM-DD HH:mm:ss")
         : null,
       status: "active",
     };
@@ -155,6 +138,20 @@ export const useInventoryStore = defineStore("inventoryStore", () => {
     }
   };
 
+  const fetchInventoryMainAssetSearch = async (q: string) => {
+    try {
+      const queryParams = new URLSearchParams({
+        q,
+        limit: "50",
+      });
+      const response = await fetchInventoryMainAssetSearchApi(queryParams);
+      return response.data;
+    } catch (err) {
+      console.error("API Error:", err);
+      return [];
+    }
+  };
+
   return {
     inventories,
     inventorySelect,
@@ -172,5 +169,6 @@ export const useInventoryStore = defineStore("inventoryStore", () => {
     updateInventory,
     deleteInventory,
     fetchInventorySearch,
+    fetchInventoryMainAssetSearch,
   };
 });

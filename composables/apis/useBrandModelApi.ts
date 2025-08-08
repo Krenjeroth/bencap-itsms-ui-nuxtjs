@@ -7,8 +7,8 @@ export const useBrandModelApi = () => {
     return url;
   });
 
-  const brandModelSelectUrl = computed(() => {
-    const url = apiUrl(moduleTitle + "-select");
+  const brandModelSearchUrl = computed(() => {
+    const url = apiUrl(moduleTitle + "-search");
     return url;
   });
 
@@ -42,9 +42,9 @@ export const useBrandModelApi = () => {
     });
   };
 
-  const fetchBrandModelSelectApi = async (queryParams?: URLSearchParams) => {
+  const fetchBrandModelSearchApi = async (queryParams?: URLSearchParams) => {
     const queryString = queryParams?.toString() || "";
-    return await sanctumFetch(`${brandModelSelectUrl.value}?${queryString}`);
+    return await sanctumFetch(`${brandModelSearchUrl.value}?${queryString}`);
   };
 
   return {
@@ -52,6 +52,6 @@ export const useBrandModelApi = () => {
     addBrandModelApi,
     updateBrandModelApi,
     deleteBrandModelApi,
-    fetchBrandModelSelectApi,
+    fetchBrandModelSearchApi,
   };
 };

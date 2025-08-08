@@ -12,6 +12,11 @@ export const useInventoryApi = () => {
     return url;
   });
 
+  const inventoriesMainAssetSearchUrl = computed(() => {
+    const url = apiUrl(moduleTitle + "-main-asset-search");
+    return url;
+  });
+
   const fetchInventoriesApi = async (queryParams: URLSearchParams) => {
     return await sanctumFetch(
       `${inventoryUrl.value}?${queryParams.toString()}`
@@ -46,11 +51,21 @@ export const useInventoryApi = () => {
     return await sanctumFetch(`${inventoriesSearchUrl.value}?${queryString}`);
   };
 
+  const fetchInventoryMainAssetSearchApi = async (
+    queryParams?: URLSearchParams
+  ) => {
+    const queryString = queryParams?.toString() || "";
+    return await sanctumFetch(
+      `${inventoriesMainAssetSearchUrl.value}?${queryString}`
+    );
+  };
+
   return {
     fetchInventoriesApi,
     addInventoryApi,
     updateInventoryApi,
     deleteInventoryApi,
     fetchInventorySearchApi,
+    fetchInventoryMainAssetSearchApi,
   };
 };

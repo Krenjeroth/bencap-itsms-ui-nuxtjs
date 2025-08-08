@@ -4,7 +4,7 @@ export const useBrandModelStore = defineStore("brandModelStore", () => {
     addBrandModelApi,
     updateBrandModelApi,
     deleteBrandModelApi,
-    fetchBrandModelSelectApi,
+    fetchBrandModelSearchApi,
   } = useBrandModelApi();
   const { hasError, errorBag, transformValidationErrors, resetErrorBag } =
     useErrorHandler();
@@ -122,8 +122,22 @@ export const useBrandModelStore = defineStore("brandModelStore", () => {
         q,
         limit: "50",
       });
-      const response = await fetchBrandModelSelectApi(queryParams);
+      const response = await fetchBrandModelSearchApi(queryParams);
       return response.data; // ✅ MUST return data!
+    } catch (err) {
+      console.error("API Error:", err);
+      return [];
+    }
+  };
+
+  const fetchBrandModelSearch = async (q: string) => {
+    try {
+      const queryParams = new URLSearchParams({
+        q,
+        limit: "50",
+      });
+      const response = await fetchBrandModelSearchApi(queryParams);
+      return response.data;
     } catch (err) {
       console.error("API Error:", err);
       return [];
@@ -148,5 +162,6 @@ export const useBrandModelStore = defineStore("brandModelStore", () => {
     updateBrandModel,
     deleteBrandModel,
     fetchBrandModelSelect,
+    fetchBrandModelSearch,
   };
 });
