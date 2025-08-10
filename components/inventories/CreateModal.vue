@@ -244,12 +244,6 @@ const searchItemTypes = async (q: string) => {
   return filtered;
 };
 
-watch(itemTypeComputed, (e) => {
-  if (e !== 1) {
-    formState.internal_components = [];
-  }
-});
-
 watch(itemTypeComputed, (val) => {
   if (val === 1 && formState.internal_components.length === 0) {
     formState.internal_components.push({
