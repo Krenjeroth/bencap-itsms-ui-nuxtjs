@@ -154,13 +154,6 @@ declare global {
 
   interface ICreateInventoryForm {
     item_type?: number;
-    // item_type?: {
-    //   id?: number;
-    //   type?: string;
-    //   classification?: string;
-    //   purpose?: string;
-    //   status?: string | null;
-    // };
     employee?: {
       id: number;
       full_name: string;
@@ -173,20 +166,6 @@ declare global {
       id?: number;
       name?: string | null;
       specification?: string;
-      // brand?: {
-      //   id?: number;
-      //   name?: string;
-      // };
-      // item_type?: {
-      //   id?: number;
-      //   type?: string;
-      //   classification?: string;
-      //   purpose?: string;
-      //   status?: string | null;
-      // };
-      // image?: string | null;
-      // year_released?: string | null;
-      // status?: string | null;
     } | null;
     ip_address?: string | null;
     mac_address?: string | null;
@@ -206,68 +185,41 @@ declare global {
     warranty_expiration_date?: TDatePickerDate;
     status?: string | null;
     internal_components?: Array | null;
-    // [
-    //   {
-    //     brand_model?: {
-    //       id?: number;
-    //       name?: string;
-    //       brand?: {
-    //         id?: number;
-    //         name?: string;
-    //       };
-    //       item_type?: {
-    //         id?: number;
-    //         type?: string;
-    //         classification?: string;
-    //         purpose?: string;
-    //         status?: string | null;
-    //       };
-    //       image?: string | null;
-    //       year_released?: string | null;
-    //       status?: string | null;
-    //     };
-    //     specific_serial_number?: string | null;
-    //     quantity?: number;
-    //   }
-    // ]
   }
 
   interface IUpdateInventoryForm {
+    item_type?: number;
     employee?: {
       id: number;
       full_name: string;
-    };
+    } | null;
+    inventory?: {
+      id: number;
+      property_number: string;
+    } | null;
     brand_model?: {
       id?: number;
-      name?: string;
-      brand?: {
-        id?: number;
-        name?: string;
-      };
-      item_type?: {
-        id?: number;
-        type?: string;
-        classification?: string;
-        purpose?: string;
-        status?: string | null;
-      };
-      image?: string | null;
-      year_released?: string | null;
-      status?: string | null;
-    };
-    parent_component?: string | null;
-    code?: string | null;
-    barcode?: string | null;
-    description?: string | null;
-    serial_number?: string | null;
-    property_number?: string;
-    date_acquired?: TDatePickerDate;
+      name?: string | null;
+      specification?: string;
+    } | null;
     ip_address?: string | null;
     mac_address?: string | null;
-    inventory_type?: string | null;
-    date_issued?: TDatePickerDate;
-    date_accepted?: TDatePickerDate;
-    date_installed?: TDatePickerDate;
+    remarks?: string | null;
+    operating_system_name?: string | null;
+    os_license_number?: string | null;
+    anti_virus_name?: string | null;
+    anti_virus_license_number?: string | null;
+    microsoft_office_name?: string | null;
+    ms_office_license_number?: string | null;
+    other_installed_applications?: string | null;
+
+    // parent_component?: number | null;
+    date_acquired?: TDatePickerDate;
+    serial_number?: string | null;
+    property_number?: string;
+    warranty_expiration_date?: TDatePickerDate;
+    status?: string | null;
+    internal_components?: Array | null;
   }
 
   interface ICreateItServiceForm {

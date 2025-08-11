@@ -11,11 +11,11 @@ const columns: ITableColumns[] = [
     label: "Issued To",
     rowClass: "whitespace-pre-line max-w-fit",
   },
-  {
-    key: "parent_component",
-    label: "Parent Component",
-    rowClass: "whitespace-pre-line max-w-fit",
-  },
+  // {
+  //   key: "parent_component",
+  //   label: "Parent Component",
+  //   rowClass: "whitespace-pre-line max-w-fit",
+  // },
   {
     key: "ip_address",
     label: "IP Address",

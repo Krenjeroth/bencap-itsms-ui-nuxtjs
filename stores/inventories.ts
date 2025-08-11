@@ -75,13 +75,12 @@ export const useInventoryStore = defineStore("inventoryStore", () => {
       employee_id: form.employee?.id,
       brand_model_id: form.brand_model?.id,
       item_type_id: form.item_type,
+      parent_component_id: form.inventory?.id,
       date_acquired: form.date_acquired
         ? transformDatePickerDate(form.date_acquired, "YYYY-MM-DD HH:mm:ss")
         : null,
       status: "active",
     };
-
-    console.log(formattedForm);
 
     await addInventoryApi(formattedForm)
       .catch((err: any) => {

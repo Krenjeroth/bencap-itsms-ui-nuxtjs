@@ -1,8 +1,11 @@
 <script setup lang="ts">
 import { format } from "date-fns";
-import { v4 as uuidv4 } from "uuid";
 const inventoryStore = useInventoryStore();
-const { loading, errorBag, hasError } = storeToRefs(inventoryStore);
+const {
+  loading: loadingInventories,
+  errorBag,
+  hasError,
+} = storeToRefs(inventoryStore);
 
 const brandModelStore = useBrandModelStore();
 const { loading: loadingBrandModels } = storeToRefs(brandModelStore);
@@ -61,16 +64,6 @@ const formState = reactive<ICreateInventoryForm>({
   // for inventory_internal_components table
   internal_components: [],
   inventory: undefined,
-
-  // code: undefined,
-  // barcode: undefined,
-  // description: undefined,
-  // date_issued: undefined,
-  // date_accepted: undefined,
-  // date_installed: undefined,
-  // is_main_asset: false,
-  // is_desktop_cpu: false,
-  // inventory: undefined,
 });
 
 const serialNumberValue = computed({
@@ -219,17 +212,20 @@ const searchEmployees = async (q: string) => {
   return result;
 };
 
-const inventoryOptions = ref<TEmployeeSelectOption[]>([]);
-const inventorySearchQuery = ref("");
+const inventoryMainAssetSearchOptions = ref<TInventorySelectOption[]>([]);
+const inventoryMainAssetSearchQuery = ref("");
 
-const searchInventory = async (q: string) => {
-  inventorySearchQuery.value = q;
-  if (!inventorySearchQuery.value || inventorySearchQuery.value.length < 2)
+const searchInventoryMainAsset = async (q: string) => {
+  inventoryMainAssetSearchQuery.value = q;
+  if (
+    !inventoryMainAssetSearchQuery.value ||
+    inventoryMainAssetSearchQuery.value.length < 2
+  )
     return [];
   const result = await inventoryStore.fetchInventoryMainAssetSearch(
-    inventorySearchQuery.value
+    inventoryMainAssetSearchQuery.value
   );
-  inventoryOptions.value = result;
+  inventoryMainAssetSearchOptions.value = result;
   return result;
 };
 
@@ -559,14 +555,14 @@ const removeRow = (index: number) => {
         v-if="itemTypeComputed !== 1"
       >
         <UFormGroup
-          label="Inventory (Parent Component)"
+          label="Parent Component"
           name="inventory"
           :ui="{ wrapper: 'md:w-full' }"
         >
           <UInputMenu
             v-model="inventoryComputed"
-            :search="searchInventory"
-            :loading="loading"
+            :search="searchInventoryMainAsset"
+            :loading="loadingInventories"
             placeholder="Search by property number..."
             option-attribute="property_number"
           >
@@ -593,10 +589,10 @@ const removeRow = (index: number) => {
             :search="searchBrandModels"
             :loading="loadingBrandModels"
             placeholder="Type to search..."
-            option-attribute="name"
+            option-attribute="specification"
           >
             <template #option="{ option }">
-              <span class="truncate">{{ option.name }}</span>
+              <span class="truncate">{{ option.specification }}</span>
             </template>
 
             <template #empty>
@@ -617,7 +613,7 @@ const removeRow = (index: number) => {
         </UFormGroup>
       </div>
 
-      <UButton type="submit" :loading="loading"> Add </UButton>
+      <UButton type="submit" :loading="loadingInventories"> Add </UButton>
     </UForm>
   </BaseModal>
 </template>
