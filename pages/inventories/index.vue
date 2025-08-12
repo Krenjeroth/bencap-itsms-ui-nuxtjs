@@ -69,9 +69,9 @@ const addInventoryModal = () => {
   });
 };
 
-const editInventoryModal = (item: any) => {
+const editInventoryModal = (inventoryItem: any) => {
   modal.open(InventoriesUpdateModal, {
-    item,
+    inventoryItem,
     pageTitle: pageTitleSingular,
     onReloadTable() {
       inventoryStore.fetchInventories();
@@ -109,9 +109,9 @@ const editInventoryModal = (item: any) => {
   });
 };
 
-const deleteInventoryModal = (item: any) => {
+const deleteInventoryModal = (inventoryItem: any) => {
   modal.open(InventoriesDeleteModal, {
-    item,
+    inventoryItem,
     pageTitle: pageTitleSingular,
     onReloadTable() {
       inventoryStore.fetchInventories();

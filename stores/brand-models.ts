@@ -130,10 +130,11 @@ export const useBrandModelStore = defineStore("brandModelStore", () => {
     }
   };
 
-  const fetchBrandModelSearch = async (q: string) => {
+  const fetchBrandModelSearch = async (q: string, item_type_id: any = null) => {
     try {
       const queryParams = new URLSearchParams({
         q,
+        item_type_id,
         limit: "50",
       });
       const response = await fetchBrandModelSearchApi(queryParams);

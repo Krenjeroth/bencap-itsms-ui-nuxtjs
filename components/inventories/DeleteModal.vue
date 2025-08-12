@@ -1,9 +1,9 @@
 <script setup lang="ts">
-const itemStore = useItemStore();
+const inventoryStore = useInventoryStore();
 
-const { loading, hasError } = storeToRefs(itemStore);
+const { loading, hasError } = storeToRefs(inventoryStore);
 const props = defineProps({
-  item: Object,
+  inventoryItem: Object,
   pageTitle: String,
 });
 const emit = defineEmits(["reloadTable", "success", "error", "close"]);
@@ -19,7 +19,7 @@ const onError = () => {
 };
 
 const handleSubmit = async () => {
-  await itemStore.deleteItem(props.item?.id);
+  await inventoryStore.deleteInventory(props.inventoryItem?.id);
 
   if (hasError.value) {
     onError();
@@ -34,7 +34,7 @@ const handleSubmit = async () => {
 <template>
   <BaseModal
     :on-close="onClose"
-    :title="`Delete ${props.item?.property_number}`"
+    :title="`Delete ${props.inventoryItem?.property_number}`"
     :ui="{ width: 'md:max-w-1xl' }"
   >
     <p class="italic">This action cannot be undone.</p>

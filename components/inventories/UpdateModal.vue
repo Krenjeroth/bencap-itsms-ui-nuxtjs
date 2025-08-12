@@ -31,7 +31,7 @@ const emit = defineEmits([
 
 const props = defineProps({
   pageTitle: String,
-  item: Object,
+  inventoryItem: Object,
 });
 
 const { capitalizeAll } = useStringHandler();
@@ -51,75 +51,84 @@ const onError = () => {
 const onNoDataChange = () => {
   emit("noDataChange");
 };
-console.log(props);
+
 const formState = reactive<IUpdateInventoryForm>({
-  employee: props.item?.employee || undefined,
-  item_type: props.item?.item_type?.id || undefined,
-  brand_model: props.item?.brand_model || undefined,
+  employee: props.inventoryItem?.employee || undefined,
+  item_type: props.inventoryItem?.item_type?.id || undefined,
+  brand_model: props.inventoryItem?.brand_model || undefined,
 
-  ip_address: props.item?.ip_address || undefined,
-  mac_address: props.item?.mac_address || undefined,
-  remarks: props.item?.remarks || undefined,
+  ip_address: props.inventoryItem?.ip_address || undefined,
+  mac_address: props.inventoryItem?.mac_address || undefined,
+  remarks: props.inventoryItem?.remarks || undefined,
 
-  operating_system_name: props.item?.operating_system_name || undefined,
-  os_license_number: props.item?.os_license_number || undefined,
-  anti_virus_name: props.item?.anti_virus_name || undefined,
-  anti_virus_license_number: props.item?.anti_virus_license_number || undefined,
-  microsoft_office_name: props.item?.microsoft_office_name || undefined,
-  ms_office_license_number: props.item?.ms_office_license_number || undefined,
+  operating_system_name:
+    props.inventoryItem?.operating_system_name || undefined,
+  os_license_number: props.inventoryItem?.os_license_number || undefined,
+  anti_virus_name: props.inventoryItem?.anti_virus_name || undefined,
+  anti_virus_license_number:
+    props.inventoryItem?.anti_virus_license_number || undefined,
+  microsoft_office_name:
+    props.inventoryItem?.microsoft_office_name || undefined,
+  ms_office_license_number:
+    props.inventoryItem?.ms_office_license_number || undefined,
   other_installed_applications:
-    props.item?.other_installed_applications || undefined,
+    props.inventoryItem?.other_installed_applications || undefined,
 
-  property_number: props.item?.property_number || undefined,
-  date_acquired: props.item?.date_acquired
-    ? transformDbDate(props.item.date_acquired)
+  property_number: props.inventoryItem?.property_number || undefined,
+  date_acquired: props.inventoryItem?.date_acquired
+    ? transformDbDate(props.inventoryItem.date_acquired)
     : undefined,
-  warranty_expiration_date: props.item?.warranty_expiration_date
-    ? transformDbDate(props.item.warranty_expiration_date)
+  warranty_expiration_date: props.inventoryItem?.warranty_expiration_date
+    ? transformDbDate(props.inventoryItem.warranty_expiration_date)
     : undefined,
-  serial_number: props.item?.serial_number || undefined,
-  status: props.item?.status || undefined,
+  serial_number: props.inventoryItem?.serial_number || undefined,
+  status: props.inventoryItem?.status || undefined,
 
   // for inventory_internal_components table
-  internal_components: props.item?.internal_components || [],
-  inventory: props.item?.inventory || undefined, // Parent Component
+  internal_components: props.inventoryItem?.internal_components || [],
+  inventory: props.inventoryItem?.inventory || undefined, // Parent Component
 });
 
 const originalState = reactive<IUpdateInventoryForm>({
   ...cloneDeep({
-    employee: props.item?.employee || undefined,
-    item_type: props.item?.item_type || undefined,
-    brand_model: props.item?.brand_model || undefined,
+    employee: props.inventoryItem?.employee || undefined,
+    item_type: props.inventoryItem?.item_type?.id || undefined,
+    brand_model: props.inventoryItem?.brand_model || undefined,
 
-    ip_address: props.item?.ip_address || undefined,
-    mac_address: props.item?.mac_address || undefined,
-    remarks: props.item?.remarks || undefined,
+    ip_address: props.inventoryItem?.ip_address || undefined,
+    mac_address: props.inventoryItem?.mac_address || undefined,
+    remarks: props.inventoryItem?.remarks || undefined,
 
-    operating_system_name: props.item?.operating_system_name || undefined,
-    os_license_number: props.item?.os_license_number || undefined,
-    anti_virus_name: props.item?.anti_virus_name || undefined,
+    operating_system_name:
+      props.inventoryItem?.operating_system_name || undefined,
+    os_license_number: props.inventoryItem?.os_license_number || undefined,
+    anti_virus_name: props.inventoryItem?.anti_virus_name || undefined,
     anti_virus_license_number:
-      props.item?.anti_virus_license_number || undefined,
-    microsoft_office_name: props.item?.microsoft_office_name || undefined,
-    ms_office_license_number: props.item?.ms_office_license_number || undefined,
+      props.inventoryItem?.anti_virus_license_number || undefined,
+    microsoft_office_name:
+      props.inventoryItem?.microsoft_office_name || undefined,
+    ms_office_license_number:
+      props.inventoryItem?.ms_office_license_number || undefined,
     other_installed_applications:
-      props.item?.other_installed_applications || undefined,
+      props.inventoryItem?.other_installed_applications || undefined,
 
-    property_number: props.item?.property_number || undefined,
-    date_acquired: props.item?.date_acquired
-      ? transformDbDate(props.item.date_acquired)
+    property_number: props.inventoryItem?.property_number || undefined,
+    date_acquired: props.inventoryItem?.date_acquired
+      ? transformDbDate(props.inventoryItem.date_acquired)
       : undefined,
-    warranty_expiration_date: props.item?.warranty_expiration_date
-      ? transformDbDate(props.item.warranty_expiration_date)
+    warranty_expiration_date: props.inventoryItem?.warranty_expiration_date
+      ? transformDbDate(props.inventoryItem.warranty_expiration_date)
       : undefined,
-    serial_number: props.item?.serial_number || undefined,
-    status: props.item?.status || undefined,
+    serial_number: props.inventoryItem?.serial_number || undefined,
+    status: props.inventoryItem?.status || undefined,
 
     // for inventory_internal_components table
-    internal_components: props.item?.internal_components || [],
-    inventory: props.item?.inventory || undefined, // Parent Component
+    internal_components: props.inventoryItem?.internal_components || [],
+    inventory: props.inventoryItem?.inventory || undefined, // Parent Component
   }),
 });
+
+console.log(props.inventoryItem?.internal_components);
 
 const fieldsToCompare: (keyof IUpdateInventoryForm)[] = [
   "employee",
@@ -275,7 +284,7 @@ const handleSubmit = async (
     return;
   }
 
-  await inventoryStore.updateInventory(props.item?.id, event.data);
+  await inventoryStore.updateInventory(props.inventoryItem?.id, event.data);
 
   if (hasError.value) {
     onError();
@@ -292,8 +301,19 @@ const searchQuery = ref("");
 const searchBrandModels = async (q: string) => {
   searchQuery.value = q;
   if (!searchQuery.value || searchQuery.value.length < 2) return [];
-  const result = await brandModelStore.fetchBrandModelSelect(searchQuery.value);
+  if (itemTypeComputed.value === 1) {
+    const result = await brandModelStore.fetchBrandModelSelect(
+      searchQuery.value
+    );
+    brandModelOptions.value = result;
+    return result;
+  }
+  const result = await brandModelStore.fetchBrandModelSearch(
+    searchQuery.value,
+    itemTypeComputed.value
+  );
   brandModelOptions.value = result;
+  console.log(result);
   return result;
 };
 

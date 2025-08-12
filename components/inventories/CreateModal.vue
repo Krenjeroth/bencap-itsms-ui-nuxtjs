@@ -192,7 +192,17 @@ const searchQuery = ref("");
 const searchBrandModels = async (q: string) => {
   searchQuery.value = q;
   if (!searchQuery.value || searchQuery.value.length < 2) return [];
-  const result = await brandModelStore.fetchBrandModelSearch(searchQuery.value);
+  if (itemTypeComputed.value === 1) {
+    const result = await brandModelStore.fetchBrandModelSelect(
+      searchQuery.value
+    );
+    brandModelOptions.value = result;
+    return result;
+  }
+  const result = await brandModelStore.fetchBrandModelSearch(
+    searchQuery.value,
+    itemTypeComputed.value
+  );
   brandModelOptions.value = result;
   console.log(result);
   return result;

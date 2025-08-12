@@ -43,11 +43,26 @@ export const useInventoryStore = defineStore("inventoryStore", () => {
 
       const response = await fetchInventoriesApi(queryParams);
 
-      inventories.value = response.data.map((item: any) => ({
-        ...item,
-        // brand_model_formatted: `${item.brand_model.brand.name} ${item.brand_model.name}`,
-        brand_model_formatted: `${item.description}`,
-        option_attribute: `${item.property_number} (${item.description})`,
+      inventories.value = response.data.map((inventory: any) => ({
+        ...inventory,
+        // brand_model_formatted: inventory.brand_model ,
+        brand_model_formatted: inventory.brand_model
+          ? inventory.brand_model
+            ? inventory.brand_model?.name
+              ? `${inventory.brand_model.item_type?.type} ${inventory.brand_model.brand?.specification}, ${inventory.brand_model?.name}`
+              : `${inventory.brand_model?.item_type?.type}, ${inventory.brand_model?.specification}`
+            : null
+          : inventory.item_type?.type,
+        // brand_model_formatted: inventory.brand_model
+        //   ? inventory.brand_model?.name
+        //     ? `${inventory.brand_model.item_type?.type} ${inventory.brand_model.brand?.specification}, ${inventory.brand_model?.name}`
+        //     : `${inventory.brand_model?.item_type?.type}, ${inventory.brand_model?.specification}`
+        //   : null,
+        // brand_model_formatted: inventory.brand_model?.name
+        //   ? `${inventory.brand_model.item_type?.type} ${inventory.brand_model.brand?.specification}, ${inventory.brand_model?.name}`
+        //   : `${inventory.brand_model?.item_type?.type}, ${inventory.brand_model?.specification}`,
+
+        option_attribute: `${inventory.property_number} (${inventory.description})`,
         // inventory_item_formatted: `${
         //   item.inventory_item.brand_model.item_type.type
         // }, ${
@@ -57,6 +72,8 @@ export const useInventoryStore = defineStore("inventoryStore", () => {
         // }`,
         // item_type_formatted: `TYPE: ${item.item_type.type}\r\nClassification: ${item.item_type.classification}\r\nPurpose: ${item.item_type.purpose}`,
       }));
+
+      console.log(inventories.value);
 
       totalInventories.value = Number(response.meta.total) || 0;
     } catch (err: any) {
@@ -97,11 +114,31 @@ export const useInventoryStore = defineStore("inventoryStore", () => {
 
     const formattedForm = {
       ...form,
-      employee_id: form.employee?.id,
-      brand_model_id: form.brand_model?.id,
+      employee_id: form.item_type === 1 ? form.employee?.id : null,
+      brand_model_id: form.item_type !== 1 ? form.brand_model?.id : null,
+      parent_component_id: form.item_type !== 1 ? form.inventory?.id : null,
+      item_type_id: form.item_type,
       date_acquired: form.date_acquired
         ? transformDatePickerDate(form.date_acquired, "YYYY-MM-DD HH:mm:ss")
         : null,
+
+      ip_address: form.item_type === 1 ? form.ip_address : null,
+      mac_address: form.item_type === 1 ? form.mac_address : null,
+      remarks: form.item_type === 1 ? form.remarks : null,
+
+      operating_system_name:
+        form.item_type === 1 ? form.operating_system_name : null,
+      os_license_number: form.item_type === 1 ? form.os_license_number : null,
+      anti_virus_name: form.item_type === 1 ? form.anti_virus_name : null,
+      anti_virus_license_number:
+        form.item_type === 1 ? form.anti_virus_license_number : null,
+      microsoft_office_name:
+        form.item_type === 1 ? form.microsoft_office_name : null,
+      ms_office_license_number:
+        form.item_type === 1 ? form.ms_office_license_number : null,
+      other_installed_applications:
+        form.item_type === 1 ? form.other_installed_applications : null,
+
       status: "active",
     };
 
