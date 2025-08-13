@@ -25,6 +25,8 @@ const formState = ref<ICreateItemTypeForm>({
   type: undefined,
   classification: undefined,
   purpose: undefined,
+  is_main_inventory: false,
+  is_component: false,
 });
 
 const typeComputed = computed({
@@ -86,6 +88,27 @@ const handleSubmit = async (
       <UFormGroup label="Purpose" name="purpose" :error="errorBag.purpose">
         <UInput v-model="purposeComputed" />
       </UFormGroup>
+
+      <div class="space-y-6 space-x-0 md:space-y-0 md:space-x-6 md:flex">
+        <UFormGroup
+          name="is_main_inventory"
+          :error="errorBag.is_main_inventory"
+        >
+          <UCheckbox
+            color="primary"
+            label="Main Inventory"
+            v-model="formState.is_main_inventory"
+          />
+        </UFormGroup>
+
+        <UFormGroup name="is_component" :error="errorBag.is_component">
+          <UCheckbox
+            color="primary"
+            label="Component"
+            v-model="formState.is_component"
+          />
+        </UFormGroup>
+      </div>
 
       <UButton type="submit" :loading="loading"> Add </UButton>
     </UForm>

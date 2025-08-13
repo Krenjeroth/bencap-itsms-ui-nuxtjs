@@ -44,7 +44,40 @@ export const useItemTypeStore = defineStore("itemTypeStore", () => {
 
       const response = await fetchItemTypesApi(queryParams);
 
-      itemTypes.value = response.data;
+      itemTypes.value = response.data.map((itemType: any) => ({
+        ...itemType,
+
+        main_component: `Main Inventory: ${
+          itemType.is_main_inventory ? "Yes" : "No"
+        }\r\nComponent: ${itemType.is_component ? "Yes" : "No"}`,
+
+        // query_status_formatted: capitalizeWord(
+        //   strConvertUnderscoreToSpace(itemType.query_status)
+        // ),
+        // request_status_formatted: capitalizeWord(
+        //   strConvertUnderscoreToSpace(ticket.request_status)
+        // ),
+        // priority_formatted: capitalizeWord(
+        //   strConvertUnderscoreToSpace(ticket.priority)
+        // ),
+        // date_formatted: `${transformDatePickerDate(
+        //   ticket.date,
+        //   "MMM DD, YYYY"
+        // )} (${transformDateDurationHumanize(ticket.date)})`,
+        // released_at_formatted: `${transformDatePickerDate(
+        //   ticket.released_at,
+        //   "MM/DD/YY"
+        // )}`,
+        // solution_formatted: `${
+        //   ticket.solution
+        //     ? ticket.solution?.description
+        //       ? `${ticket.solution.title} — ${ticket.solution.author.display_name} \n\r\n\r` +
+        //         ticket.solution?.description
+        //       : `${ticket.solution.title} — ${ticket.solution.author.display_name}`
+        //     : "None"
+        // }`,
+      }));
+
       totalItemTypes.value = Number(response.meta.total) || 0;
     } catch (err: any) {
       throw err;

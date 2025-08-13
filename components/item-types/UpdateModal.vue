@@ -37,6 +37,8 @@ const formState = ref<IUpdateItemTypeForm>({
   type: props.itemType?.type || undefined,
   classification: props.itemType?.classification || undefined,
   purpose: props.itemType?.purpose || undefined,
+  is_main_inventory: props.itemType?.is_main_inventory ? true : false,
+  is_component: props.itemType?.is_component ? true : false,
 });
 
 const originalState = ref<IUpdateItemTypeForm>({
@@ -44,6 +46,8 @@ const originalState = ref<IUpdateItemTypeForm>({
     type: props.itemType?.type || undefined,
     classification: props.itemType?.classification || undefined,
     purpose: props.itemType?.purpose || undefined,
+    is_main_inventory: props.itemType?.is_main_inventory ? true : false,
+    is_component: props.itemType?.is_component ? true : false,
   }),
 });
 
@@ -51,6 +55,8 @@ const fieldsToCompare: (keyof IUpdateItemTypeForm)[] = [
   "type",
   "classification",
   "purpose",
+  "is_main_inventory",
+  "is_component",
 ];
 
 const isChangedComputed = computed(() => {
@@ -101,12 +107,14 @@ const handleSubmit = async (
   onSuccess();
   return;
 };
+
+console.log(props.itemType);
 </script>
 
 <template>
   <BaseModal :on-close="onClose" :title="`Update ${props.pageTitle}`">
     <UForm
-      :schema="CreateItemTypeValidationSchema"
+      :schema="UpdateItemTypeValidationSchema"
       :state="formState"
       @submit.prevent="handleSubmit"
       class="space-y-6"
@@ -126,6 +134,27 @@ const handleSubmit = async (
       <UFormGroup label="Purpose" name="purpose" :error="errorBag.purpose">
         <UInput v-model="purposeComputed" />
       </UFormGroup>
+
+      <div class="space-y-6 space-x-0 md:space-y-0 md:space-x-6 md:flex">
+        <UFormGroup
+          name="is_main_inventory"
+          :error="errorBag.is_main_inventory"
+        >
+          <UCheckbox
+            color="primary"
+            label="Main Inventory"
+            v-model="formState.is_main_inventory"
+          />
+        </UFormGroup>
+
+        <UFormGroup name="is_component" :error="errorBag.is_component">
+          <UCheckbox
+            color="primary"
+            label="Component"
+            v-model="formState.is_component"
+          />
+        </UFormGroup>
+      </div>
 
       <UButton type="submit" :loading="loading" :disabled="!isChangedComputed">
         Update

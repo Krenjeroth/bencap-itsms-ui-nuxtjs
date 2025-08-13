@@ -19,6 +19,11 @@ const columns: ITableColumns[] = [
     rowClass: "whitespace-pre-line max-w-fit",
   },
   {
+    key: "main_component",
+    // label: "Main Inventory",
+    rowClass: "whitespace-pre-line max-w-fit",
+  },
+  {
     key: "actions",
     rowClass: "whitespace-pre-line max-w-fit text-center",
   },

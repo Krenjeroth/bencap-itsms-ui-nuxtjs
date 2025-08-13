@@ -130,12 +130,16 @@ declare global {
     type?: string;
     classification?: string;
     purpose?: string;
+    is_main_inventory?: boolean;
+    is_component?: boolean;
   }
 
   interface IUpdateItemTypeForm {
     type?: string;
     classification?: string;
     purpose?: string;
+    is_main_inventory?: boolean;
+    is_component?: boolean;
   }
 
   interface ICreateCommonProblemForm {
