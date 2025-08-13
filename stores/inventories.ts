@@ -47,30 +47,12 @@ export const useInventoryStore = defineStore("inventoryStore", () => {
         ...inventory,
         // brand_model_formatted: inventory.brand_model ,
         brand_model_formatted: inventory.brand_model
-          ? inventory.brand_model
-            ? inventory.brand_model?.name
-              ? `${inventory.brand_model.item_type?.type} ${inventory.brand_model.brand?.specification}, ${inventory.brand_model?.name}`
-              : `${inventory.brand_model?.item_type?.type}, ${inventory.brand_model?.specification}`
-            : null
+          ? inventory.brand_model?.name
+            ? `${inventory.brand_model.item_type?.type} ${inventory.brand_model?.specification}, ${inventory.brand_model?.name}`
+            : `${inventory.brand_model?.item_type?.type}, ${inventory.brand_model?.specification}`
           : inventory.item_type?.type,
-        // brand_model_formatted: inventory.brand_model
-        //   ? inventory.brand_model?.name
-        //     ? `${inventory.brand_model.item_type?.type} ${inventory.brand_model.brand?.specification}, ${inventory.brand_model?.name}`
-        //     : `${inventory.brand_model?.item_type?.type}, ${inventory.brand_model?.specification}`
-        //   : null,
-        // brand_model_formatted: inventory.brand_model?.name
-        //   ? `${inventory.brand_model.item_type?.type} ${inventory.brand_model.brand?.specification}, ${inventory.brand_model?.name}`
-        //   : `${inventory.brand_model?.item_type?.type}, ${inventory.brand_model?.specification}`,
 
         option_attribute: `${inventory.property_number} (${inventory.description})`,
-        // inventory_item_formatted: `${
-        //   item.inventory_item.brand_model.item_type.type
-        // }, ${
-        //   item.inventory_item.description
-        //     ? `${item.inventory_item.description}, ${item.inventory_item.brand_model.brand.name} ${item.inventory_item.brand_model.name}`
-        //     : `${item.inventory_item.brand_model.brand.name} ${item.inventory_item.brand_model.name}`
-        // }`,
-        // item_type_formatted: `TYPE: ${item.item_type.type}\r\nClassification: ${item.item_type.classification}\r\nPurpose: ${item.item_type.purpose}`,
       }));
 
       console.log(inventories.value);
