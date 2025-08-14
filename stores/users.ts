@@ -39,6 +39,8 @@ export const useUserStore = defineStore("userStore", () => {
   ];
   const WITH_DOT_SUFFIX = ["jr", "sr"];
 
+  const heartbeatInterval = ref<number | null>(null);
+
   const fetchUsers = async () => {
     loading.value = true;
     try {
@@ -175,6 +177,24 @@ export const useUserStore = defineStore("userStore", () => {
       });
   };
 
+  const startHeartbeat = () => {
+    stopHeartbeat(); // prevent duplicates
+    heartbeatInterval.value = window.setInterval(async () => {
+      try {
+        await $fetch("/api/me/heartbeat", { method: "PUT" });
+      } catch (error) {
+        console.error("Heartbeat failed", error);
+      }
+    }, 60000); // every 60 seconds
+  };
+
+  const stopHeartbeat = () => {
+    if (heartbeatInterval.value) {
+      clearInterval(heartbeatInterval.value);
+      heartbeatInterval.value = null;
+    }
+  };
+
   return {
     users,
     loading,
@@ -191,5 +211,7 @@ export const useUserStore = defineStore("userStore", () => {
     addUser,
     updateUser,
     deleteUser,
+    startHeartbeat,
+    stopHeartbeat,
   };
 });
