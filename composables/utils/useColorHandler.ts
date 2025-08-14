@@ -39,6 +39,12 @@ export const useColorHandler = () => {
         return "blue";
       case "pulled_out":
         return "yellow";
+
+      // ? Component Classification
+      case "parent":
+        return "blue";
+      case "component":
+        return "yellow";
       default:
         return "gray";
     }

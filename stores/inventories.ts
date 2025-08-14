@@ -43,16 +43,21 @@ export const useInventoryStore = defineStore("inventoryStore", () => {
 
       const response = await fetchInventoriesApi(queryParams);
 
-      inventories.value = response.data.map((inventory: any) => ({
-        ...inventory,
-        // brand_model_formatted: inventory.brand_model ,
-        brand_model_formatted: inventory.brand_model
-          ? inventory.brand_model?.name
-            ? `${inventory.brand_model.item_type?.type} ${inventory.brand_model?.specification}, ${inventory.brand_model?.name}`
-            : `${inventory.brand_model?.item_type?.type}, ${inventory.brand_model?.specification}`
-          : inventory.item_type?.type,
+      inventories.value = response.data.map((inventoryResponse: any) => ({
+        ...inventoryResponse,
+        actual_user: inventoryResponse.employee
+          ? `${inventoryResponse.employee?.full_name}`
+          : `${inventoryResponse.inventory?.employee?.full_name}`,
+        component_classification: inventoryResponse.inventory
+          ? `Component`
+          : `Parent`,
+        brand_model_formatted: inventoryResponse.brand_model
+          ? inventoryResponse.brand_model?.name
+            ? `${inventoryResponse.brand_model.item_type?.type} ${inventoryResponse.brand_model?.specification}, ${inventoryResponse.brand_model?.name}`
+            : `${inventoryResponse.brand_model?.item_type?.type}, ${inventoryResponse.brand_model?.specification}`
+          : inventoryResponse.item_type?.type,
 
-        option_attribute: `${inventory.property_number} (${inventory.description})`,
+        option_attribute: `${inventoryResponse.property_number} (${inventoryResponse.description})`,
       }));
 
       console.log(inventories.value);

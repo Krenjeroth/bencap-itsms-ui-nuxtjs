@@ -42,7 +42,12 @@ declare global {
   }
 
   interface ITableExpandableDetails {
-    (row: ITableRow): Array<{ key: string; label: string; value: any }>;
+    (row: ITableRow): Array<{
+      key: string;
+      label: string;
+      value: any;
+      show: boolean;
+    }>;
   }
 
   interface ITableTabItem {

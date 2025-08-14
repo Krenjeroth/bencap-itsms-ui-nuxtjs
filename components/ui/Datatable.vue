@@ -451,6 +451,35 @@ watch([currentTab, dropdownFilter, searchQuery], () => {
         >
       </template>
 
+      <template #property_number-data="{ row }">
+        <div class="grid grid-cols-1">
+          <span>
+            <UBadge color="gray" variant="subtle" class="m-0.5">{{
+              row.property_number
+            }}</UBadge>
+          </span>
+
+          <span>
+            <UBadge
+              v-if="row.inventory"
+              color="blue"
+              variant="subtle"
+              class="m-0.5"
+              >Parent: {{ row.inventory.property_number }}</UBadge
+            >
+          </span>
+        </div>
+      </template>
+
+      <template #component_classification-data="{ row }">
+        <UBadge
+          :color="getStatusColor(row.component_classification)"
+          variant="solid"
+          class="m-0.5"
+          >{{ row.component_classification }}</UBadge
+        >
+      </template>
+
       <template #personnel-data="{ row }">
         <div v-if="Array.isArray(row.personnel) && row.personnel.length > 0">
           <UAvatarGroup
@@ -479,12 +508,25 @@ watch([currentTab, dropdownFilter, searchQuery], () => {
       </template>
 
       <template v-if="props.isExpandable" #expand="{ row }">
-        <div class="px-4 py-4 text-gray-500 dark:text-gray-400 text-sm">
-          <p v-for="detail in expandableDetails(row)" :key="detail.key">
+        <div
+          class="px-4 py-4 text-gray-500 dark:text-gray-400 text-sm grid grid-cols-2 gap-2"
+        >
+          <div
+            v-for="detail in expandableDetails(row)"
+            :key="detail.key"
+            v-show="detail.show"
+            class="font-mono"
+          >
             <strong>{{ detail.label }}</strong
             >:
             <span class="italic whitespace-pre-line">{{ detail.value }}</span>
-          </p>
+          </div>
+          <!-- <p v-for="detail in expandableDetails(row)" :key="detail.key">
+            <strong>{{ detail.label }}</strong
+            >:
+            <span class="italic whitespace-pre-line">{{ detail.value }}</span>
+          </p> -->
+          <!-- <UTable :rows="expandableDetails(row)" :columns="columnsTable" /> -->
         </div>
       </template>
     </UTable>

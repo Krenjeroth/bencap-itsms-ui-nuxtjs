@@ -7,33 +7,17 @@ const columns: ITableColumns[] = [
     rowClass: "whitespace-pre-line max-w-fit",
   },
   {
-    key: "employee.full_name",
-    label: "Issued To",
+    key: "actual_user",
+    label: "Actual User",
     rowClass: "whitespace-pre-line max-w-fit",
   },
-  // {
-  //   key: "parent_component",
-  //   label: "Parent Component",
-  //   rowClass: "whitespace-pre-line max-w-fit",
-  // },
-  {
-    key: "ip_address",
-    label: "IP Address",
-    rowClass: "whitespace-pre-line max-w-fit",
-  },
-  {
-    key: "mac_address",
-    label: "MAC Address",
-    rowClass: "whitespace-pre-line max-w-fit",
-  },
-  // {
-  //   key: "item_type_formatted",
-  //   label: "Type",
-  //   rowClass: "whitespace-pre-line max-w-fit",
-  // },
   {
     key: "brand_model_formatted",
     label: "Brand Model",
+    rowClass: "whitespace-pre-line max-w-fit",
+  },
+  {
+    key: "component_classification",
     rowClass: "whitespace-pre-line max-w-fit",
   },
   {
@@ -70,50 +54,101 @@ const items: ITableActions = (row: any, handlers: IHandlers) => [
 ];
 
 const expandableDetails: ITableExpandableDetails = (row: any) => [
-  // {
-  //   key: "brand_model.item_type.type",
-  //   label: "Type",
-  //   value: row.brand_model.item_type.type,
-  // },
-  // {
-  //   key: "brand_model.item_type.classification",
-  //   label: "Classification",
-  //   value: row.brand_model.item_type.classification,
-  // },
-  // {
-  //   key: "brand_model.item_type.purpose",
-  //   label: "Purpose",
-  //   value: row.brand_model.item_type.purpose,
-  // },
-  // {
-  //   key: "employee.full_name",
-  //   label: "Issued To",
-  //   value: row.employee.full_name,
-  // },
   {
-    key: "description",
-    label: "Description",
-    value: row.description,
+    key:
+      row.item_type.id === 1
+        ? "employee.department.name"
+        : "inventory.employee.department.name",
+    label: "Department",
+    value:
+      row.item_type.id === 1
+        ? row.employee?.department?.name
+        : row.inventory?.employee?.department?.name,
+    show: true,
   },
   {
-    key: "serial_number",
-    label: "Serial Number",
-    value: row.serial_number,
+    key:
+      row.item_type.id === 1
+        ? "employee.division_section"
+        : "inventory.employee.division_section",
+    label: "Division / Section",
+    value:
+      row.item_type.id === 1
+        ? row.employee?.department?.division
+        : row.inventory?.employee?.department?.division,
+    show: true,
   },
   {
-    key: "ics_number",
-    label: "ICS Number",
-    value: row.ics_number,
+    key: "ip_address",
+    label: "IP Address",
+    value: row.ip_address,
+    show: true,
+  },
+  {
+    key: "mac_address",
+    label: "MAC Address",
+    value: row.mac_address,
+    show: true,
+  },
+  {
+    key: "remarks",
+    label: "Remarks",
+    value: row.remarks,
+    show: !!row.remarks,
   },
   {
     key: "date_acquired",
     label: "Date Acquired",
     value: row.date_acquired,
+    show: true,
   },
   {
-    key: "inventory_type",
-    label: "Inventory Type",
-    value: row.inventory_type,
+    key: "serial_number",
+    label: "Serial Number",
+    value: row.serial_number,
+    show: !!row.serial_number,
+  },
+  {
+    key: "operating_system_name",
+    label: "Operating System Name",
+    value: row.operating_system_name,
+    show: row.item_type.id === 1,
+  },
+  {
+    key: "os_license_number",
+    label: "OS License Number",
+    value: row.os_license_number,
+    show: row.item_type.id === 1,
+  },
+  {
+    key: "anti_virus_name",
+    label: "Anti Virus Name",
+    value: row.anti_virus_name,
+    show: row.item_type.id === 1,
+  },
+  {
+    key: "anti_virus_license_number",
+    label: "Anti Virus License Number",
+    value: row.anti_virus_license_number,
+    show: row.item_type.id === 1,
+  },
+  {
+    key: "microsoft_office_name",
+    label: "Microsoft Office Name",
+    value: row.microsoft_office_name,
+    show: row.item_type.id === 1,
+  },
+  {
+    key: "ms_office_license_number",
+    label: "MS Office License Number",
+    value: row.ms_office_license_number,
+    show: row.item_type.id === 1,
+  },
+  {
+    key: "other_installed_applications",
+    label: "Other Installed Applications",
+    value: row.other_installed_applications,
+    show: row.item_type.id === 1,
   },
 ];
 
