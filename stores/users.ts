@@ -1,6 +1,11 @@
 export const useUserStore = defineStore("userStore", () => {
-  const { fetchUsersApi, addUserApi, updateUserApi, deleteUserApi } =
-    useUserApi();
+  const {
+    fetchUsersApi,
+    addUserApi,
+    updateUserApi,
+    deleteUserApi,
+    startHeartbeatApi,
+  } = useUserApi();
   const { hasError, errorBag, transformValidationErrors, resetErrorBag } =
     useErrorHandler();
   const { capitalizeWords, capitalizeAll, strSanitize } = useStringHandler();
@@ -178,14 +183,18 @@ export const useUserStore = defineStore("userStore", () => {
   };
 
   const startHeartbeat = () => {
+    console.log("Start Heartbeat()");
     stopHeartbeat(); // prevent duplicates
-    heartbeatInterval.value = window.setInterval(async () => {
+    const sendHeartbeat = async () => {
       try {
-        await $fetch("/api/me/heartbeat", { method: "PUT" });
+        await startHeartbeatApi();
       } catch (error) {
         console.error("Heartbeat failed", error);
       }
-    }, 60000); // every 60 seconds
+    };
+
+    sendHeartbeat(); // 🔹 send immediately
+    heartbeatInterval.value = window.setInterval(sendHeartbeat, 60000);
   };
 
   const stopHeartbeat = () => {

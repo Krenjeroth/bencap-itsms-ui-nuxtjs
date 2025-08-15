@@ -1,5 +1,5 @@
 export const useAuthApi = () => {
-  const { login } = useSanctumAuth();
+  const { login, logout } = useSanctumAuth();
 
   const authLoginApi = async (form: ILoginForm) => {
     return await login(form);
@@ -9,5 +9,9 @@ export const useAuthApi = () => {
     return await useSanctumUser();
   };
 
-  return { authLoginApi, fetchLoggedInUserApi };
+  const authLogoutApi = async () => {
+    return await logout();
+  };
+
+  return { authLoginApi, fetchLoggedInUserApi, authLogoutApi };
 };

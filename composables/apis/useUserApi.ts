@@ -7,6 +7,16 @@ export const useUserApi = () => {
     return url;
   });
 
+  const heartbeatUrl = computed(() => {
+    const url = apiUrl("me/heartbeat");
+    return url;
+  });
+
+  const stopHeartbeatUrl = computed(() => {
+    const url = apiUrl("me/stop-heartbeat");
+    return url;
+  });
+
   const fetchUsersApi = async (queryParams: URLSearchParams) => {
     return await sanctumFetch(`${usersUrl.value}?${queryParams.toString()}`);
   };
@@ -62,5 +72,30 @@ export const useUserApi = () => {
     });
   };
 
-  return { fetchUsersApi, addUserApi, updateUserApi, deleteUserApi };
+  const startHeartbeatApi = async () => {
+    return await sanctumFetch(`${heartbeatUrl.value}`, {
+      method: "PUT",
+      headers: {
+        Accept: "application/json",
+      },
+    });
+  };
+
+  const stopHeartbeatApi = async () => {
+    return await sanctumFetch(`${stopHeartbeatUrl.value}`, {
+      method: "PUT",
+      headers: {
+        Accept: "application/json",
+      },
+    });
+  };
+
+  return {
+    fetchUsersApi,
+    addUserApi,
+    updateUserApi,
+    deleteUserApi,
+    startHeartbeatApi,
+    stopHeartbeatApi,
+  };
 };
