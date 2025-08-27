@@ -200,5 +200,13 @@ export const CreateInventoryValidationSchema = z
           message: "Brand model is required.",
         });
       }
+
+      if (!data.serial_number || data.serial_number.trim() === "") {
+        ctx.addIssue({
+          path: ["serial_number"],
+          code: z.ZodIssueCode.custom,
+          message: "Serial number is required.",
+        });
+      }
     }
   });
