@@ -12,7 +12,7 @@ defineProps({
 </script>
 
 <template>
-  <UModal prevent-close>
+  <UModal>
     <UCard>
       <template #header>
         <div class="flex items-center justify-between">
