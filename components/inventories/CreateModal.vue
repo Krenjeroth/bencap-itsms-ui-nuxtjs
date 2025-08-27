@@ -445,11 +445,13 @@ const removeRow = (index: number) => {
                   :search="searchBrandModels"
                   :loading="loadingBrandModels"
                   placeholder="Type to search..."
-                  option-attribute="specification"
+                  option-attribute="option_attribute_description"
                   :key="index"
                 >
                   <template #option="{ option }">
-                    <span class="truncate">{{ option.specification }}</span>
+                    <span class="truncate">{{
+                      option.option_attribute_description
+                    }}</span>
                   </template>
 
                   <template #empty>
@@ -599,10 +601,12 @@ const removeRow = (index: number) => {
             :search="searchBrandModels"
             :loading="loadingBrandModels"
             placeholder="Type to search..."
-            option-attribute="specification"
+            option-attribute="option_attribute_description"
           >
             <template #option="{ option }">
-              <span class="truncate">{{ option.specification }}</span>
+              <span class="truncate">{{
+                option.option_attribute_description
+              }}</span>
             </template>
 
             <template #empty>
