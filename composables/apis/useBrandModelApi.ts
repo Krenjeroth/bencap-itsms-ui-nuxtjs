@@ -43,7 +43,6 @@ export const useBrandModelApi = () => {
   };
 
   const fetchBrandModelSearchApi = async (queryParams?: URLSearchParams) => {
-    console.log(queryParams?.toString(), "queryParams");
     const queryString = queryParams?.toString() || "";
     return await sanctumFetch(`${brandModelSearchUrl.value}?${queryString}`);
   };
