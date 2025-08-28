@@ -1,7 +1,7 @@
 <script setup lang="ts">
-const inventoryItemStore = useInventoryItemStore();
+const itSupplyStore = useItSupplyStore();
 
-const { loading, hasError } = storeToRefs(inventoryItemStore);
+const { loading, hasError } = storeToRefs(itSupplyStore);
 const props = defineProps({
   item: Object,
   pageTitle: String,
@@ -19,7 +19,7 @@ const onError = () => {
 };
 
 const handleSubmit = async () => {
-  await inventoryItemStore.deleteInventoryItem(props.item?.id);
+  await itSupplyStore.deleteItSupply(props.item?.id);
 
   if (hasError.value) {
     onError();

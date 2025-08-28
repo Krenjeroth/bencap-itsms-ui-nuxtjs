@@ -200,10 +200,12 @@ const searchBrandModels = async (q: string) => {
             :search="searchBrandModels"
             :loading="loadingBrandModels"
             placeholder="Type to search..."
-            option-attribute="name"
+            option-attribute="option_attribute_description"
           >
             <template #option="{ option }">
-              <span class="truncate">{{ option.name }}</span>
+              <span class="truncate">{{
+                option.option_attribute_description
+              }}</span>
             </template>
 
             <template #empty>
@@ -216,10 +218,10 @@ const searchBrandModels = async (q: string) => {
         </UFormGroup>
 
         <UFormGroup
-          label="Measurement Unit"
+          label="Measurement"
           name="measurement_unit"
           :error="errorBag.measurement_unit"
-          :ui="{ wrapper: 'md:w-full' }"
+          :ui="{ wrapper: 'md:w-1/4' }"
         >
           <USelect
             v-model="formState.measurement_unit"
