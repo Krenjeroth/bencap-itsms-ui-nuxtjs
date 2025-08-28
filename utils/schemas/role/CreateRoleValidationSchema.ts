@@ -6,4 +6,7 @@ export const CreateRoleValidationSchema = z.object({
       invalid_type_error: "Title is required",
     })
     .min(3, "Title must be at least 3 characters long"),
+  permission_ids: z
+    .array(z.number())
+    .min(1, "At least one permission is required"),
 });

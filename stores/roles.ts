@@ -55,6 +55,7 @@ export const useRoleStore = defineStore("roleStore", () => {
     resetErrorBag();
 
     const formattedForm = {
+      ...form,
       title: capitalizeWords(form.title),
     };
 

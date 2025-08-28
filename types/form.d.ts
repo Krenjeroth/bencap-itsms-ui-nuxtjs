@@ -71,6 +71,7 @@ declare global {
 
   interface ICreateRoleForm {
     title?: string;
+    permission_ids?: number[];
   }
 
   interface IUpdateRoleForm {

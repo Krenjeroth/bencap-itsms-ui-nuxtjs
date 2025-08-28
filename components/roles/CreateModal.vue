@@ -1,5 +1,8 @@
 <script setup lang="ts">
 const roleStore = useRoleStore();
+const permissionStore = usePermissionStore();
+const { permissionsAll } = storeToRefs(permissionStore);
+permissionStore.fetchPermissionsAll();
 const { loading, errorBag, hasError } = storeToRefs(roleStore);
 const emit = defineEmits(["reloadTable", "success", "error", "close"]);
 
@@ -17,6 +20,7 @@ const onError = () => {
 
 const formState = ref<ICreateRoleForm>({
   title: undefined,
+  permission_ids: [],
 });
 
 const handleSubmit = async (
@@ -44,6 +48,23 @@ const handleSubmit = async (
     >
       <UFormGroup label="Role Title" name="title" :error="errorBag.title">
         <UInput v-model="formState.title" />
+      </UFormGroup>
+
+      <UFormGroup
+        label="Permissions"
+        name="permission_ids"
+        :error="errorBag.permission_ids"
+      >
+        <div class="grid grid-cols-2 gap-1">
+          <UCheckbox
+            v-for="permission in permissionsAll"
+            :key="permission.id"
+            v-model="formState.permission_ids"
+            :value="permission.id"
+            :id="permission.title"
+            :label="permission.title"
+          />
+        </div>
       </UFormGroup>
 
       <UButton type="submit" :loading="loading"> Add </UButton>
