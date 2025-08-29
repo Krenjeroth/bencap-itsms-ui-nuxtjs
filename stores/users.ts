@@ -105,13 +105,25 @@ export const useUserStore = defineStore("userStore", () => {
       .charAt(0)
       .toUpperCase()}${strSanitize(name.lastname).charAt(0).toUpperCase()}`;
 
+    // const offices_assigned: number[] = [];
+
+    // form.offices_assigned_ids?.forEach((value) => {
+    //   offices_assigned.push(Number(value));
+    // });
+
     const formattedForm = {
       ...form,
       username,
       display_name,
       name: JSON.stringify(name),
       designation: capitalizeAll(form.designation),
+      // offices_assigned_ids: Array.from(offices_assigned_ids),
     };
+    console.log(JSON.stringify(formattedForm, null, 2));
+    console.log(
+      formattedForm.offices_assigned_ids,
+      typeof formattedForm.offices_assigned_ids
+    );
 
     await addUserApi(formattedForm)
       .catch((err) => {

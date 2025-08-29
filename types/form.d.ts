@@ -16,8 +16,9 @@ declare global {
     designation?: string;
     email?: string;
     password?: string;
-    role?: string;
+    role?: number | string;
     photo_id?: File | null;
+    offices_assigned_ids?: number[];
   }
 
   interface IUpdateUserForm {
@@ -33,6 +34,7 @@ declare global {
     role?: number | string;
     img_path?: string | null;
     photo_id?: File | null;
+    offices_assigned_ids?: number[];
   }
 
   interface ICreateDepartmentForm {

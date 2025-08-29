@@ -24,12 +24,24 @@ export const useUserApi = () => {
   const addUserApi = async (form: ICreateUserForm) => {
     const formData = new FormData();
 
+    // for (const key in form) {
+    //   if (
+    //     form[key as keyof ICreateUserForm] !== null &&
+    //     form[key as keyof ICreateUserForm] !== undefined
+    //   ) {
+    //     formData.append(key, form[key as keyof ICreateUserForm] as any);
+    //   }
+    // }
+
     for (const key in form) {
-      if (
-        form[key as keyof ICreateUserForm] !== null &&
-        form[key as keyof ICreateUserForm] !== undefined
-      ) {
-        formData.append(key, form[key as keyof ICreateUserForm] as any);
+      const value = form[key as keyof ICreateUserForm];
+
+      if (value !== null && value !== undefined) {
+        if (Array.isArray(value) || typeof value === "object") {
+          formData.append(key, JSON.stringify(value)); // stringify arrays/objects
+        } else {
+          formData.append(key, value as any);
+        }
       }
     }
 

@@ -5,6 +5,12 @@ const roleStore = useRoleStore();
 const { roleSelect } = storeToRefs(roleStore);
 const { capitalizeAll } = useStringHandler();
 roleStore.getRoleSelect();
+
+const departmentStore = useDepartmentStore();
+const { loading: loadingDepartments, departmentSelect } =
+  storeToRefs(departmentStore);
+departmentStore.fetchDepartmentSelect();
+
 const emit = defineEmits(["reloadTable", "success", "error", "close"]);
 
 const onClose = () => emit("close");
@@ -31,6 +37,7 @@ const formState = ref<ICreateUserForm>({
   password: undefined,
   role: undefined,
   photo_id: null,
+  offices_assigned_ids: [],
 });
 
 const filePreview = ref<string | null>(null);
@@ -55,6 +62,16 @@ const designationComputed = computed({
   get: () => formState.value.designation ?? undefined,
   set: (value) =>
     (formState.value.designation = capitalizeAll(value) || undefined),
+});
+
+const roleComputed = computed({
+  get: () => formState.value.role ?? undefined,
+  set: (value) => (formState.value.role = value ? Number(value) : undefined),
+});
+
+const officesAssignedComputed = computed({
+  get: () => formState.value.offices_assigned_ids ?? undefined,
+  set: (value) => (formState.value.offices_assigned_ids = value || []),
 });
 
 const handlePhotoUpload = (files: FileList | null) => {
@@ -85,16 +102,40 @@ const handlePhotoUpload = (files: FileList | null) => {
 const handleSubmit = async (
   event: IFormSubmitEvent<TCreateUserValidationSchema>
 ) => {
+  console.log(
+    typeof Array.from(event.data.offices_assigned_ids),
+    Array.from(event.data.offices_assigned_ids)
+  );
+  console.log(
+    typeof event.data.offices_assigned_ids,
+    event.data.offices_assigned_ids
+  );
   await userStore.addUser(event.data);
 
-  if (hasError.value) {
-    onError();
-    return;
-  }
+  // if (hasError.value) {
+  //   onError();
+  //   return;
+  // }
 
-  onSuccess();
-  return;
+  // onSuccess();
+  // return;
 };
+
+const searchDepartments = async (q: string) => {
+  if (!q || q.length < 2) return [];
+  if (departmentSelect.value.length === 0) {
+    await departmentStore.fetchDepartmentSelect();
+  }
+  return departmentSelect.value.filter((dept) =>
+    dept.abbreviation.toLowerCase().includes(q.toLowerCase())
+  );
+};
+
+watch(roleComputed, (val) => {
+  if (val === 2) {
+    formState.value.offices_assigned_ids = [];
+  }
+});
 </script>
 
 <template>
@@ -150,7 +191,7 @@ const handleSubmit = async (
           :ui="{ wrapper: 'md:w-full' }"
         >
           <USelect
-            v-model="formState.role"
+            v-model="roleComputed"
             :options="roleSelect"
             value-attribute="id"
             option-attribute="title"
@@ -215,6 +256,36 @@ const handleSubmit = async (
         >
           <UInput v-model="suffixComputed" />
         </UFormGroup>
+      </div>
+
+      <div v-if="roleComputed === 2" class="space-y-6 md:space-y-0">
+        <UDivider label="Offices / Agencies Assigned" />
+        <div class="space-y-6 md:space-y-0 md:flex md:space-x-6">
+          <UFormGroup
+            label="Offices"
+            name="offices_assigned_ids"
+            :error="errorBag.offices_assigned_ids"
+            :ui="{ wrapper: 'md:w-full' }"
+          >
+            <USelectMenu
+              v-model="officesAssignedComputed"
+              :options="departmentSelect"
+              :searchable="true"
+              :search="searchDepartments"
+              :loading="loadingDepartments"
+              placeholder="Type to search..."
+              value-attribute="id"
+              option-attribute="abbreviation"
+              multiple
+            >
+              <template #option-empty="{ query }">
+                <q>{{ query }}</q> not found
+              </template>
+
+              <template #empty> No Department found </template>
+            </USelectMenu>
+          </UFormGroup>
+        </div>
       </div>
 
       <UFormGroup

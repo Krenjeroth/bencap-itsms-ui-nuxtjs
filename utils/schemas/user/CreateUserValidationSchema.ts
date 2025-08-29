@@ -2,70 +2,108 @@ import { z } from "zod";
 const acceptedFileTypes = ["image/png", "image/jpeg", "image/jpg"];
 const fileSizeLimit = 2 * 1024 * 1024; // 2MB
 
-export const CreateUserValidationSchema = z.object({
-  // name: z
-  //   .string({
-  //     invalid_type_error: "Name is required",
-  //   })
-  //   .min(3, "Name must be at least 3 characters long"),
-  email: z
-    .string({
-      invalid_type_error: "Email is required",
-    })
-    .email("Email is not valid"),
-  password: z
-    .string({
-      invalid_type_error: "Password is required",
-    })
-    .min(8, "Password must be at least 8 characters long"),
-  role: z.string({
-    required_error: "Role is required",
-  }),
-  // Profile
-  prefix: z
-    .string()
-    .regex(/^[A-Za-z]+$/, "Prefix must be alphabets only.")
-    .nullable()
-    .optional(),
-  firstname: z
-    .string({
-      required_error: "First name is required",
-    })
-    .min(3, "First name must be at least 3 characters long")
-    .max(50, "First name must be at most 50 characters long"),
-  middlename: z
-    .string({
-      required_error: "Middle name is required",
-    })
-    .min(3, "Middle name must be at least 3 characters long")
-    .max(50, "Middle name must be at most 50 characters long"),
-  lastname: z
-    .string({
-      required_error: "Last name is required",
-    })
-    .min(3, "Last name must be at least 3 characters long")
-    .max(50, "Last name must be at most 50 characters long"),
-  suffix: z
-    .string()
-    .regex(/^[A-Za-z]+$/, "Suffix must be alphabets only.")
-    .nullable()
-    .optional(),
-  designation: z
-    .string({
-      required_error: "Designation is required",
-    })
-    .min(3, "Designation must be at least 3 characters long")
-    .max(50, "Designation must be at most 50 characters long"),
-  gender: z.enum(["male", "female"]),
-  photo_id: z
-    .custom<File | undefined | null>()
-    .refine((file) => !file || acceptedFileTypes.includes(file?.type)!, {
-      message: "Photo ID must be a PNG, JPEG, or JPG",
-    })
-    .refine((file) => !file || file?.size <= fileSizeLimit!, {
-      message: "Photo ID must be less than 2MB",
-    }),
-});
+export const CreateUserValidationSchema = z
+  .object({
+    // name: z
+    //   .string({
+    //     invalid_type_error: "Name is required",
+    //   })
+    //   .min(3, "Name must be at least 3 characters long"),
+    email: z
+      .string({
+        invalid_type_error: "Email is required",
+      })
+      .email("Email is not valid"),
+    password: z
+      .string({
+        invalid_type_error: "Password is required",
+      })
+      .min(8, "Password must be at least 8 characters long"),
+    role: z.union([z.number(), z.string()]),
+    offices_assigned_ids: z
+      .array(z.number())
+      .min(1, "At least one office is required"),
+    // Profile
+    prefix: z
+      .string()
+      .regex(/^[A-Za-z]+$/, "Prefix must be alphabets only.")
+      .nullable()
+      .optional(),
+    firstname: z
+      .string({
+        required_error: "First name is required",
+      })
+      .min(3, "First name must be at least 3 characters long")
+      .max(50, "First name must be at most 50 characters long"),
+    middlename: z
+      .string({
+        required_error: "Middle name is required",
+      })
+      .min(3, "Middle name must be at least 3 characters long")
+      .max(50, "Middle name must be at most 50 characters long"),
+    lastname: z
+      .string({
+        required_error: "Last name is required",
+      })
+      .min(3, "Last name must be at least 3 characters long")
+      .max(50, "Last name must be at most 50 characters long"),
+    suffix: z
+      .string()
+      .regex(/^[A-Za-z]+$/, "Suffix must be alphabets only.")
+      .nullable()
+      .optional(),
+    designation: z
+      .string({
+        required_error: "Designation is required",
+      })
+      .min(3, "Designation must be at least 3 characters long")
+      .max(50, "Designation must be at most 50 characters long"),
+    gender: z.enum(["male", "female"]),
+    photo_id: z
+      .custom<File | undefined | null>()
+      .refine((file) => !file || acceptedFileTypes.includes(file?.type)!, {
+        message: "Photo ID must be a PNG, JPEG, or JPG",
+      })
+      .refine((file) => !file || file?.size <= fileSizeLimit!, {
+        message: "Photo ID must be less than 2MB",
+      }),
+  })
+  .superRefine((data, ctx) => {
+    if (data.role === 2) {
+      if (
+        !data.offices_assigned_ids ||
+        data.offices_assigned_ids.length === 0
+      ) {
+        ctx.addIssue({
+          path: ["offices_assigned_ids"],
+          code: z.ZodIssueCode.custom,
+          message: "Offices assigned is required.",
+        });
+      }
+
+      // Rule 1: The `internal_components` array must exist and not be empty.
+      // if (!data.internal_components || data.internal_components.length === 0) {
+      //   ctx.addIssue({
+      //     code: z.ZodIssueCode.custom,
+      //     message:
+      //       "At least one internal component is required for this item type.",
+      //     path: ["internal_components"],
+      //   });
+      // } else {
+      //   // Rule 2: Each item in the array must have a `brand_model` selected.
+      //   data.internal_components.forEach((component, index) => {
+      //     if (!component.brand_model) {
+      //       console.log(component, component.brand_model, index);
+      //       ctx.addIssue({
+      //         code: z.ZodIssueCode.custom,
+      //         message: "Model is required. - " + index,
+      //         path: ["internal_components", index, "brand_model"],
+      //       });
+      //     }
+      //   });
+      // }
+    }
+  });
 //   .refine((data) => data.password === data.password_confirmation, {
 //   message: "Passwords do not match",
 //   path: ["password_confirmation"],
