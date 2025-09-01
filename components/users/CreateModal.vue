@@ -102,23 +102,15 @@ const handlePhotoUpload = (files: FileList | null) => {
 const handleSubmit = async (
   event: IFormSubmitEvent<TCreateUserValidationSchema>
 ) => {
-  console.log(
-    typeof Array.from(event.data.offices_assigned_ids),
-    Array.from(event.data.offices_assigned_ids)
-  );
-  console.log(
-    typeof event.data.offices_assigned_ids,
-    event.data.offices_assigned_ids
-  );
   await userStore.addUser(event.data);
 
-  // if (hasError.value) {
-  //   onError();
-  //   return;
-  // }
+  if (hasError.value) {
+    onError();
+    return;
+  }
 
-  // onSuccess();
-  // return;
+  onSuccess();
+  return;
 };
 
 const searchDepartments = async (q: string) => {

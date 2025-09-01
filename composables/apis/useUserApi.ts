@@ -24,25 +24,21 @@ export const useUserApi = () => {
   const addUserApi = async (form: ICreateUserForm) => {
     const formData = new FormData();
 
-    // for (const key in form) {
-    //   if (
-    //     form[key as keyof ICreateUserForm] !== null &&
-    //     form[key as keyof ICreateUserForm] !== undefined
-    //   ) {
-    //     formData.append(key, form[key as keyof ICreateUserForm] as any);
-    //   }
-    // }
-
     for (const key in form) {
-      const value = form[key as keyof ICreateUserForm];
-
-      if (value !== null && value !== undefined) {
-        if (Array.isArray(value) || typeof value === "object") {
-          formData.append(key, JSON.stringify(value)); // stringify arrays/objects
-        } else {
-          formData.append(key, value as any);
+      if (
+        form[key as keyof ICreateUserForm] !== null &&
+        form[key as keyof ICreateUserForm] !== undefined
+      ) {
+        if (key !== "offices_assigned_ids") {
+          formData.append(key, form[key as keyof ICreateUserForm] as any);
         }
       }
+    }
+
+    if (form.offices_assigned_ids && Array.isArray(form.offices_assigned_ids)) {
+      form.offices_assigned_ids.forEach((item: any) => {
+        formData.append("offices_assigned_ids[]", item);
+      });
     }
 
     return await sanctumFetch(`${usersUrl.value}`, {
