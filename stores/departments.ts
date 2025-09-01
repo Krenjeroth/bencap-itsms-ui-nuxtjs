@@ -101,6 +101,8 @@ export const useDepartmentStore = defineStore("departmentStore", () => {
       });
   };
 
+  // ?? might create a separate function for searching departments
+  // ?? since this is used in some features where it searches for departments
   const fetchDepartmentSelect = async () => {
     try {
       const response = await fetchDepartmentSelectApi();
