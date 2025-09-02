@@ -11,6 +11,10 @@ const { loading: loadingDepartments, departmentSelect } =
   storeToRefs(departmentStore);
 departmentStore.fetchDepartmentSelect();
 
+const agencyStore = useAgencyStore();
+const { loading: loadingAgencies, agencySelect } = storeToRefs(agencyStore);
+agencyStore.fetchAgencySelect();
+
 const emit = defineEmits(["reloadTable", "success", "error", "close"]);
 
 const onClose = () => emit("close");
@@ -38,6 +42,7 @@ const formState = ref<ICreateUserForm>({
   role: undefined,
   photo_id: null,
   offices_assigned_ids: [],
+  agencies_assigned_ids: [],
 });
 
 const filePreview = ref<string | null>(null);
@@ -72,6 +77,11 @@ const roleComputed = computed({
 const officesAssignedComputed = computed({
   get: () => formState.value.offices_assigned_ids ?? undefined,
   set: (value) => (formState.value.offices_assigned_ids = value || []),
+});
+
+const agenciesAssignedComputed = computed({
+  get: () => formState.value.agencies_assigned_ids ?? undefined,
+  set: (value) => (formState.value.agencies_assigned_ids = value || []),
 });
 
 const handlePhotoUpload = (files: FileList | null) => {
@@ -123,9 +133,26 @@ const searchDepartments = async (q: string) => {
   );
 };
 
+const agencyOptions = ref<TAgencySelectOption[]>([]);
+const agencySearchQuery = ref("");
+
+const searchAgencies = async (q: string) => {
+  agencySearchQuery.value = q;
+  if (!agencySearchQuery.value || agencySearchQuery.value.length < 2) return [];
+  const result = await agencyStore.fetchAgencySearch(agencySearchQuery.value);
+  agencyOptions.value = result;
+  return result;
+};
+
 watch(roleComputed, (val) => {
   if (val === 2) {
     formState.value.offices_assigned_ids = [];
+  }
+});
+
+watch(roleComputed, (val) => {
+  if (val === 3) {
+    formState.value.agencies_assigned_ids = [];
   }
 });
 </script>
@@ -250,7 +277,7 @@ watch(roleComputed, (val) => {
         </UFormGroup>
       </div>
 
-      <div v-if="roleComputed === 2" class="space-y-6 md:space-y-0">
+      <div v-if="roleComputed === 2" class="space-y-6">
         <UDivider label="Offices / Agencies Assigned" />
         <div class="space-y-6 md:space-y-0 md:flex md:space-x-6">
           <UFormGroup
@@ -275,6 +302,31 @@ watch(roleComputed, (val) => {
               </template>
 
               <template #empty> No Department found </template>
+            </USelectMenu>
+          </UFormGroup>
+
+          <UFormGroup
+            label="Agencies"
+            name="agencies_assigned_ids"
+            :error="errorBag.agencies_assigned_ids"
+            :ui="{ wrapper: 'md:w-full' }"
+          >
+            <USelectMenu
+              v-model="agenciesAssignedComputed"
+              :options="agencySelect"
+              :searchable="true"
+              :search="searchAgencies"
+              :loading="loadingAgencies"
+              placeholder="Type to search..."
+              value-attribute="id"
+              option-attribute="abbreviation"
+              multiple
+            >
+              <template #option-empty="{ query }">
+                <q>{{ query }}</q> not found
+              </template>
+
+              <template #empty> No Agency found </template>
             </USelectMenu>
           </UFormGroup>
         </div>

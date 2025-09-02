@@ -23,6 +23,9 @@ export const CreateUserValidationSchema = z
     offices_assigned_ids: z
       .array(z.number())
       .min(1, "At least one office is required"),
+    agencies_assigned_ids: z
+      .array(z.number())
+      .min(1, "At least one agency is required"),
     // Profile
     prefix: z
       .string()
@@ -81,33 +84,18 @@ export const CreateUserValidationSchema = z
         });
       }
 
-      // Rule 1: The `internal_components` array must exist and not be empty.
-      // if (!data.internal_components || data.internal_components.length === 0) {
-      //   ctx.addIssue({
-      //     code: z.ZodIssueCode.custom,
-      //     message:
-      //       "At least one internal component is required for this item type.",
-      //     path: ["internal_components"],
-      //   });
-      // } else {
-      //   // Rule 2: Each item in the array must have a `brand_model` selected.
-      //   data.internal_components.forEach((component, index) => {
-      //     if (!component.brand_model) {
-      //       console.log(component, component.brand_model, index);
-      //       ctx.addIssue({
-      //         code: z.ZodIssueCode.custom,
-      //         message: "Model is required. - " + index,
-      //         path: ["internal_components", index, "brand_model"],
-      //       });
-      //     }
-      //   });
-      // }
+      if (
+        !data.agencies_assigned_ids ||
+        data.agencies_assigned_ids.length === 0
+      ) {
+        ctx.addIssue({
+          path: ["agencies_assigned_ids"],
+          code: z.ZodIssueCode.custom,
+          message: "Agencies assigned is required.",
+        });
+      }
     }
   });
-//   .refine((data) => data.password === data.password_confirmation, {
-//   message: "Passwords do not match",
-//   path: ["password_confirmation"],
-// });
 
 export const CreatePhotoIdSchema = z
   .custom<File | undefined | null>()
