@@ -404,6 +404,19 @@ watch([currentTab, dropdownFilter, searchQuery], () => {
         >
       </template>
 
+      <template #offices_agencies_assigned-data="{ row }">
+        <div class="space-y-2">
+          <UBadge
+            v-for="office in row.offices_agencies_assigned"
+            :key="office.id"
+            color="primary"
+            variant="solid"
+            class="mr-2"
+            >{{ office.abbreviation }}</UBadge
+          >
+        </div>
+      </template>
+
       <template #query_status_formatted-data="{ row }">
         <UBadge variant="outline" :color="getStatusColor(row.query_status)">{{
           row.query_status_formatted
@@ -572,6 +585,19 @@ watch([currentTab, dropdownFilter, searchQuery], () => {
           class="mr-2"
           >{{ role.title }}</UBadge
         >
+      </template>
+
+      <template #offices_agencies_assigned-data="{ row }">
+        <div class="space-y-2">
+          <UBadge
+            v-for="office in row.offices_agencies_assigned"
+            :key="office.id"
+            color="gray"
+            variant="solid"
+            class="mr-2"
+            >{{ office.abbreviation }}</UBadge
+          >
+        </div>
       </template>
 
       <template #query_status_formatted-data="{ row }">

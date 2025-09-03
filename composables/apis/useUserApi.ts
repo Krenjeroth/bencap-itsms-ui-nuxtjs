@@ -67,8 +67,25 @@ export const useUserApi = () => {
         form[key as keyof IUpdateUserForm] !== null &&
         form[key as keyof IUpdateUserForm] !== undefined
       ) {
-        formData.append(key, form[key as keyof IUpdateUserForm] as any);
+        if (key !== "offices_assigned_ids" && key !== "agencies_assigned_ids") {
+          formData.append(key, form[key as keyof IUpdateUserForm] as any);
+        }
       }
+    }
+
+    if (form.offices_assigned_ids && Array.isArray(form.offices_assigned_ids)) {
+      form.offices_assigned_ids.forEach((item: any) => {
+        formData.append("offices_assigned_ids[]", item);
+      });
+    }
+
+    if (
+      form.agencies_assigned_ids &&
+      Array.isArray(form.agencies_assigned_ids)
+    ) {
+      form.agencies_assigned_ids.forEach((item: any) => {
+        formData.append("agencies_assigned_ids[]", item);
+      });
     }
 
     return await sanctumFetch(`${usersUrl.value}/${id}`, {

@@ -6,6 +6,16 @@ const roleStore = useRoleStore();
 const { roleSelect } = storeToRefs(roleStore);
 const { strDeepSanitize, capitalizeAll } = useStringHandler();
 roleStore.getRoleSelect();
+
+const departmentStore = useDepartmentStore();
+const { loading: loadingDepartments, departmentSelect } =
+  storeToRefs(departmentStore);
+departmentStore.fetchDepartmentSelect();
+
+const agencyStore = useAgencyStore();
+const { loading: loadingAgencies, agencySelect } = storeToRefs(agencyStore);
+agencyStore.fetchAgencySelect();
+
 const props = defineProps({
   user: Object,
 });
@@ -45,6 +55,8 @@ const formState = ref<IUpdateUserForm>({
   designation: props.user?.profile?.designation ?? undefined,
   img_path: props.user?.profile?.img_path ?? undefined,
   photo_id: null,
+  offices_assigned_ids: props.user?.offices_assigned_ids ?? [],
+  agencies_assigned_ids: props.user?.agencies_assigned_ids ?? [],
 });
 
 const originalState = ref<IUpdateUserForm>(
@@ -60,6 +72,8 @@ const originalState = ref<IUpdateUserForm>(
     designation: props.user?.profile?.designation ?? undefined,
     img_path: props.user?.profile?.img_path ?? undefined,
     photo_id: null,
+    offices_assigned_ids: props.user?.offices_assigned_ids ?? [],
+    agencies_assigned_ids: props.user?.agencies_assigned_ids ?? [],
   })
 );
 
@@ -85,6 +99,21 @@ const designationComputed = computed({
   get: () => formState.value.designation ?? undefined,
   set: (value) =>
     (formState.value.designation = capitalizeAll(value) || undefined),
+});
+
+const roleComputed = computed({
+  get: () => formState.value.role ?? undefined,
+  set: (value) => (formState.value.role = value ? Number(value) : undefined),
+});
+
+const officesAssignedComputed = computed({
+  get: () => formState.value.offices_assigned_ids ?? undefined,
+  set: (value) => (formState.value.offices_assigned_ids = value || []),
+});
+
+const agenciesAssignedComputed = computed({
+  get: () => formState.value.agencies_assigned_ids ?? undefined,
+  set: (value) => (formState.value.agencies_assigned_ids = value || []),
 });
 
 filePreview.value = props.user?.profile?.img_path ?? null;
@@ -126,6 +155,8 @@ const fieldsToCompare: (keyof IUpdateUserForm)[] = [
   "designation",
   "img_path",
   "photo_id",
+  "offices_assigned_ids",
+  "agencies_assigned_ids",
 ];
 
 const isChangedComputed = computed(() => {
@@ -155,6 +186,39 @@ const handleSubmit = async (
   onSuccess();
   return;
 };
+
+const searchDepartments = async (q: string) => {
+  if (!q || q.length < 2) return [];
+  if (departmentSelect.value.length === 0) {
+    await departmentStore.fetchDepartmentSelect();
+  }
+  return departmentSelect.value.filter((dept) =>
+    dept.abbreviation.toLowerCase().includes(q.toLowerCase())
+  );
+};
+
+const agencyOptions = ref<TAgencySelectOption[]>([]);
+const agencySearchQuery = ref("");
+
+const searchAgencies = async (q: string) => {
+  agencySearchQuery.value = q;
+  if (!agencySearchQuery.value || agencySearchQuery.value.length < 2) return [];
+  const result = await agencyStore.fetchAgencySearch(agencySearchQuery.value);
+  agencyOptions.value = result;
+  return result;
+};
+
+watch(roleComputed, (val) => {
+  if (val === 2) {
+    formState.value.offices_assigned_ids = [];
+  }
+});
+
+watch(roleComputed, (val) => {
+  if (val === 3) {
+    formState.value.agencies_assigned_ids = [];
+  }
+});
 </script>
 
 <template>
@@ -262,6 +326,62 @@ const handleSubmit = async (
         >
           <UInput v-model="suffixComputed" />
         </UFormGroup>
+      </div>
+
+      <!-- <div v-if="roleComputed === 2" class="space-y-6"> -->
+      <div class="space-y-6">
+        <UDivider label="Offices / Agencies Assigned" />
+        <div class="space-y-6 md:space-y-0 md:flex md:space-x-6">
+          <UFormGroup
+            label="Offices"
+            name="offices_assigned_ids"
+            :error="errorBag.offices_assigned_ids"
+            :ui="{ wrapper: 'md:w-full' }"
+          >
+            <USelectMenu
+              v-model="officesAssignedComputed"
+              :options="departmentSelect"
+              :searchable="true"
+              :search="searchDepartments"
+              :loading="loadingDepartments"
+              placeholder="Type to search..."
+              value-attribute="id"
+              option-attribute="abbreviation"
+              multiple
+            >
+              <template #option-empty="{ query }">
+                <q>{{ query }}</q> not found
+              </template>
+
+              <template #empty> No Department found </template>
+            </USelectMenu>
+          </UFormGroup>
+
+          <UFormGroup
+            label="Agencies"
+            name="agencies_assigned_ids"
+            :error="errorBag.agencies_assigned_ids"
+            :ui="{ wrapper: 'md:w-full' }"
+          >
+            <USelectMenu
+              v-model="agenciesAssignedComputed"
+              :options="agencySelect"
+              :searchable="true"
+              :search="searchAgencies"
+              :loading="loadingAgencies"
+              placeholder="Type to search..."
+              value-attribute="id"
+              option-attribute="abbreviation"
+              multiple
+            >
+              <template #option-empty="{ query }">
+                <q>{{ query }}</q> not found
+              </template>
+
+              <template #empty> No Agency found </template>
+            </USelectMenu>
+          </UFormGroup>
+        </div>
       </div>
 
       <UFormGroup

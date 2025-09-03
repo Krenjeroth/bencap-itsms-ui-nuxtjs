@@ -16,6 +16,7 @@ const columns: ITableColumns[] = [
     label: "Display Name",
     rowClass: "whitespace-pre-line max-w-fit",
   },
+
   {
     key: "email",
     label: "Email",
@@ -25,6 +26,11 @@ const columns: ITableColumns[] = [
     key: "roles",
     label: "Roles",
     rowClass: "whitespace-pre-line max-w-auto overflow-x-auto",
+  },
+  {
+    key: "offices_agencies_assigned",
+    label: "Assigned Offices / Agencies",
+    rowClass: "whitespace-pre-line max-w-fit",
   },
   {
     key: "actions",
