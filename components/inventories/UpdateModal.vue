@@ -399,7 +399,7 @@ const removeRow = (index: number) => {
   <BaseModal
     :on-close="onClose"
     :title="`Update ${props.pageTitle}`"
-    :ui="{ width: 'md:max-w-4xl' }"
+    :ui="{ width: 'md:max-w-7xl' }"
   >
     <UForm
       :schema="UpdateInventoryValidationSchema"
@@ -553,11 +553,13 @@ const removeRow = (index: number) => {
                   :search="searchBrandModels"
                   :loading="loadingBrandModels"
                   placeholder="Type to search..."
-                  option-attribute="specification"
+                  option-attribute="option_attribute_description"
                   :key="index"
                 >
                   <template #option="{ option }">
-                    <span class="truncate">{{ option.specification }}</span>
+                    <span class="truncate">{{
+                      option.option_attribute_description
+                    }}</span>
                   </template>
 
                   <template #empty>
@@ -692,7 +694,9 @@ const removeRow = (index: number) => {
               <span v-if="searchQuery.length < 2" class="text-gray-400"
                 >Type at least 2 characters...</span
               >
-              <span v-else class="text-gray-400">No Brand Model found</span>
+              <span v-else class="text-gray-400"
+                >No Parent Component found</span
+              >
             </template>
           </UInputMenu>
         </UFormGroup>
@@ -707,10 +711,12 @@ const removeRow = (index: number) => {
             :search="searchBrandModels"
             :loading="loadingBrandModels"
             placeholder="Type to search..."
-            option-attribute="specification"
+            option-attribute="option_attribute_description"
           >
             <template #option="{ option }">
-              <span class="truncate">{{ option.specification }}</span>
+              <span class="truncate">{{
+                option.option_attribute_description
+              }}</span>
             </template>
 
             <template #empty>

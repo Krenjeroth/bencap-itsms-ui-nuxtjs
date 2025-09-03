@@ -66,7 +66,7 @@ export const CreateInventoryValidationSchema = z
       .string()
       .regex(
         /^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$/,
-        "Invalid MAC address format (expected XX:XX:XX:XX:XX:XX)"
+        "Invalid MAC address format (expected XX:XX:XX:XX:XX:XX / XX-XX-XX-XX-XX-XX)"
       )
       .nullable()
       .optional(),

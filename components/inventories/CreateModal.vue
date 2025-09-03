@@ -586,7 +586,9 @@ const removeRow = (index: number) => {
               <span v-if="searchQuery.length < 2" class="text-gray-400"
                 >Type at least 2 characters...</span
               >
-              <span v-else class="text-gray-400">No Brand Model found</span>
+              <span v-else class="text-gray-400"
+                >No Parent Component found</span
+              >
             </template>
           </UInputMenu>
         </UFormGroup>
