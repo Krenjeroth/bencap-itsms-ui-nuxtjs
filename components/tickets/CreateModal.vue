@@ -224,18 +224,6 @@ const searchAgencies = async (q: string) => {
             <span class="truncate">{{
               option.inventory_option_attribute
             }}</span>
-            <!-- <span class="truncate"
-              >{{ option.property_number }} ({{
-                option.inventory_item.brand_model.brand.name
-              }}
-              {{ option.inventory_item.brand_model.name }})</span
-            > -->
-            <!-- <span class="truncate"
-              >{{ option.property_number }} ({{
-                option.brand_model.item_type.type
-              }}: {{ option.brand_model.brand.name }}
-              {{ option.brand_model.name }})</span
-            > -->
           </template>
 
           <template #empty>

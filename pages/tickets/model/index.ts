@@ -187,6 +187,7 @@ const expandableDetails: ITableExpandableDetails = (row: any) => [
     key: "solution_formatted",
     label: "Solution",
     value: row.solution_formatted,
+    show: true,
   },
 ];
 
