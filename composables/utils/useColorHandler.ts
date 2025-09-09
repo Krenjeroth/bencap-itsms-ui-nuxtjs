@@ -1,7 +1,7 @@
 export const useColorHandler = () => {
-  const getStatusColor = (status: string) => {
+  const getStatusColor = (status: string, engagement: string | null = null) => {
     switch (status.toLowerCase()) {
-      // Query Status
+      // ? Query Status
       case "queued":
         return "yellow";
       case "checking_stock":
@@ -20,7 +20,7 @@ export const useColorHandler = () => {
         return "green";
       case "reopened":
         return "purple";
-      // Request Status
+      // ? Request Status
       case "open":
         return "yellow";
       case "accepted":
@@ -45,6 +45,20 @@ export const useColorHandler = () => {
         return "blue";
       case "component":
         return "yellow";
+
+      // ? Profile Status
+      case "online":
+        switch (engagement) {
+          case "ready":
+            return "green";
+          case "busy":
+            return "orange";
+          default:
+            return "blue";
+        }
+      case "offline":
+        return "gray";
+
       default:
         return "gray";
     }
