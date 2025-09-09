@@ -504,10 +504,35 @@ watch([currentTab, dropdownFilter, searchQuery], () => {
               v-for="personnel in row.personnel"
               :src="personnel.img_path"
               :alt="personnel.display_name.toLowerCase()"
+              :chip-color="
+                getStatusColor(personnel.status, personnel.engagement)
+              "
+              :chip-text="
+                personnel.status === 'offline'
+                  ? personnel.last_seen_at_humanized
+                  : ''
+              "
             />
           </UAvatarGroup>
         </div>
-        <div v-else class="italic">None</div>
+        <div v-else class="italic">
+          <UAvatar
+            v-if="row.personnel_agency_assigned.length > 0"
+            size="2xl"
+            v-for="personnel in row.personnel_agency_assigned"
+            :src="personnel.img_path"
+            :alt="personnel.display_name.toLowerCase()"
+            :ui="{ wrapper: 'border-2 border-gray-500 border-dashed' }"
+          />
+          <UAvatar
+            v-else-if="row.personnel_office_assigned.length > 0"
+            size="2xl"
+            v-for="personnel in row.personnel_office_assigned"
+            :src="personnel.img_path"
+            :alt="personnel.display_name.toLowerCase()"
+            :ui="{ wrapper: 'border-2 border-gray-500 border-dashed' }"
+          />
+        </div>
       </template>
 
       <template #actions-data="{ row }">
@@ -643,10 +668,35 @@ watch([currentTab, dropdownFilter, searchQuery], () => {
               v-for="personnel in row.personnel"
               :src="personnel.img_path"
               :alt="personnel.display_name.toLowerCase()"
+              :chip-color="
+                getStatusColor(personnel.status, personnel.engagement)
+              "
+              :chip-text="
+                personnel.status === 'offline'
+                  ? personnel.last_seen_at_humanized
+                  : ''
+              "
             />
           </UAvatarGroup>
         </div>
-        <div v-else class="italic">None</div>
+        <div v-else class="italic">
+          <UAvatar
+            v-if="row.personnel_agency_assigned.length > 0"
+            size="2xl"
+            v-for="personnel in row.personnel_agency_assigned"
+            :src="personnel.img_path"
+            :alt="personnel.display_name.toLowerCase()"
+            :ui="{ wrapper: 'border-2 border-gray-500 border-dashed' }"
+          />
+          <UAvatar
+            v-else-if="row.personnel_office_assigned.length > 0"
+            size="2xl"
+            v-for="personnel in row.personnel_office_assigned"
+            :src="personnel.img_path"
+            :alt="personnel.display_name.toLowerCase()"
+            :ui="{ wrapper: 'border-2 border-gray-500 border-dashed' }"
+          />
+        </div>
       </template>
 
       <template #actions-data="{ row }">
