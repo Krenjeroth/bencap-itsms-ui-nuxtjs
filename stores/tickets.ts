@@ -98,6 +98,18 @@ export const useTicketStore = defineStore("ticketStore", () => {
               : `${ticket.solution.title} — ${ticket.solution.author.display_name}`
             : "None"
         }`,
+
+        client: ticket.inventory
+          ? ticket.inventory.inventory
+            ? `${ticket.inventory.inventory.employee.full_name} \n\r (${ticket.inventory.inventory.employee.department.abbreviation})`
+            : `${ticket.inventory.employee.full_name} \n\r (${ticket.inventory.employee.department.abbreviation})`
+          : `${ticket.full_name} \n\r (${ticket.agency.abbreviation})`,
+
+        item_type: ticket.inventory
+          ? ticket.inventory.brand_model
+            ? `${ticket.inventory.brand_model.option_attribute_description}`
+            : `${ticket.inventory.item_type.type}`
+          : ticket.item_type.type,
       }));
 
       totalTickets.value = Number(response.meta.total) || 0;

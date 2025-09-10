@@ -10,12 +10,12 @@ const columns: ITableColumns[] = [
     rowClass: "whitespace-pre-line max-w-fit",
   },
   {
-    key: "employee.full_name",
-    label: "Employee",
+    key: "client",
+    label: "Client",
     rowClass: "whitespace-pre-line max-w-fit",
   },
   {
-    key: "item_type.type",
+    key: "item_type",
     label: "Item Type",
     rowClass: "whitespace-pre-line max-w-fit",
   },
