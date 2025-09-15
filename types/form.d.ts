@@ -194,6 +194,7 @@ declare global {
     warranty_expiration_date?: TDatePickerDate;
     status?: string | null;
     internal_components?: Array | null;
+    parent_id?: number;
   }
 
   interface IUpdateInventoryForm {
@@ -229,6 +230,25 @@ declare global {
     warranty_expiration_date?: TDatePickerDate;
     status?: string | null;
     internal_components?: Array | null;
+  }
+
+  interface IAddComponentInventoryForm {
+    parent_id?: number;
+    item_type?: number;
+    inventory?: {
+      id: number;
+      property_number: string;
+    } | null;
+    brand_model?: {
+      id?: number;
+      name?: string | null;
+      specification?: string;
+    } | null;
+    parent_property_number?: string;
+    date_acquired?: TDatePickerDate;
+    serial_number?: string | null;
+    property_number?: string;
+    status?: string | null;
   }
 
   interface ICreateItServiceForm {

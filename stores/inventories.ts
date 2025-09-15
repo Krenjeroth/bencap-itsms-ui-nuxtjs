@@ -51,6 +51,7 @@ export const useInventoryStore = defineStore("inventoryStore", () => {
         component_classification: inventoryResponse.inventory
           ? `Component`
           : `Parent`,
+        is_parent: inventoryResponse.inventory ? false : true,
         brand_model_formatted: inventoryResponse.brand_model
           ? inventoryResponse.brand_model?.name
             ? `${inventoryResponse.brand_model.item_type?.type} ${inventoryResponse.brand_model?.specification}, ${inventoryResponse.brand_model?.name}`
@@ -79,7 +80,8 @@ export const useInventoryStore = defineStore("inventoryStore", () => {
       employee_id: form.employee?.id,
       brand_model_id: form.brand_model?.id,
       item_type_id: form.item_type,
-      parent_component_id: form.inventory?.id,
+      // parent_component_id: form.inventory?.id,
+      parent_component_id: form.parent_id,
       date_acquired: form.date_acquired
         ? transformDatePickerDate(form.date_acquired, "YYYY-MM-DD HH:mm:ss")
         : null,

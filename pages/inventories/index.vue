@@ -20,6 +20,7 @@ import {
   InventoriesCreateModal,
   InventoriesUpdateModal,
   InventoriesDeleteModal,
+  InventoriesAddComponentModal,
 } from "#components";
 import * as model from "./model/index";
 const modal = useModal();
@@ -81,6 +82,46 @@ const editInventoryModal = (inventoryItem: any) => {
         icon: "i-heroicons-check-circle",
         // title: "Success !",
         description: `${pageTitleSingular} updated.`,
+        id: "modal-success",
+        color: "green",
+      });
+    },
+    onError() {
+      actionToastResult({
+        icon: "i-heroicons-x-circle",
+        // title: "Error !",
+        description: "Something went wrong.",
+        id: "modal-error",
+        color: "red",
+      });
+    },
+    onNoDataChange() {
+      actionToastResult({
+        icon: "i-heroicons-exclamation-circle",
+        // title: "Error !",
+        description: "No data changes detected.",
+        id: "modal-warning",
+        color: "yellow",
+      });
+    },
+    onClose() {
+      modal.close();
+    },
+  });
+};
+
+const addComponentModal = (inventoryItem: any) => {
+  modal.open(InventoriesAddComponentModal, {
+    inventoryItem,
+    pageTitle: pageTitleSingular,
+    onReloadTable() {
+      inventoryStore.fetchInventories();
+    },
+    onSuccess() {
+      actionToastResult({
+        icon: "i-heroicons-check-circle",
+        // title: "Success !",
+        description: `${pageTitleSingular} component added.`,
         id: "modal-success",
         color: "green",
       });
@@ -177,6 +218,7 @@ watch(selectedStatus, () => {
       :action-handlers="{
         edit: editInventoryModal,
         delete: deleteInventoryModal,
+        addComponent: addComponentModal,
       }"
       :pagination="{ page, pageCount, total: totalInventories }"
       :sorting="sort"

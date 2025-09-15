@@ -26,32 +26,36 @@ const columns: ITableColumns[] = [
   },
 ];
 
-const items: ITableActions = (row: any, handlers: IHandlers) => [
-  [
-    {
-      label: "Edit",
-      icon: "i-heroicons-pencil-square-20-solid",
-      click: () => handlers.edit?.(row),
-    },
-  ],
-  // [
-  //   {
-  //     label: "Archive",
-  //     icon: "i-heroicons-archive-box-20-solid",
-  //   },
-  //   {
-  //     label: "Move",
-  //     icon: "i-heroicons-arrow-right-circle-20-solid",
-  //   },
-  // ],
-  [
+const items: ITableActions = (row: any, handlers: IHandlers) => {
+  const actions: any[] = [];
+  const adminActions: any[] = [];
+
+  // Always show Edit
+  adminActions.push({
+    label: "Edit",
+    icon: "i-heroicons-pencil-square-20-solid",
+    click: () => handlers.edit?.(row),
+  });
+
+  if (row.is_parent) {
+    adminActions.push({
+      label: "Add Component",
+      icon: "material-symbols:add-link-rounded",
+      click: () => handlers.addComponent?.(row),
+    });
+  }
+  actions.unshift(adminActions);
+
+  actions.push([
     {
       label: "Delete",
       icon: "i-heroicons-trash-20-solid",
       click: () => handlers.delete?.(row),
     },
-  ],
-];
+  ]);
+
+  return actions;
+};
 
 const expandableDetails: ITableExpandableDetails = (row: any) => [
   {
