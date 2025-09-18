@@ -465,7 +465,7 @@ watch([currentTab, dropdownFilter, searchQuery], () => {
       </template>
 
       <template #property_number-data="{ row }">
-        <div class="grid grid-cols-1">
+        <div v-if="row.property_number" class="grid grid-cols-1">
           <span>
             <UBadge color="gray" variant="subtle" class="m-0.5">{{
               row.property_number
@@ -479,6 +479,17 @@ watch([currentTab, dropdownFilter, searchQuery], () => {
               variant="subtle"
               class="m-0.5"
               >Parent: {{ row.inventory.property_number }}</UBadge
+            >
+          </span>
+        </div>
+        <div v-else class="grid grid-cols-1">
+          <span>
+            <UBadge
+              v-if="row.inventory"
+              color="blue"
+              variant="subtle"
+              class="m-0.5"
+              >{{ row.inventory.property_number }}</UBadge
             >
           </span>
         </div>

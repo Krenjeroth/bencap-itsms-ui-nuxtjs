@@ -10,6 +10,11 @@ const columns: ITableColumns[] = [
     rowClass: "whitespace-pre-line max-w-fit",
   },
   {
+    key: "property_number",
+    label: "Property Number",
+    rowClass: "whitespace-pre-line max-w-fit",
+  },
+  {
     key: "client",
     label: "Client",
     rowClass: "whitespace-pre-line max-w-fit",
