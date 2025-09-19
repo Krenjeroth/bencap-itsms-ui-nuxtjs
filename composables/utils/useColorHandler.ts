@@ -18,8 +18,6 @@ export const useColorHandler = () => {
         return "red";
       case "resolved":
         return "green";
-      case "reopened":
-        return "purple";
       // ? Request Status
       case "open":
         return "yellow";
@@ -27,6 +25,8 @@ export const useColorHandler = () => {
         return "blue";
       case "closed":
         return "gray";
+      case "reopened":
+        return "purple";
       // Priority
       case "low":
         return "blue";
