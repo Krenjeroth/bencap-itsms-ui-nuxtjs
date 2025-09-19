@@ -217,13 +217,11 @@ const searchAgencies = async (q: string) => {
           v-model="formState.inventory"
           :search="searchInventories"
           :loading="loadingInventories"
-          placeholder="Search by property number..."
+          placeholder="Search by property number / actual user..."
           option-attribute="inventory_option_attribute"
         >
           <template #option="{ option }">
-            <span class="truncate">{{
-              option.inventory_option_attribute
-            }}</span>
+            <span>{{ option.inventory_option_attribute }}</span>
           </template>
 
           <template #empty>
