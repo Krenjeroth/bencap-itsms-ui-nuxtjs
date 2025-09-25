@@ -15,6 +15,7 @@ useHead({
 const { strSingular } = useStringHandler();
 
 const pageTitleSingular = strSingular(route.meta.title as string);
+const pageTitlePlural = route.meta.title as string;
 
 import {
   TicketsCreateModal,
@@ -416,7 +417,7 @@ const setReleaseDateModal = (ticket: any) => {
 };
 
 watch(search, () => {
-  page.value = 1; // Reset page
+  page.value = 1;
   ticketStore.fetchTickets();
 });
 
@@ -425,8 +426,15 @@ watch(pageCount, () => {
   ticketStore.fetchTickets();
 });
 
-watch([page, pageCount], () => {
+watch(pageCount, () => {
+  page.value = 1;
   ticketStore.fetchTickets();
+});
+
+watch(page, (newValue, oldValue) => {
+  if (newValue !== oldValue) {
+    ticketStore.fetchTickets();
+  }
 });
 
 watch(selectedStatus, () => {
@@ -436,14 +444,14 @@ watch(selectedStatus, () => {
 
 watch(activeTab, () => {
   page.value = 1;
-  // ticketStore.fetchTickets();
+  ticketStore.fetchTickets();
 });
 </script>
 
 <template>
   <div>
     <UiDatatable
-      :module-title="route.meta.title as string"
+      :module-title="pageTitlePlural"
       :is-expandable="true"
       :expandable-details="expandableDetails"
       :columns="columns"
@@ -455,6 +463,7 @@ watch(activeTab, () => {
       :tab-items="tabItems"
       :add-data-modal="addTicketModal"
       :loading="loading"
+      :active-tab="activeTab"
       :action-handlers="{
         edit: editTicketModal,
         // delete: deleteItServiceModal,

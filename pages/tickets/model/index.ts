@@ -203,7 +203,7 @@ const queryStatusOptions: ITableStatusOptions[] = [
   { key: "awaiting_part", label: "Awaiting Part", value: "awaiting_part" },
   { key: "resolved", label: "Resolved", value: "resolved" },
   { key: "cancelled", label: "Cancelled", value: "cancelled" },
-  { key: "reopened", label: "Reopened", value: "reopened" },
+  // { key: "reopened", label: "Reopened", value: "reopened" },
 ];
 
 const tabItems = [

@@ -58,15 +58,24 @@ export const useTicketStore = defineStore("ticketStore", () => {
   const fetchTickets = async () => {
     loading.value = true;
     try {
-      const queryParams = new URLSearchParams({
-        page: page.value.toString(),
-        per_page: pageCount.value.toString(),
-        sort: sort.value.column,
-        order: sort.value.direction,
-        search: search.value,
-        ...(selectedStatus.value ? { query_status: selectedStatus.value } : {}),
-        ...(activeTab.value !== "all" ? { tab: activeTab.value } : {}),
-      });
+      const queryParams = new URLSearchParams();
+
+      queryParams.set("page", page.value.toString());
+      queryParams.set("per_page", pageCount.value.toString());
+
+      if (sort.value.column) {
+        queryParams.set("sort", sort.value.column);
+        queryParams.set("order", sort.value.direction);
+      }
+
+      if (search.value) queryParams.set("search", search.value);
+      if (selectedStatus.value) {
+        queryParams.set("query_status", selectedStatus.value);
+      }
+
+      if (activeTab.value && activeTab.value !== "all") {
+        queryParams.set("tab", activeTab.value);
+      }
 
       const response = await fetchTicketsApi(queryParams);
 

@@ -66,6 +66,10 @@ const props = defineProps({
     type: Array as PropType<ITableTabItem[]>,
     default: () => [],
   },
+  activeTab: {
+    type: [String, Number],
+    default: 0,
+  },
 });
 
 const emit = defineEmits([
@@ -82,34 +86,52 @@ const { capitalizeWord } = useStringHandler();
 const searchQuery = ref(props.search);
 const dropdownFilter = ref(props.selectedDropdownFilter);
 
-const localPage = ref(props.pagination.page);
-const localPageCount = ref(Number(props.pagination.pageCount));
+const localPage = computed({
+  get() {
+    return props.pagination.page;
+  },
+  set(newValue) {
+    emit("update:page", newValue);
+  },
+});
 
-// Start Tab Items
+const localPageCount = computed({
+  get() {
+    return Number(props.pagination.pageCount);
+  },
+  set(newValue) {
+    emit("update:pageCount", Number(newValue));
+  },
+});
 
-const filteredTableData = computed(() => {
-  switch (currentTab.value) {
-    case "open":
-      return props.tableData.filter((row) => row.request_status === "open");
-    case "closed":
-      return props.tableData.filter((row) => row.request_status === "closed");
-    case "accepted_by_others":
-      return props.tableData.filter((row) => row.is_accepted_by_others);
-    case "accepted_by_me":
-      return props.tableData.filter((row) => row.is_accepted_by_me);
-    case "other_agency":
-      return props.tableData.filter((row) => row.is_other_agency);
-    // case "unaccepted":
-    //   return props.tableData.filter((row) => !row.is_accepted_by_me);
-    default:
-      return props.tableData;
-  }
+const localActiveTab = computed({
+  get() {
+    const index = props.tabItems.findIndex(
+      (item) => item.value === props.activeTab
+    );
+    return index !== -1 ? index : 0;
+  },
+  set(index) {
+    const newTabValue = props.tabItems[index]?.value;
+    if (newTabValue) {
+      emit("update:active-tab", newTabValue);
+    }
+  },
 });
 
 const localSort = ref(props.sorting);
+const selectedColumns = ref(props.columns);
+const columnsTable = computed(() =>
+  props.columns
+    .filter((column) => selectedColumns.value.includes(column))
+    .map((column) => ({
+      ...column,
+      responsiveClass: column.responsiveClass || "",
+    }))
+);
 
 const sortedTableData = computed(() => {
-  const data = [...filteredTableData.value];
+  const data = [...props.tableData];
 
   if (!localSort.value?.column) {
     return data.sort((a, b) => {
@@ -139,20 +161,8 @@ const activeTab = ref(0);
 const currentTab = computed(() =>
   props.enableTab ? props.tabItems[activeTab.value].value : "all"
 );
-// const currentTab = computed(() => activeTab.value[0]);
 
 // End Tab Items
-
-// Columns
-const selectedColumns = ref(props.columns);
-const columnsTable = computed(() =>
-  props.columns
-    .filter((column) => selectedColumns.value.includes(column))
-    .map((column) => ({
-      ...column,
-      responsiveClass: column.responsiveClass || "",
-    }))
-);
 
 const excludeSelectColumn = computed(() =>
   props.columns.filter(
@@ -185,10 +195,6 @@ const pageTo = computed(() =>
 );
 
 const paginationTotal = computed(() => {
-  // If not on the 'all' tab, or if search or dropdown filter is active, use filtered data length
-  if (currentTab.value !== "all" || searchQuery.value || dropdownFilter.value) {
-    return sortedTableData.value.length;
-  }
   return props.pagination.total;
 });
 
@@ -196,16 +202,6 @@ const resetFilters = () => {
   searchQuery.value = "";
   dropdownFilter.value = "";
 };
-
-// const localSort = ref(props.sorting);
-
-watch([currentTab, localPageCount], () => {
-  localPage.value = 1;
-});
-
-watch([searchQuery], () => {
-  props.pagination.page = 1;
-});
 
 watch(searchQuery, (q) => {
   emit("update:search", q);
@@ -235,10 +231,6 @@ watch(localPageCount, (newCount) => {
 
 watch(localPage, (newPage) => {
   emit("update:page", newPage);
-});
-
-watch([currentTab, dropdownFilter, searchQuery], () => {
-  localPage.value = 1;
 });
 </script>
 
@@ -344,7 +336,7 @@ watch([currentTab, dropdownFilter, searchQuery], () => {
     <div v-if="props.enableTab" class="flex w-full px-2 pt-2">
       <UTabs
         :items="props.tabItems"
-        v-model="activeTab"
+        v-model="localActiveTab"
         :ui="{
           wrapper: 'justify-center w-full',
         }"
@@ -733,21 +725,6 @@ watch([currentTab, dropdownFilter, searchQuery], () => {
         <span class="font-medium">{{ paginationTotal }}</span>
         results
       </p>
-      <!-- <UPagination
-        v-model="localPage"
-        :total="paginationTotal"
-        :page-count="localPageCount"
-        @update:modelValue="emit('update:page', $event)"
-        :ui="{
-          wrapper: 'flex items-center gap-1',
-          rounded: '!rounded-full min-w-[32px] justify-center',
-          default: {
-            activeButton: {
-              variant: 'outline',
-            },
-          },
-        }"
-      /> -->
       <UPagination
         v-model="localPage"
         :total="paginationTotal"
