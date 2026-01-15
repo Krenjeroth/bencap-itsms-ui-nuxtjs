@@ -8,7 +8,7 @@ export const useEmployeeStore = defineStore("employeeStore", () => {
   } = useEmployeeApi();
   const { hasError, errorBag, transformValidationErrors, resetErrorBag } =
     useErrorHandler();
-  const { capitalizeAll, strDeepSanitize } = useStringHandler();
+  const { capitalizeAll, strDeepSanitize, capitalizeWord } = useStringHandler();
   // const { transformUtcDatetime } = useDateHandler();
   enum SortDirection {
     ASC = "asc",
@@ -42,12 +42,10 @@ export const useEmployeeStore = defineStore("employeeStore", () => {
 
       employees.value = response.data.map((employee: any) => ({
         ...employee,
-        middlename: strDeepSanitize(employee.middlename),
-        suffix: strDeepSanitize(employee.suffix),
-        department_id: employee.department.id,
-        department_full: `${employee.department.full_name} (${employee.department.abbreviation})`,
-        position_id: employee.position.id,
-        position_name: `${employee.position.name} (${employee.position.abbreviation})`,
+        office_full: `${employee.office_desc} (${employee.office_code})`,
+        position_type: `${employee.position_title} (${capitalizeWord(
+          employee.type
+        )})`,
       }));
 
       totalEmployees.value = Number(response.meta.total) || 0;
