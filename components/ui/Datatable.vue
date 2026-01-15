@@ -36,6 +36,10 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  enableAddData: {
+    type: Boolean,
+    default: true,
+  },
   addDataModal: {
     type: Function as PropType<() => void>,
     default: () => {},
@@ -257,6 +261,7 @@ watch(localPage, (newPage) => {
           {{ moduleTitle }}
         </h2>
         <UButton
+          v-if="enableAddData"
           :label="`Add ${moduleTitle}`"
           @click="addDataModal"
           color="primary"
