@@ -33,103 +33,103 @@ const {
 const { columns, items } = model;
 employeeStore.fetchEmployees();
 
-const addEmployeeModal = () => {
-  modal.open(EmployeesCreateModal, {
-    onReloadTable() {
-      employeeStore.fetchEmployees();
-    },
-    onSuccess() {
-      actionToastResult({
-        icon: "i-heroicons-check-circle",
-        // title: "Success !",
-        description: "Employee created.",
-        id: "modal-success",
-        color: "green",
-      });
-    },
-    onError() {
-      actionToastResult({
-        icon: "i-heroicons-x-circle",
-        // title: "Error !",
-        description: "Something went wrong.",
-        id: "modal-error",
-        color: "red",
-      });
-    },
-    onClose() {
-      modal.close();
-    },
-  });
-};
+// const addEmployeeModal = () => {
+//   modal.open(EmployeesCreateModal, {
+//     onReloadTable() {
+//       employeeStore.fetchEmployees();
+//     },
+//     onSuccess() {
+//       actionToastResult({
+//         icon: "i-heroicons-check-circle",
+//         // title: "Success !",
+//         description: "Employee created.",
+//         id: "modal-success",
+//         color: "green",
+//       });
+//     },
+//     onError() {
+//       actionToastResult({
+//         icon: "i-heroicons-x-circle",
+//         // title: "Error !",
+//         description: "Something went wrong.",
+//         id: "modal-error",
+//         color: "red",
+//       });
+//     },
+//     onClose() {
+//       modal.close();
+//     },
+//   });
+// };
 
-const editEmployeeModal = (employee: any) => {
-  modal.open(EmployeesUpdateModal, {
-    employee,
-    onReloadTable() {
-      employeeStore.fetchEmployees();
-    },
-    onSuccess() {
-      actionToastResult({
-        icon: "i-heroicons-check-circle",
-        // title: "Success !",
-        description: "Employee updated.",
-        id: "modal-success",
-        color: "green",
-      });
-    },
-    onError() {
-      actionToastResult({
-        icon: "i-heroicons-x-circle",
-        // title: "Error !",
-        description: "Something went wrong.",
-        id: "modal-error",
-        color: "red",
-      });
-    },
-    onNoDataChange() {
-      actionToastResult({
-        icon: "i-heroicons-exclamation-circle",
-        // title: "Error !",
-        description: "No data changes detected.",
-        id: "modal-warning",
-        color: "yellow",
-      });
-    },
-    onClose() {
-      modal.close();
-    },
-  });
-};
+// const editEmployeeModal = (employee: any) => {
+//   modal.open(EmployeesUpdateModal, {
+//     employee,
+//     onReloadTable() {
+//       employeeStore.fetchEmployees();
+//     },
+//     onSuccess() {
+//       actionToastResult({
+//         icon: "i-heroicons-check-circle",
+//         // title: "Success !",
+//         description: "Employee updated.",
+//         id: "modal-success",
+//         color: "green",
+//       });
+//     },
+//     onError() {
+//       actionToastResult({
+//         icon: "i-heroicons-x-circle",
+//         // title: "Error !",
+//         description: "Something went wrong.",
+//         id: "modal-error",
+//         color: "red",
+//       });
+//     },
+//     onNoDataChange() {
+//       actionToastResult({
+//         icon: "i-heroicons-exclamation-circle",
+//         // title: "Error !",
+//         description: "No data changes detected.",
+//         id: "modal-warning",
+//         color: "yellow",
+//       });
+//     },
+//     onClose() {
+//       modal.close();
+//     },
+//   });
+// };
 
-const deleteEmployeeModal = (employee: any) => {
-  modal.open(EmployeesDeleteModal, {
-    employee,
-    onReloadTable() {
-      employeeStore.fetchEmployees();
-    },
-    onSuccess() {
-      actionToastResult({
-        icon: "i-heroicons-check-circle",
-        // title: "Success !",
-        description: "Employee deleted.",
-        id: "modal-success",
-        color: "green",
-      });
-    },
-    onError() {
-      actionToastResult({
-        icon: "i-heroicons-x-circle",
-        // title: "Error !",
-        description: "Something went wrong.",
-        id: "modal-error",
-        color: "red",
-      });
-    },
-    onClose() {
-      modal.close();
-    },
-  });
-};
+// const deleteEmployeeModal = (employee: any) => {
+//   modal.open(EmployeesDeleteModal, {
+//     employee,
+//     onReloadTable() {
+//       employeeStore.fetchEmployees();
+//     },
+//     onSuccess() {
+//       actionToastResult({
+//         icon: "i-heroicons-check-circle",
+//         // title: "Success !",
+//         description: "Employee deleted.",
+//         id: "modal-success",
+//         color: "green",
+//       });
+//     },
+//     onError() {
+//       actionToastResult({
+//         icon: "i-heroicons-x-circle",
+//         // title: "Error !",
+//         description: "Something went wrong.",
+//         id: "modal-error",
+//         color: "red",
+//       });
+//     },
+//     onClose() {
+//       modal.close();
+//     },
+//   });
+// };
 
 // Watch search changes and fetch when updated
 watch(search, () => {
@@ -161,12 +161,8 @@ watch(selectedStatus, () => {
       :columns="columns"
       :action-items="items"
       :table-data="data"
-      :add-data-modal="addEmployeeModal"
+      :enable-add-data="false"
       :loading="loading"
-      :action-handlers="{
-        edit: editEmployeeModal,
-        delete: deleteEmployeeModal,
-      }"
       :pagination="{ page, pageCount, total: totalEmployees }"
       :sorting="sort"
       :search="search"
