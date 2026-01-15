@@ -2,31 +2,31 @@ export { columns, items };
 
 const columns: ITableColumns[] = [
   {
-    key: "full_name",
+    key: "fullname",
     label: "Name",
     sortable: true,
     direction: "desc",
     rowClass: "whitespace-pre-line max-w-fit",
   },
   {
-    key: "uid",
+    key: "employee_id_number",
     label: "ID",
     rowClass: "whitespace-pre-line max-w-fit",
   },
   {
-    key: "department_full",
-    label: "Department",
+    key: "office_full",
+    label: "Office",
     rowClass: "whitespace-pre-line max-w-fit",
   },
   {
-    key: "position_name",
+    key: "position_type",
     label: "Position",
     rowClass: "whitespace-pre-line max-w-fit",
   },
-  {
-    key: "actions",
-    rowClass: "whitespace-pre-line max-w-fit text-center",
-  },
+  // {
+  //   key: "actions",
+  //   rowClass: "whitespace-pre-line max-w-fit text-center",
+  // },
 ];
 
 const items: ITableActions = (row: any, handlers: IHandlers) => [
