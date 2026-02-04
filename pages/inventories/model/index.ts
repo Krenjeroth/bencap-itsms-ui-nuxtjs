@@ -31,11 +31,11 @@ const items: ITableActions = (row: any, handlers: IHandlers) => {
   const adminActions: any[] = [];
 
   // Always show Edit
-  adminActions.push({
-    label: "Edit",
-    icon: "i-heroicons-pencil-square-20-solid",
-    click: () => handlers.edit?.(row),
-  });
+  // adminActions.push({
+  //   label: "Edit",
+  //   icon: "i-heroicons-pencil-square-20-solid",
+  //   click: () => handlers.edit?.(row),
+  // });
 
   if (row.is_parent) {
     adminActions.push({
@@ -44,7 +44,9 @@ const items: ITableActions = (row: any, handlers: IHandlers) => {
       click: () => handlers.addComponent?.(row),
     });
   }
-  actions.unshift(adminActions);
+  if (adminActions.length > 0) {
+    actions.unshift(adminActions);
+  }
 
   actions.push([
     {
@@ -61,25 +63,25 @@ const expandableDetails: ITableExpandableDetails = (row: any) => [
   {
     key:
       row.item_type.id === 1
-        ? "employee.department.name"
-        : "inventory.employee.department.name",
+        ? "employee.office_desc"
+        : "inventory.employee.office_desc",
     label: "Department",
     value:
       row.item_type.id === 1
-        ? row.employee?.department?.name
-        : row.inventory?.employee?.department?.name,
+        ? row.employee?.office_desc
+        : row.inventory?.employee?.office_desc,
     show: true,
   },
   {
     key:
       row.item_type.id === 1
-        ? "employee.division_section"
-        : "inventory.employee.division_section",
+        ? "employee.division"
+        : "inventory.employee.division",
     label: "Division / Section",
     value:
       row.item_type.id === 1
-        ? row.employee?.department?.division
-        : row.inventory?.employee?.department?.division,
+        ? row.employee?.division
+        : row.inventory?.employee?.division,
     show: true,
   },
   {

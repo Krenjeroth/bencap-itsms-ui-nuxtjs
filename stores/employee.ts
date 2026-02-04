@@ -44,7 +44,7 @@ export const useEmployeeStore = defineStore("employeeStore", () => {
         ...employee,
         office_full: `${employee.office_desc} (${employee.office_code})`,
         position_type: `${employee.position_title} (${capitalizeWord(
-          employee.type
+          employee.type,
         )})`,
       }));
 

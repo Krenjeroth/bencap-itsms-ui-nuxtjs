@@ -46,8 +46,8 @@ export const useInventoryStore = defineStore("inventoryStore", () => {
       inventories.value = response.data.map((inventoryResponse: any) => ({
         ...inventoryResponse,
         actual_user: inventoryResponse.employee
-          ? `${inventoryResponse.employee?.full_name}`
-          : `${inventoryResponse.inventory?.employee?.full_name}`,
+          ? `${inventoryResponse.employee?.fullname}`
+          : `${inventoryResponse.inventory?.employee?.fullname}`,
         component_classification: inventoryResponse.inventory
           ? `Component`
           : `Parent`,
@@ -57,6 +57,11 @@ export const useInventoryStore = defineStore("inventoryStore", () => {
             ? `${inventoryResponse.brand_model.item_type?.type} ${inventoryResponse.brand_model?.specification}, ${inventoryResponse.brand_model?.name}`
             : `${inventoryResponse.brand_model?.item_type?.type}, ${inventoryResponse.brand_model?.specification}`
           : inventoryResponse.item_type?.type,
+
+        // internal_components_brand_model_fomatted:
+        //   inventoryResponse.internal_components
+        //     ? `(${inventoryResponse.internal_components})`
+        //     : null,
 
         option_attribute: `${inventoryResponse.property_number} (${inventoryResponse.description})`,
       }));
@@ -87,6 +92,8 @@ export const useInventoryStore = defineStore("inventoryStore", () => {
         : null,
       status: "active",
     };
+
+    console.log(formattedForm);
 
     await addInventoryApi(formattedForm)
       .catch((err: any) => {

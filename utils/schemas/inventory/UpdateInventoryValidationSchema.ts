@@ -58,7 +58,7 @@ export const UpdateInventoryValidationSchema = z
         },
         {
           message: "Invalid IP address (must be IPv4 or IPv6)",
-        }
+        },
       )
       .nullable()
       .optional(),
@@ -66,7 +66,7 @@ export const UpdateInventoryValidationSchema = z
       .string()
       .regex(
         /^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$/,
-        "Invalid MAC address format (expected XX:XX:XX:XX:XX:XX / XX-XX-XX-XX-XX-XX)"
+        "Invalid MAC address format (expected XX:XX:XX:XX:XX:XX / XX-XX-XX-XX-XX-XX)",
       )
       .nullable()
       .optional(),
@@ -147,7 +147,7 @@ export const UpdateInventoryValidationSchema = z
             .optional(),
           // specific_serial_number: z.string().nullable().optional(),
           quantity: z.number().optional(),
-        })
+        }),
       )
       .optional()
       .nullable(),
@@ -198,6 +198,14 @@ export const UpdateInventoryValidationSchema = z
           path: ["brand_model"],
           code: z.ZodIssueCode.custom,
           message: "Brand model is required.",
+        });
+      }
+
+      if (!data.serial_number || data.serial_number.trim() === "") {
+        ctx.addIssue({
+          path: ["serial_number"],
+          code: z.ZodIssueCode.custom,
+          message: "Serial number is required.",
         });
       }
     }

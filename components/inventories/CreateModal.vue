@@ -172,7 +172,7 @@ const inventoryComputed = computed({
 });
 
 const handleSubmit = async (
-  event: IFormSubmitEvent<TCreateInventoryValidationSchema>
+  event: IFormSubmitEvent<TCreateInventoryValidationSchema>,
 ) => {
   console.log(event.data);
   await inventoryStore.addInventory(event.data);
@@ -194,14 +194,14 @@ const searchBrandModels = async (q: string) => {
   if (!searchQuery.value || searchQuery.value.length < 2) return [];
   if (itemTypeComputed.value === 1) {
     const result = await brandModelStore.fetchBrandModelSelect(
-      searchQuery.value
+      searchQuery.value,
     );
     brandModelOptions.value = result;
     return result;
   }
   const result = await brandModelStore.fetchBrandModelSearch(
     searchQuery.value,
-    itemTypeComputed.value
+    itemTypeComputed.value,
   );
   brandModelOptions.value = result;
   console.log(result);
@@ -216,7 +216,7 @@ const searchEmployees = async (q: string) => {
   if (!employeeSearchQuery.value || employeeSearchQuery.value.length < 2)
     return [];
   const result = await employeeStore.fetchEmployeeSearch(
-    employeeSearchQuery.value
+    employeeSearchQuery.value,
   );
   employeeOptions.value = result;
   return result;
@@ -233,7 +233,7 @@ const searchInventoryMainAsset = async (q: string) => {
   )
     return [];
   const result = await inventoryStore.fetchInventoryMainAssetSearch(
-    inventoryMainAssetSearchQuery.value
+    inventoryMainAssetSearchQuery.value,
   );
   inventoryMainAssetSearchOptions.value = result;
   return result;
@@ -245,7 +245,7 @@ const searchItemTypes = async (q: string) => {
     await itemTypeStore.fetchItemTypeSelect();
   }
   const filtered = itemTypeSelect.value.filter((itemType) =>
-    itemType.type.toLowerCase().includes(q.toLowerCase())
+    itemType.type.toLowerCase().includes(q.toLowerCase()),
   );
   return filtered;
 };

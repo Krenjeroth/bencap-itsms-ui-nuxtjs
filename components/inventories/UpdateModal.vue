@@ -128,8 +128,6 @@ const originalState = reactive<IUpdateInventoryForm>({
   }),
 });
 
-console.log(props.inventoryItem?.internal_components);
-
 const fieldsToCompare: (keyof IUpdateInventoryForm)[] = [
   "employee",
   "item_type",
@@ -194,8 +192,6 @@ const itemTypeComputed = computed({
     formState.item_type = value ? Number(value) : undefined;
   },
 });
-
-console.log(itemTypeComputed.value);
 
 const operatingSystemNameComputed = computed({
   get: () => formState.operating_system_name ?? undefined,
@@ -275,7 +271,7 @@ const inventoryComputed = computed({
 });
 
 const handleSubmit = async (
-  event: IFormSubmitEvent<TUpdateInventoryValidationSchema>
+  event: IFormSubmitEvent<TUpdateInventoryValidationSchema>,
 ) => {
   console.log(event.data);
 
@@ -303,17 +299,16 @@ const searchBrandModels = async (q: string) => {
   if (!searchQuery.value || searchQuery.value.length < 2) return [];
   if (itemTypeComputed.value === 1) {
     const result = await brandModelStore.fetchBrandModelSelect(
-      searchQuery.value
+      searchQuery.value,
     );
     brandModelOptions.value = result;
     return result;
   }
   const result = await brandModelStore.fetchBrandModelSearch(
     searchQuery.value,
-    itemTypeComputed.value
+    itemTypeComputed.value,
   );
   brandModelOptions.value = result;
-  console.log(result);
   return result;
 };
 
@@ -325,7 +320,7 @@ const searchEmployees = async (q: string) => {
   if (!employeeSearchQuery.value || employeeSearchQuery.value.length < 2)
     return [];
   const result = await employeeStore.fetchEmployeeSearch(
-    employeeSearchQuery.value
+    employeeSearchQuery.value,
   );
   employeeOptions.value = result;
   return result;
@@ -342,7 +337,7 @@ const searchInventoryMainAsset = async (q: string) => {
   )
     return [];
   const result = await inventoryStore.fetchInventoryMainAssetSearch(
-    inventoryMainAssetSearchQuery.value
+    inventoryMainAssetSearchQuery.value,
   );
   inventoryMainAssetSearchOptions.value = result;
   return result;
@@ -354,7 +349,7 @@ const searchItemTypes = async (q: string) => {
     await itemTypeStore.fetchItemTypeSelect();
   }
   const filtered = itemTypeSelect.value.filter((itemType) =>
-    itemType.type.toLowerCase().includes(q.toLowerCase())
+    itemType.type.toLowerCase().includes(q.toLowerCase()),
   );
   return filtered;
 };
@@ -444,10 +439,10 @@ const removeRow = (index: number) => {
               :search="searchEmployees"
               :loading="loadingEmployees"
               placeholder="Type to search..."
-              option-attribute="full_name"
+              option-attribute="fullname"
             >
               <template #option="{ option }">
-                <span class="truncate">{{ option.full_name }}</span>
+                <span class="truncate">{{ option.fullname }}</span>
               </template>
               <template #empty>
                 <span

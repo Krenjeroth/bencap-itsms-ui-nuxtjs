@@ -2,7 +2,7 @@ export { columns, items };
 
 const columns: ITableColumns[] = [
   {
-    key: "fullname",
+    key: "full_name",
     label: "Name",
     sortable: true,
     direction: "desc",

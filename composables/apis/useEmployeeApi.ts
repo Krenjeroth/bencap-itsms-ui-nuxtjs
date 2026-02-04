@@ -14,7 +14,7 @@ export const useEmployeeApi = () => {
 
   const fetchEmployeesApi = async (queryParams: URLSearchParams) => {
     return await sanctumFetch(
-      `${employeesUrl.value}?${queryParams.toString()}`
+      `${employeesUrl.value}?${queryParams.toString()}`,
     );
   };
 
