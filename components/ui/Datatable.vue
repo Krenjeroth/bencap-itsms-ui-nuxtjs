@@ -111,7 +111,7 @@ const localPageCount = computed({
 const localActiveTab = computed({
   get() {
     const index = props.tabItems.findIndex(
-      (item) => item.value === props.activeTab
+      (item) => item.value === props.activeTab,
     );
     return index !== -1 ? index : 0;
   },
@@ -131,7 +131,7 @@ const columnsTable = computed(() =>
     .map((column) => ({
       ...column,
       responsiveClass: column.responsiveClass || "",
-    }))
+    })),
 );
 
 const sortedTableData = computed(() => {
@@ -163,7 +163,7 @@ const sortedTableData = computed(() => {
 const activeTab = ref(0);
 
 const currentTab = computed(() =>
-  props.enableTab ? props.tabItems[activeTab.value].value : "all"
+  props.enableTab ? props.tabItems[activeTab.value].value : "all",
 );
 
 // End Tab Items
@@ -180,22 +180,22 @@ const excludeSelectColumn = computed(() =>
       v.key !== "property_number" &&
       v.key !== "title" &&
       v.key !== "type" &&
-      v.key !== "code"
-  )
+      v.key !== "code",
+  ),
 );
 
 // Pagination info
 const pageFrom = computed(() =>
   paginationTotal.value === 0
     ? 0
-    : (props.pagination.page - 1) * props.pagination.pageCount + 1
+    : (props.pagination.page - 1) * props.pagination.pageCount + 1,
 );
 
 const pageTo = computed(() =>
   Math.min(
     props.pagination.page * props.pagination.pageCount,
-    paginationTotal.value
-  )
+    paginationTotal.value,
+  ),
 );
 
 const paginationTotal = computed(() => {
@@ -385,7 +385,7 @@ watch(localPage, (newPage) => {
           size="3xl"
           :src="row.profile?.img_path"
           :alt="`${capitalizeWord(
-            row.profile.name.firstname.match(/^\S+/)?.[0]
+            row.profile.name.firstname.match(/^\S+/)?.[0],
           )} ${capitalizeWord(row.profile.name.lastname)}`"
         />
       </template>
@@ -506,7 +506,11 @@ watch(localPage, (newPage) => {
           <UAvatarGroup
             size="2xl"
             :max="3"
-            :key="row.personnel && row.personnel.length ? row.personnel.map((p:any) => p.id).join('-') : 'none'"
+            :key="
+              row.personnel && row.personnel.length
+                ? row.personnel.map((p: any) => p.id).join('-')
+                : 'none'
+            "
           >
             <UAvatar
               v-for="personnel in row.personnel"
@@ -563,9 +567,30 @@ watch(localPage, (newPage) => {
             v-show="detail.show"
             class="font-mono"
           >
-            <strong>{{ detail.label }}</strong
-            >:
-            <span class="italic whitespace-pre-line">{{ detail.value }}</span>
+            <div
+              v-if="typeof detail.value === 'object' && detail.value !== null"
+            >
+              <strong>{{ detail.label }}</strong
+              >:
+              <div class="grid grid-cols-2 gap-2">
+                <div v-for="internal_component in detail.value">
+                  <span class="italic whitespace-pre-line"
+                    ><strong>{{
+                      internal_component.brand_model.item_type.type
+                    }}</strong></span
+                  >:
+                  <span class="italic whitespace-pre-line"
+                    >{{ internal_component.brand_model.brand.name }},
+                    {{ internal_component.brand_model.specification }}</span
+                  >
+                </div>
+              </div>
+            </div>
+            <div v-else>
+              <strong>{{ detail.label }}</strong
+              >:
+              <span class="italic whitespace-pre-line">{{ detail.value }}</span>
+            </div>
           </div>
           <!-- <p v-for="detail in expandableDetails(row)" :key="detail.key">
             <strong>{{ detail.label }}</strong
@@ -604,7 +629,7 @@ watch(localPage, (newPage) => {
           size="3xl"
           :src="row.profile?.img_path"
           :alt="`${capitalizeWord(
-            row.profile.name.firstname.match(/^\S+/)?.[0]
+            row.profile.name.firstname.match(/^\S+/)?.[0],
           )} ${capitalizeWord(row.profile.name.lastname)}`"
         />
       </template>
@@ -670,7 +695,11 @@ watch(localPage, (newPage) => {
           <UAvatarGroup
             size="2xl"
             :max="3"
-            :key="row.personnel && row.personnel.length ? row.personnel.map((p:any) => p.id).join('-') : 'none'"
+            :key="
+              row.personnel && row.personnel.length
+                ? row.personnel.map((p: any) => p.id).join('-')
+                : 'none'
+            "
           >
             <UAvatar
               v-for="personnel in row.personnel"
