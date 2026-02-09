@@ -58,7 +58,7 @@ export const CreateInventoryValidationSchema = z
         },
         {
           message: "Invalid IP address (must be IPv4 or IPv6)",
-        }
+        },
       )
       .nullable()
       .optional(),
@@ -66,7 +66,7 @@ export const CreateInventoryValidationSchema = z
       .string()
       .regex(
         /^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$/,
-        "Invalid MAC address format (expected XX:XX:XX:XX:XX:XX / XX-XX-XX-XX-XX-XX)"
+        "Invalid MAC address format (expected XX:XX:XX:XX:XX:XX / XX-XX-XX-XX-XX-XX)",
       )
       .nullable()
       .optional(),
@@ -147,14 +147,14 @@ export const CreateInventoryValidationSchema = z
             .optional(),
           // specific_serial_number: z.string().nullable().optional(),
           quantity: z.number().optional(),
-        })
+        }),
       )
       .optional()
       .nullable(),
   })
   .superRefine((data, ctx) => {
     // Corrected: Now checking data.item_type directly as a number
-    if (data.item_type === 1) {
+    if (data.item_type === 1 || data.item_type === 164) {
       if (!data.employee || data.employee.id === null) {
         ctx.addIssue({
           path: ["employee"],
