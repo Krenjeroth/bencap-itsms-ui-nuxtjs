@@ -156,6 +156,12 @@ const expandableDetails: ITableExpandableDetails = (row: any) => [
     value: row.other_installed_applications,
     show: row.item_type.id === 1,
   },
+  {
+    key: "internal_components.id",
+    label: "Internal Components",
+    value: row.internal_components,
+    show: row.item_type.id === 1,
+  },
 ];
 
 const classificationOptions: ITableStatusOptions[] = [
