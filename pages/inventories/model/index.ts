@@ -80,8 +80,8 @@ const expandableDetails: ITableExpandableDetails = (row: any) => [
     label: "Division / Section",
     value:
       row.item_type.id === 1
-        ? row.employee?.division
-        : row.inventory?.employee?.division,
+        ? row.employee?.unit
+        : row.inventory?.employee?.unit,
     show: true,
   },
   {
