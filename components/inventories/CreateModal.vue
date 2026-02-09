@@ -323,7 +323,10 @@ const removeRow = (index: number) => {
         </UFormGroup>
       </div>
 
-      <div v-if="itemTypeComputed === 1" class="space-y-6">
+      <div
+        v-if="itemTypeComputed === 1 || itemTypeComputed === 164"
+        class="space-y-6"
+      >
         <UDivider label="Basic Information" />
         <div class="space-y-6 md:space-y-0 md:flex md:space-x-6">
           <UFormGroup
@@ -377,7 +380,7 @@ const removeRow = (index: number) => {
 
       <div
         :class="
-          itemTypeComputed === 1
+          itemTypeComputed === 1 || itemTypeComputed === 164
             ? 'grid grid-cols-2 gap-4'
             : 'grid grid-cols-1 gap-4'
         "
@@ -422,11 +425,11 @@ const removeRow = (index: number) => {
           <!-- Internal Components -->
           <!-- CHANGED: Added v-if check and removed manual error prop. UForm will now handle the errors for dynamic fields. -->
           <UFormGroup
-            v-if="itemTypeComputed === 1"
+            v-if="itemTypeComputed === 1 || itemTypeComputed === 164"
             label="Internal Components"
             name="internal_components"
             class="flex flex-col"
-            :required="itemTypeComputed === 1"
+            :required="itemTypeComputed === 1 || itemTypeComputed === 164"
           >
             <div
               class="flex space-y-6 md:space-y-4 md:flex md:space-x-4 items-end"
@@ -437,7 +440,7 @@ const removeRow = (index: number) => {
                 label="Model"
                 :name="`internal_components.${index}.brand_model`"
                 :ui="{ wrapper: 'md:w-full' }"
-                :required="itemTypeComputed === 1"
+                :required="itemTypeComputed === 1 || itemTypeComputed === 164"
                 :key="index"
               >
                 <UInputMenu
@@ -468,7 +471,7 @@ const removeRow = (index: number) => {
                 label="Qty"
                 :name="`internal_components.${index}.quantity`"
                 :ui="{ wrapper: 'md:w-16' }"
-                :required="itemTypeComputed === 1"
+                :required="itemTypeComputed === 1 || itemTypeComputed === 164"
               >
                 <UInput type="number" v-model="row.quantity" />
               </UFormGroup>
@@ -484,7 +487,10 @@ const removeRow = (index: number) => {
               </div>
             </div>
           </UFormGroup>
-          <div v-if="itemTypeComputed === 1" class="text-center">
+          <div
+            v-if="itemTypeComputed === 1 || itemTypeComputed === 164"
+            class="text-center"
+          >
             <UButton
               color="orange"
               size="sm"
@@ -495,7 +501,7 @@ const removeRow = (index: number) => {
         </div>
         <!-- ? Software -->
         <div
-          v-if="itemTypeComputed === 1"
+          v-if="itemTypeComputed === 1 || itemTypeComputed === 164"
           class="col-span-1 gap-4 flex flex-col"
         >
           <UDivider label="Software" />
@@ -564,7 +570,7 @@ const removeRow = (index: number) => {
 
       <div
         class="space-y-6 md:space-y-0 md:flex md:space-x-6"
-        v-if="itemTypeComputed !== 1"
+        v-if="itemTypeComputed !== 1 && itemTypeComputed !== 164"
       >
         <UFormGroup
           label="Parent Component"
