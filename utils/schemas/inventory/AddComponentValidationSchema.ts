@@ -15,7 +15,7 @@ export const AddComponentValidationSchema = z.object({
     specification: z.string(),
   }),
 
-  serial_number: z.string(),
+  serial_number: z.string().nullable().optional(),
   parent_id: z.number(),
   property_number: z.string(),
 });
