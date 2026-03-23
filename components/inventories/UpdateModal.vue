@@ -273,8 +273,6 @@ const inventoryComputed = computed({
 const handleSubmit = async (
   event: IFormSubmitEvent<TUpdateInventoryValidationSchema>,
 ) => {
-  console.log(event.data);
-
   if (!isChangedComputed.value) {
     onNoDataChange();
     return;
@@ -439,10 +437,10 @@ const removeRow = (index: number) => {
               :search="searchEmployees"
               :loading="loadingEmployees"
               placeholder="Type to search..."
-              option-attribute="fullname"
+              option-attribute="full_name"
             >
               <template #option="{ option }">
-                <span class="truncate">{{ option.fullname }}</span>
+                <span class="truncate">{{ option.full_name }}</span>
               </template>
               <template #empty>
                 <span

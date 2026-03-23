@@ -1,4 +1,4 @@
-export { columns, items, classificationOptions, expandableDetails };
+export { columns, items, classificationOptions, expandableDetails, tabItems };
 
 const columns: ITableColumns[] = [
   {
@@ -31,11 +31,11 @@ const items: ITableActions = (row: any, handlers: IHandlers) => {
   const adminActions: any[] = [];
 
   // Always show Edit
-  // adminActions.push({
-  //   label: "Edit",
-  //   icon: "i-heroicons-pencil-square-20-solid",
-  //   click: () => handlers.edit?.(row),
-  // });
+  adminActions.push({
+    label: "Edit",
+    icon: "i-heroicons-pencil-square-20-solid",
+    click: () => handlers.edit?.(row),
+  });
 
   if (row.is_parent) {
     adminActions.push({
@@ -77,36 +77,46 @@ const expandableDetails: ITableExpandableDetails = (row: any) => [
       row.item_type.id === 1
         ? "employee.division"
         : "inventory.employee.division",
-    label: "Division / Section",
+    label: "Division / Section / Unit",
     value:
       row.item_type.id === 1
         ? row.employee?.unit
         : row.inventory?.employee?.unit,
-    show: true,
+    show:
+      row.item_type.id === 1
+        ? !!row.employee?.unit
+        : !!row.inventory?.employee?.unit,
   },
   {
     key: "ip_address",
     label: "IP Address",
-    value: row.ip_address,
-    show: true,
+    value: row.item_type.id === 1 ? row.ip_address : row.inventory?.ip_address,
+    show:
+      row.item_type.id === 1 ? !!row.ip_address : !!row.inventory?.ip_address,
   },
   {
     key: "mac_address",
     label: "MAC Address",
-    value: row.mac_address,
-    show: true,
+    value:
+      row.item_type.id === 1 ? row.mac_address : row.inventory?.mac_address,
+    show:
+      row.item_type.id === 1 ? !!row.mac_address : !!row.inventory?.mac_address,
   },
   {
     key: "remarks",
     label: "Remarks",
-    value: row.remarks,
-    show: !!row.remarks,
+    value: row.item_type.id === 1 ? row.remarks : row.inventory?.remarks,
+    show: row.item_type.id === 1 ? !!row.remarks : !!row.inventory?.remarks,
   },
   {
     key: "date_acquired",
     label: "Date Acquired",
-    value: row.date_acquired,
-    show: true,
+    value:
+      row.item_type.id === 1 ? row.date_acquired : row.inventory?.date_acquired,
+    show:
+      row.item_type.id === 1
+        ? !!row.date_acquired
+        : !!row.inventory?.date_acquired,
   },
   {
     key: "serial_number",
@@ -151,17 +161,46 @@ const expandableDetails: ITableExpandableDetails = (row: any) => [
     show: row.item_type.id === 1,
   },
   {
-    key: "other_installed_applications",
-    label: "Other Installed Applications",
-    value: row.other_installed_applications,
-    show: row.item_type.id === 1,
-  },
-  {
     key: "internal_components.id",
     label: "Internal Components",
     value: row.internal_components,
     show: row.item_type.id === 1,
   },
+  {
+    key: "other_installed_applications",
+    label: "Other Installed Applications",
+    value: row.other_installed_applications,
+    show: row.item_type.id === 1,
+  },
+];
+
+const tabItems = [
+  { label: "All", value: "all", icon: "i-heroicons-list-bullet" },
+  {
+    label: "Parent Components",
+    value: "parent_components",
+    icon: "material-symbols-light:adjust-outline",
+  },
+  {
+    label: "Child Components",
+    value: "child_components",
+    icon: "material-symbols:assignment-add-outline",
+  },
+  // {
+  //   label: "Accepted by Others",
+  //   value: "accepted_by_others",
+  //   icon: "material-symbols-light:person-check-outline-rounded",
+  // },
+  // {
+  //   label: "Closed Tickets",
+  //   value: "closed",
+  //   icon: "material-symbols-light:line-end-circle-outline-rounded",
+  // },
+  // {
+  //   label: "Other Agency",
+  //   value: "other_agency",
+  //   icon: "material-symbols-light:line-end-circle-outline-rounded",
+  // },
 ];
 
 const classificationOptions: ITableStatusOptions[] = [

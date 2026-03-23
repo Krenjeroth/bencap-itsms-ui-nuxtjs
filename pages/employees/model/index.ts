@@ -55,3 +55,32 @@ const items: ITableActions = (row: any, handlers: IHandlers) => [
     },
   ],
 ];
+
+const tabItems = [
+  { label: "All Tickets", value: "all", icon: "i-heroicons-list-bullet" },
+  {
+    label: "Open Tickets",
+    value: "open",
+    icon: "material-symbols-light:adjust-outline",
+  },
+  {
+    label: "Accepted by Me",
+    value: "accepted_by_me",
+    icon: "material-symbols:assignment-add-outline",
+  },
+  {
+    label: "Accepted by Others",
+    value: "accepted_by_others",
+    icon: "material-symbols-light:person-check-outline-rounded",
+  },
+  {
+    label: "Closed Tickets",
+    value: "closed",
+    icon: "material-symbols-light:line-end-circle-outline-rounded",
+  },
+  // {
+  //   label: "Other Agency",
+  //   value: "other_agency",
+  //   icon: "material-symbols-light:line-end-circle-outline-rounded",
+  // },
+];

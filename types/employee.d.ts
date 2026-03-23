@@ -8,7 +8,7 @@ declare global {
     middlename: string;
     lastname: string;
     suffix: string | null;
-    full_name: string;
+    fullname: string;
     img_path: string;
   }
 

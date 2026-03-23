@@ -70,7 +70,7 @@ export const CreateInventoryValidationSchema = z
       )
       .nullable()
       .optional(),
-    remark: z.string().nullable().optional(),
+    remarks: z.string().nullable().optional(),
     operating_system_name: z.string().nullable().optional(),
     os_license_number: z.string().nullable().optional(),
     anti_virus_name: z.string().nullable().optional(),
@@ -201,12 +201,12 @@ export const CreateInventoryValidationSchema = z
         });
       }
 
-      if (!data.serial_number || data.serial_number.trim() === "") {
-        ctx.addIssue({
-          path: ["serial_number"],
-          code: z.ZodIssueCode.custom,
-          message: "Serial number is required.",
-        });
-      }
+      // if (!data.serial_number || data.serial_number.trim() === "") {
+      //   ctx.addIssue({
+      //     path: ["serial_number"],
+      //     code: z.ZodIssueCode.custom,
+      //     message: "Serial number is required.",
+      //   });
+      // }
     }
   });

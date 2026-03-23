@@ -28,16 +28,22 @@ const columns: ITableColumns[] = [
   {
     key: "item_type.type",
     label: "Type",
+    sortable: true,
+    direction: "desc",
     rowClass: "whitespace-pre-line max-w-fit",
   },
   {
     key: "item_type.classification",
     label: "Classification",
+    sortable: true,
+    direction: "desc",
     rowClass: "whitespace-pre-line max-w-fit",
   },
   {
     key: "item_type.purpose",
     label: "Purpose",
+    sortable: true,
+    direction: "desc",
     rowClass: "whitespace-pre-line max-w-fit",
   },
   {

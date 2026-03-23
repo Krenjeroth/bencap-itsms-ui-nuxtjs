@@ -1,11 +1,5 @@
 export const useEmployeeStore = defineStore("employeeStore", () => {
-  const {
-    fetchEmployeesApi,
-    addEmployeeApi,
-    updateEmployeeApi,
-    deleteEmployeeApi,
-    fetchEmployeeSearchApi,
-  } = useEmployeeApi();
+  const { fetchEmployeesApi, fetchEmployeeSearchApi } = useEmployeeApi();
   const { hasError, errorBag, transformValidationErrors, resetErrorBag } =
     useErrorHandler();
   const { capitalizeAll, strDeepSanitize, capitalizeWord } = useStringHandler();
@@ -56,83 +50,83 @@ export const useEmployeeStore = defineStore("employeeStore", () => {
     }
   };
 
-  const addEmployee = async (form: ICreateEmployeeForm) => {
-    loading.value = true;
-    resetErrorBag();
+  // const addEmployee = async (form: ICreateEmployeeForm) => {
+  //   loading.value = true;
+  //   resetErrorBag();
 
-    const firstname = capitalizeAll(form.firstname);
-    const suffix = form.suffix ? capitalizeAll(form.suffix).concat(".") : "";
-    const middlename = form.middlename
-      ? capitalizeAll(form.middlename).concat(".")
-      : "";
-    const lastname = capitalizeAll(form.lastname);
+  //   const firstname = capitalizeAll(form.firstname);
+  //   const suffix = form.suffix ? capitalizeAll(form.suffix).concat(".") : "";
+  //   const middlename = form.middlename
+  //     ? capitalizeAll(form.middlename).concat(".")
+  //     : "";
+  //   const lastname = capitalizeAll(form.lastname);
 
-    const formattedForm = {
-      ...form,
-      department_id: form.department,
-      position_id: form.position,
-      firstname,
-      middlename,
-      lastname,
-      suffix,
-      full_name: `${firstname} ${middlename} ${lastname}${
-        suffix ? " " + suffix : ""
-      }`,
-    };
+  //   const formattedForm = {
+  //     ...form,
+  //     department_id: form.department,
+  //     position_id: form.position,
+  //     firstname,
+  //     middlename,
+  //     lastname,
+  //     suffix,
+  //     full_name: `${firstname} ${middlename} ${lastname}${
+  //       suffix ? " " + suffix : ""
+  //     }`,
+  //   };
 
-    await addEmployeeApi(formattedForm)
-      .catch((err: any) => {
-        transformValidationErrors(err);
-      })
-      .finally(() => {
-        loading.value = false;
-      });
-  };
+  //   await addEmployeeApi(formattedForm)
+  //     .catch((err: any) => {
+  //       transformValidationErrors(err);
+  //     })
+  //     .finally(() => {
+  //       loading.value = false;
+  //     });
+  // };
 
-  const updateEmployee = async (id: string, form: IUpdateEmployeeForm) => {
-    loading.value = true;
-    resetErrorBag();
+  // const updateEmployee = async (id: string, form: IUpdateEmployeeForm) => {
+  //   loading.value = true;
+  //   resetErrorBag();
 
-    const firstname = capitalizeAll(form.firstname);
-    const suffix = form.suffix ? capitalizeAll(form.suffix).concat(".") : "";
-    const middlename = form.middlename
-      ? capitalizeAll(form.middlename).concat(".")
-      : "";
-    const lastname = capitalizeAll(form.lastname);
+  //   const firstname = capitalizeAll(form.firstname);
+  //   const suffix = form.suffix ? capitalizeAll(form.suffix).concat(".") : "";
+  //   const middlename = form.middlename
+  //     ? capitalizeAll(form.middlename).concat(".")
+  //     : "";
+  //   const lastname = capitalizeAll(form.lastname);
 
-    const formattedForm = {
-      ...form,
-      department_id: form.department ? Number(form.department) : undefined,
-      position_id: form.position ? Number(form.position) : undefined,
-      firstname,
-      middlename,
-      lastname,
-      suffix,
-      full_name: `${firstname} ${middlename} ${lastname}${
-        suffix ? " " + suffix : ""
-      }`,
-    };
+  //   const formattedForm = {
+  //     ...form,
+  //     department_id: form.department ? Number(form.department) : undefined,
+  //     position_id: form.position ? Number(form.position) : undefined,
+  //     firstname,
+  //     middlename,
+  //     lastname,
+  //     suffix,
+  //     full_name: `${firstname} ${middlename} ${lastname}${
+  //       suffix ? " " + suffix : ""
+  //     }`,
+  //   };
 
-    await updateEmployeeApi(id, formattedForm)
-      .catch((err: any) => {
-        transformValidationErrors(err);
-      })
-      .finally(() => {
-        loading.value = false;
-      });
-  };
+  //   await updateEmployeeApi(id, formattedForm)
+  //     .catch((err: any) => {
+  //       transformValidationErrors(err);
+  //     })
+  //     .finally(() => {
+  //       loading.value = false;
+  //     });
+  // };
 
-  const deleteEmployee = async (id: string) => {
-    loading.value = true;
-    resetErrorBag();
-    await deleteEmployeeApi(id)
-      .catch((err: any) => {
-        transformValidationErrors(err);
-      })
-      .finally(() => {
-        loading.value = false;
-      });
-  };
+  // const deleteEmployee = async (id: string) => {
+  //   loading.value = true;
+  //   resetErrorBag();
+  //   await deleteEmployeeApi(id)
+  //     .catch((err: any) => {
+  //       transformValidationErrors(err);
+  //     })
+  //     .finally(() => {
+  //       loading.value = false;
+  //     });
+  // };
 
   const fetchEmployeeSearch = async (q: string) => {
     try {
@@ -160,9 +154,9 @@ export const useEmployeeStore = defineStore("employeeStore", () => {
     totalEmployees,
     selectedStatus,
     fetchEmployees,
-    addEmployee,
-    updateEmployee,
-    deleteEmployee,
+    // addEmployee,
+    // updateEmployee,
+    // deleteEmployee,
     fetchEmployeeSearch,
   };
 });

@@ -28,6 +28,10 @@ export const useInventoryStore = defineStore("inventoryStore", () => {
   });
   const totalInventories = ref(0);
   const selectedStatus = ref("");
+  const selectedOffice = ref("");
+  const activeTab = ref<"all" | "parent_components" | "child_components">(
+    "all",
+  );
 
   const fetchInventories = async () => {
     loading.value = true;
@@ -40,6 +44,14 @@ export const useInventoryStore = defineStore("inventoryStore", () => {
         search: search.value,
         ...(selectedStatus.value ? { status: selectedStatus.value } : {}),
       });
+
+      if (selectedOffice.value) {
+        queryParams.set("office_id", selectedOffice.value);
+      }
+
+      if (activeTab.value && activeTab.value !== "all") {
+        queryParams.set("tab", activeTab.value);
+      }
 
       const response = await fetchInventoriesApi(queryParams);
 
@@ -65,8 +77,6 @@ export const useInventoryStore = defineStore("inventoryStore", () => {
 
         option_attribute: `${inventoryResponse.property_number} (${inventoryResponse.description})`,
       }));
-
-      console.log(inventories.value);
 
       totalInventories.value = Number(response.meta.total) || 0;
     } catch (err: any) {
@@ -199,6 +209,7 @@ export const useInventoryStore = defineStore("inventoryStore", () => {
     sort,
     totalInventories,
     selectedStatus,
+    activeTab,
     fetchInventories,
     addInventory,
     updateInventory,

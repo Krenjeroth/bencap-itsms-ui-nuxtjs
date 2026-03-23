@@ -36,8 +36,9 @@ const {
   sort,
   totalInventories,
   selectedStatus,
+  activeTab,
 } = storeToRefs(inventoryStore);
-const { columns, items, expandableDetails } = model;
+const { columns, items, expandableDetails, tabItems } = model;
 inventoryStore.fetchInventories();
 
 const addInventoryModal = () => {
@@ -202,6 +203,11 @@ watch(selectedStatus, () => {
   page.value = 1;
   inventoryStore.fetchInventories();
 });
+
+watch(activeTab, () => {
+  page.value = 1;
+  inventoryStore.fetchInventories();
+});
 </script>
 
 <template>
@@ -213,6 +219,8 @@ watch(selectedStatus, () => {
       :columns="columns"
       :action-items="items"
       :table-data="data"
+      :enable-tab="true"
+      :tab-items="tabItems"
       :add-data-modal="addInventoryModal"
       :loading="loading"
       :action-handlers="{
@@ -229,6 +237,7 @@ watch(selectedStatus, () => {
       @update:sort="inventoryStore.fetchInventories"
       @update:search="(value) => (search = value)"
       @update:selected-dropdown-filter="(value) => (selectedStatus = value)"
+      @update:active-tab="(value) => (activeTab = value)"
     />
   </div>
 </template>
