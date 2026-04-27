@@ -1,24 +1,26 @@
 <script setup lang="ts">
-import { cloneDeep } from "lodash";
+import { cloneDeep, isEqual } from "lodash";
+
 const userStore = useUserStore();
 const { loading, errorBag, hasError, genderOptions } = storeToRefs(userStore);
+
 const roleStore = useRoleStore();
 const { roleSelect } = storeToRefs(roleStore);
+
 const { strDeepSanitize, capitalizeAll } = useStringHandler();
+
 roleStore.getRoleSelect();
 
-const departmentStore = useDepartmentStore();
-const { loading: loadingDepartments, departmentSelect } =
-  storeToRefs(departmentStore);
-departmentStore.fetchDepartmentSelect();
+const officeStore = useOfficeStore();
+const { loading: loadingOffices, officeSelect } = storeToRefs(officeStore);
 
 const agencyStore = useAgencyStore();
 const { loading: loadingAgencies, agencySelect } = storeToRefs(agencyStore);
-agencyStore.fetchAgencySelect();
 
 const props = defineProps({
   user: Object,
 });
+
 const emit = defineEmits([
   "reloadTable",
   "success",
@@ -43,9 +45,21 @@ const onNoDataChange = () => {
   emit("noDataChange");
 };
 
+const normalizeSelectedOffice = (office: any) => ({
+  id: String(office.id),
+  office_code: office.office_code ?? office.abbreviation ?? null,
+  office_desc: office.office_desc ?? null,
+  abbreviation: office.abbreviation ?? office.office_code ?? null,
+  label:
+    office.label ??
+    (office.office_code && office.office_desc
+      ? `${office.office_code} - ${office.office_desc}`
+      : (office.abbreviation ?? office.office_code ?? office.office_desc)),
+});
+
 const formState = ref<IUpdateUserForm>({
   email: props.user?.email ?? undefined,
-  role: props.user?.roles[0].id ?? undefined,
+  role: props.user?.roles[0]?.id ?? undefined,
   prefix: strDeepSanitize(props.user?.profile?.name?.prefix) || undefined,
   firstname: props.user?.profile?.name?.firstname ?? undefined,
   middlename: props.user?.profile?.name?.middlename ?? undefined,
@@ -55,14 +69,34 @@ const formState = ref<IUpdateUserForm>({
   designation: props.user?.profile?.designation ?? undefined,
   img_path: props.user?.profile?.img_path ?? undefined,
   photo_id: null,
-  offices_assigned_ids: props.user?.offices_assigned_ids ?? [],
+  offices_assigned_ids: (props.user?.offices_assigned_ids ?? []).map(
+    (id: any) => Number(id),
+  ),
   agencies_assigned_ids: props.user?.agencies_assigned_ids ?? [],
 });
 
-const originalState = ref<IUpdateUserForm>(
+const selectedOfficeIds = computed(() =>
+  (props.user?.offices_assigned_ids ?? []).map((id: any) => String(id)),
+);
+
+const officesAssignedPayloadComputed = computed(() => {
+  return (selectedOfficeOptions.value || []).map((office: any) => ({
+    id: String(office.id),
+    office_code: office.office_code ?? office.abbreviation ?? null,
+    office_desc: office.office_desc ?? null,
+    abbreviation: office.abbreviation ?? office.office_code ?? null,
+    label:
+      office.label ??
+      (office.office_code && office.office_desc
+        ? `${office.office_code} - ${office.office_desc}`
+        : (office.abbreviation ?? office.office_code ?? office.office_desc)),
+  }));
+});
+
+const originalState = ref(
   cloneDeep({
     email: props.user?.email ?? undefined,
-    role: props.user?.roles[0].id ?? undefined,
+    role: props.user?.roles[0]?.id ?? undefined,
     prefix: strDeepSanitize(props.user?.profile?.name?.prefix) || undefined,
     firstname: props.user?.profile?.name?.firstname ?? undefined,
     middlename: props.user?.profile?.name?.middlename ?? undefined,
@@ -72,10 +106,48 @@ const originalState = ref<IUpdateUserForm>(
     designation: props.user?.profile?.designation ?? undefined,
     img_path: props.user?.profile?.img_path ?? undefined,
     photo_id: null,
-    offices_assigned_ids: props.user?.offices_assigned_ids ?? [],
+    offices_assigned_ids: [...(props.user?.offices_assigned_ids ?? [])]
+      .map(Number)
+      .sort((a, b) => a - b),
     agencies_assigned_ids: props.user?.agencies_assigned_ids ?? [],
-  })
+  }),
 );
+
+const normalizedCurrentState = computed(() => ({
+  email: formState.value.email ?? undefined,
+  role: formState.value.role ?? undefined,
+  prefix: formState.value.prefix ?? undefined,
+  firstname: formState.value.firstname ?? undefined,
+  middlename: formState.value.middlename ?? undefined,
+  lastname: formState.value.lastname ?? undefined,
+  suffix: formState.value.suffix ?? undefined,
+  gender: formState.value.gender ?? undefined,
+  designation: formState.value.designation ?? undefined,
+  agencies_assigned_ids: [...(formState.value.agencies_assigned_ids ?? [])]
+    .map(String)
+    .sort(),
+  offices_assigned_ids: [...(formState.value.offices_assigned_ids ?? [])]
+    .map(Number)
+    .sort((a, b) => a - b),
+}));
+
+const normalizedOriginalState = computed(() => ({
+  email: props.user?.email ?? undefined,
+  role: props.user?.roles[0]?.id ?? undefined,
+  prefix: strDeepSanitize(props.user?.profile?.name?.prefix) || undefined,
+  firstname: props.user?.profile?.name?.firstname ?? undefined,
+  middlename: props.user?.profile?.name?.middlename ?? undefined,
+  lastname: props.user?.profile?.name?.lastname ?? undefined,
+  suffix: strDeepSanitize(props.user?.profile?.name?.suffix) || undefined,
+  gender: props.user?.profile?.gender ?? undefined,
+  designation: props.user?.profile?.designation ?? undefined,
+  agencies_assigned_ids: [...(props.user?.agencies_assigned_ids ?? [])]
+    .map(String)
+    .sort(),
+  offices_assigned_ids: [...(props.user?.offices_assigned_ids ?? [])]
+    .map(String)
+    .sort(),
+}));
 
 const filePreview = ref<string | null>(null);
 const zodValidationError = ref<string | null>(null);
@@ -106,14 +178,68 @@ const roleComputed = computed({
   set: (value) => (formState.value.role = value ? Number(value) : undefined),
 });
 
-const officesAssignedComputed = computed({
-  get: () => formState.value.offices_assigned_ids ?? undefined,
-  set: (value) => (formState.value.offices_assigned_ids = value || []),
-});
-
 const agenciesAssignedComputed = computed({
   get: () => formState.value.agencies_assigned_ids ?? undefined,
   set: (value) => (formState.value.agencies_assigned_ids = value || []),
+});
+
+const normalizeOfficeOption = (office: any) => ({
+  id: Number(office.id),
+  office_code: office.office_code ?? office.abbreviation ?? null,
+  office_desc: office.office_desc ?? null,
+  abbreviation: office.abbreviation ?? office.office_code ?? null,
+  label:
+    office.label ??
+    office.office_code ??
+    office.abbreviation ??
+    office.office_desc,
+});
+
+const selectedOfficeIdsSet = computed(() => {
+  return new Set(
+    (formState.value.offices_assigned_ids ?? []).map((id: any) => Number(id)),
+  );
+});
+
+const selectedOfficeOptions = computed({
+  get: () => {
+    const ids = selectedOfficeIdsSet.value;
+    return (officeSelect.value || []).filter((office: any) =>
+      ids.has(Number(office.id)),
+    );
+  },
+  set: (value) => {
+    formState.value.offices_assigned_ids = (value || []).map((office: any) =>
+      Number(office.id),
+    );
+  },
+});
+
+const selectedOfficeCodes = computed(() => {
+  const ids = selectedOfficeIdsSet.value;
+
+  const codesFromOptions = (officeSelect.value || [])
+    .filter((office: any) => ids.has(Number(office.id)))
+    .map(
+      (office: any) =>
+        office.office_code ?? office.abbreviation ?? office.label ?? office.id,
+    );
+
+  if (codesFromOptions.length) return codesFromOptions;
+
+  return (props.user?.offices_assigned || []).map(
+    (office: any) =>
+      office.office_code ?? office.abbreviation ?? office.label ?? office.id,
+  );
+});
+
+const selectedOfficeDisplayLabel = computed(() => {
+  const codes = selectedOfficeCodes.value;
+  const count = codes.length;
+
+  if (count === 0) return "";
+  if (count <= 2) return codes.join(", ");
+  return `${codes.slice(0, 2).join(", ")} +${count - 2} more`;
 });
 
 filePreview.value = props.user?.profile?.img_path ?? null;
@@ -127,7 +253,6 @@ const handlePhotoUpload = (files: FileList | null) => {
   }
 
   const file = files[0];
-
   const zodValidationResult = CreatePhotoIdSchema.safeParse(file);
 
   if (!zodValidationResult.success) {
@@ -160,23 +285,62 @@ const fieldsToCompare: (keyof IUpdateUserForm)[] = [
 ];
 
 const isChangedComputed = computed(() => {
-  return fieldsToCompare.some((key) => {
-    const a = formState.value[key];
-    const b = originalState.value[key];
-
-    return !isEqual(a, b);
-  });
+  return !isEqual(normalizedCurrentState.value, normalizedOriginalState.value);
 });
 
+const hydrateSelectedOfficesFromOptions = () => {
+  const options = officeSelect.value || [];
+  const ids = selectedOfficeIds.value;
+
+  if (!options.length || !ids.length) {
+    selectedOfficeOptions.value = [];
+    return;
+  }
+
+  selectedOfficeOptions.value = options
+    .filter((office: any) => ids.includes(String(office.id)))
+    .map((office: any) => normalizeSelectedOffice(office));
+};
+
+watch(
+  officeSelect,
+  () => {
+    hydrateSelectedOfficesFromOptions();
+  },
+  { immediate: true, deep: true },
+);
+
+onMounted(async () => {
+  await officeStore.fetchOfficeSelect();
+  await agencyStore.fetchAgencySelect();
+
+  const merged = [...(officeSelect.value || [])];
+
+  (props.user?.offices_assigned || []).forEach((saved: any) => {
+    const normalized = normalizeOfficeOption(saved);
+    if (
+      !merged.find((item: any) => String(item.id) === String(normalized.id))
+    ) {
+      merged.push(normalized);
+    }
+  });
+
+  officeSelect.value = merged;
+});
 const handleSubmit = async (
-  event: IFormSubmitEvent<TUpdateUserValidationSchema>
+  event: IFormSubmitEvent<TUpdateUserValidationSchema>,
 ) => {
   if (!isChangedComputed.value) {
     onNoDataChange();
     return;
   }
 
-  await userStore.updateUser(props.user?.id, event.data);
+  const payload = {
+    ...event.data,
+    offices_assigned: officesAssignedPayloadComputed.value,
+  };
+
+  await userStore.updateUser(props.user?.id, payload as any);
 
   if (hasError.value) {
     onError();
@@ -184,17 +348,27 @@ const handleSubmit = async (
   }
 
   onSuccess();
-  return;
 };
 
-const searchDepartments = async (q: string) => {
-  if (!q || q.length < 2) return [];
-  if (departmentSelect.value.length === 0) {
-    await departmentStore.fetchDepartmentSelect();
+const searchOffices = async (q: string) => {
+  if (!q || q.length < 2) {
+    return officeSelect.value;
   }
-  return departmentSelect.value.filter((dept) =>
-    dept.abbreviation.toLowerCase().includes(q.toLowerCase())
-  );
+
+  const result = await officeStore.fetchOfficeSearch(q);
+
+  const merged = [...result];
+
+  (props.user?.offices_assigned || []).forEach((saved: any) => {
+    const normalized = normalizeOfficeOption(saved);
+    if (
+      !merged.find((item: any) => String(item.id) === String(normalized.id))
+    ) {
+      merged.push(normalized);
+    }
+  });
+
+  return merged;
 };
 
 const agencyOptions = ref<TAgencySelectOption[]>([]);
@@ -210,6 +384,7 @@ const searchAgencies = async (q: string) => {
 
 watch(roleComputed, (val) => {
   if (val === 2) {
+    selectedOfficeOptions.value = [];
     formState.value.offices_assigned_ids = [];
   }
 });
@@ -232,6 +407,7 @@ watch(roleComputed, (val) => {
       :state="formState"
       @submit.prevent="handleSubmit"
       class="space-y-6"
+      @error="console.log($event)"
     >
       <div class="space-y-6 md:space-y-0 md:flex md:space-x-6">
         <UFormGroup
@@ -337,23 +513,42 @@ watch(roleComputed, (val) => {
             name="offices_assigned_ids"
             :error="errorBag.offices_assigned_ids"
             :ui="{ wrapper: 'md:w-full' }"
+            truncate
           >
             <USelectMenu
-              v-model="officesAssignedComputed"
-              :options="departmentSelect"
-              :searchable="true"
-              :search="searchDepartments"
-              :loading="loadingDepartments"
+              v-model="selectedOfficeOptions"
+              :options="officeSelect"
+              searchable
               placeholder="Type to search..."
-              value-attribute="id"
-              option-attribute="abbreviation"
+              by="id"
               multiple
             >
-              <template #option-empty="{ query }">
-                <q>{{ query }}</q> not found
+              <template #label>
+                <span
+                  v-if="selectedOfficeDisplayLabel"
+                  class="block truncate pr-6"
+                >
+                  {{ selectedOfficeDisplayLabel }}
+                </span>
+                <span v-else class="text-gray-400 block truncate pr-6">
+                  Type to search...
+                </span>
               </template>
 
-              <template #empty> No Department found </template>
+              <template #option="{ option }">
+                <div
+                  class="flex items-center justify-between w-full gap-3 truncate"
+                >
+                  <span class="truncate">{{ option.office_code }}</span>
+                  <UIcon
+                    v-if="selectedOfficeIdsSet.has(Number(option.id))"
+                    name="i-heroicons-check-20-solid"
+                    class="w-5 h-5 text-primary-500 shrink-0"
+                  />
+                </div>
+              </template>
+
+              <template #empty>No Office found</template>
             </USelectMenu>
           </UFormGroup>
 
