@@ -113,41 +113,25 @@ const originalState = ref(
   }),
 );
 
-const normalizedCurrentState = computed(() => ({
-  email: formState.value.email ?? undefined,
-  role: formState.value.role ?? undefined,
-  prefix: formState.value.prefix ?? undefined,
-  firstname: formState.value.firstname ?? undefined,
-  middlename: formState.value.middlename ?? undefined,
-  lastname: formState.value.lastname ?? undefined,
-  suffix: formState.value.suffix ?? undefined,
-  gender: formState.value.gender ?? undefined,
-  designation: formState.value.designation ?? undefined,
-  agencies_assigned_ids: [...(formState.value.agencies_assigned_ids ?? [])]
-    .map(String)
-    .sort(),
-  offices_assigned_ids: [...(formState.value.offices_assigned_ids ?? [])]
+const normalizeUpdateState = (source: any) => ({
+  email: source.email ?? undefined,
+  role: source.role ?? undefined,
+  prefix: source.prefix ?? undefined,
+  firstname: source.firstname ?? undefined,
+  middlename: source.middlename ?? undefined,
+  lastname: source.lastname ?? undefined,
+  suffix: source.suffix ?? undefined,
+  gender: source.gender ?? undefined,
+  designation: source.designation ?? undefined,
+  img_path: source.img_path ?? undefined,
+  photo_id: source.photo_id ?? null,
+  agencies_assigned_ids: [...(source.agencies_assigned_ids ?? [])]
     .map(Number)
     .sort((a, b) => a - b),
-}));
-
-const normalizedOriginalState = computed(() => ({
-  email: props.user?.email ?? undefined,
-  role: props.user?.roles[0]?.id ?? undefined,
-  prefix: strDeepSanitize(props.user?.profile?.name?.prefix) || undefined,
-  firstname: props.user?.profile?.name?.firstname ?? undefined,
-  middlename: props.user?.profile?.name?.middlename ?? undefined,
-  lastname: props.user?.profile?.name?.lastname ?? undefined,
-  suffix: strDeepSanitize(props.user?.profile?.name?.suffix) || undefined,
-  gender: props.user?.profile?.gender ?? undefined,
-  designation: props.user?.profile?.designation ?? undefined,
-  agencies_assigned_ids: [...(props.user?.agencies_assigned_ids ?? [])]
-    .map(String)
-    .sort(),
-  offices_assigned_ids: [...(props.user?.offices_assigned_ids ?? [])]
-    .map(String)
-    .sort(),
-}));
+  offices_assigned_ids: [...(source.offices_assigned_ids ?? [])]
+    .map(Number)
+    .sort((a, b) => a - b),
+});
 
 const filePreview = ref<string | null>(null);
 const zodValidationError = ref<string | null>(null);
@@ -285,7 +269,24 @@ const fieldsToCompare: (keyof IUpdateUserForm)[] = [
 ];
 
 const isChangedComputed = computed(() => {
-  return !isEqual(normalizedCurrentState.value, normalizedOriginalState.value);
+  const current = normalizeUpdateState(formState.value);
+  const original = normalizeUpdateState({
+    email: props.user?.email,
+    role: props.user?.roles[0]?.id,
+    prefix: strDeepSanitize(props.user?.profile?.name?.prefix) || undefined,
+    firstname: props.user?.profile?.name?.firstname ?? undefined,
+    middlename: props.user?.profile?.name?.middlename ?? undefined,
+    lastname: props.user?.profile?.name?.lastname ?? undefined,
+    suffix: strDeepSanitize(props.user?.profile?.name?.suffix) || undefined,
+    gender: props.user?.profile?.gender ?? undefined,
+    designation: props.user?.profile?.designation ?? undefined,
+    img_path: props.user?.profile?.img_path ?? undefined,
+    photo_id: null,
+    offices_assigned_ids: props.user?.offices_assigned_ids ?? [],
+    agencies_assigned_ids: props.user?.agencies_assigned_ids ?? [],
+  });
+
+  return !isEqual(current, original);
 });
 
 const hydrateSelectedOfficesFromOptions = () => {
