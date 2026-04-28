@@ -522,6 +522,7 @@ watch(roleComputed, (val) => {
               searchable
               placeholder="Type to search..."
               by="id"
+              option-attribute="label"
               multiple
             >
               <template #label>
@@ -540,7 +541,7 @@ watch(roleComputed, (val) => {
                 <div
                   class="flex items-center justify-between w-full gap-3 truncate"
                 >
-                  <span class="truncate">{{ option.office_code }}</span>
+                  <span class="truncate">{{ option.label }}</span>
                   <UIcon
                     v-if="selectedOfficeIdsSet.has(Number(option.id))"
                     name="i-heroicons-check-20-solid"
