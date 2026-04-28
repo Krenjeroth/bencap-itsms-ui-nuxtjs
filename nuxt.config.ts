@@ -5,11 +5,13 @@ export default defineNuxtConfig({
   ssr: false,
   css: ["~/assets/styles/main.scss"],
   app: {
+    baseURL: "/app/",
+    buildAssetsDir: "/_nuxt/",
     head: {
       charset: "utf-8",
       viewport: "width=device-width, initial-scale=1",
       meta: [{ name: "author", content: "Krenjer Jan J. Sapitola" }],
-      link: [{ rel: "icon", href: "/favicon.ico" }],
+      link: [{ rel: "icon", href: "/app/favicon.ico" }],
       htmlAttrs: {
         lang: "en",
       },
@@ -35,7 +37,8 @@ export default defineNuxtConfig({
   ],
   sanctum: {
     // baseUrl: "http://itsms:80", // Laravel API: Local
-    baseUrl: "http://192.168.6.169", // Laravel API: Remote
+    baseUrl: "http://192.168.2.27", // Laravel API: Prod
+    // baseUrl: "http://192.168.6.169", // Laravel API: Local
     redirect: {
       keepRequestedRoute: true,
       onAuthOnly: "/auth/login",
