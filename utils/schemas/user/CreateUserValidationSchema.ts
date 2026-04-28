@@ -20,12 +20,11 @@ export const CreateUserValidationSchema = z
       })
       .min(8, "Password must be at least 8 characters long"),
     role: z.union([z.number(), z.string()]),
-    offices_assigned_ids: z
-      .array(z.number())
-      .min(1, "At least one office is required"),
-    agencies_assigned_ids: z
-      .array(z.number())
-      .min(1, "At least one agency is required"),
+
+    offices_assigned_ids: z.array(z.coerce.number()).optional(),
+
+    agencies_assigned_ids: z.array(z.coerce.number()).optional().default([]),
+
     // Profile
     prefix: z
       .string()
@@ -73,27 +72,26 @@ export const CreateUserValidationSchema = z
   })
   .superRefine((data, ctx) => {
     if (data.role === 2) {
-      if (
-        !data.offices_assigned_ids ||
-        data.offices_assigned_ids.length === 0
-      ) {
-        ctx.addIssue({
-          path: ["offices_assigned_ids"],
-          code: z.ZodIssueCode.custom,
-          message: "Offices assigned is required.",
-        });
-      }
-
-      if (
-        !data.agencies_assigned_ids ||
-        data.agencies_assigned_ids.length === 0
-      ) {
-        ctx.addIssue({
-          path: ["agencies_assigned_ids"],
-          code: z.ZodIssueCode.custom,
-          message: "Agencies assigned is required.",
-        });
-      }
+      // if (
+      //   !data.offices_assigned_ids ||
+      //   data.offices_assigned_ids.length === 0
+      // ) {
+      //   ctx.addIssue({
+      //     path: ["offices_assigned_ids"],
+      //     code: z.ZodIssueCode.custom,
+      //     message: "Offices assigned is required.",
+      //   });
+      // }
+      // if (
+      //   !data.agencies_assigned_ids ||
+      //   data.agencies_assigned_ids.length === 0
+      // ) {
+      //   ctx.addIssue({
+      //     path: ["agencies_assigned_ids"],
+      //     code: z.ZodIssueCode.custom,
+      //     message: "Agencies assigned is required.",
+      //   });
+      // }
     }
   });
 
