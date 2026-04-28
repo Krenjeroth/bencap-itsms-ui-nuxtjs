@@ -21,16 +21,22 @@ export const useUserApi = () => {
     return await sanctumFetch(`${usersUrl.value}?${queryParams.toString()}`);
   };
 
-  const addUserApi = async (form: ICreateUserForm) => {
+  const addUserApi = async (
+    form: ICreateUserForm & { offices_assigned?: any[] },
+  ) => {
     const formData = new FormData();
 
     for (const key in form) {
       if (
-        form[key as keyof ICreateUserForm] !== null &&
-        form[key as keyof ICreateUserForm] !== undefined
+        form[key as keyof typeof form] !== null &&
+        form[key as keyof typeof form] !== undefined
       ) {
-        if (key !== "offices_assigned_ids" && key !== "agencies_assigned_ids") {
-          formData.append(key, form[key as keyof ICreateUserForm] as any);
+        if (
+          key !== "offices_assigned_ids" &&
+          key !== "agencies_assigned_ids" &&
+          key !== "offices_assigned"
+        ) {
+          formData.append(key, form[key as keyof typeof form] as any);
         }
       }
     }
@@ -39,6 +45,13 @@ export const useUserApi = () => {
       form.offices_assigned_ids.forEach((item: any) => {
         formData.append("offices_assigned_ids[]", item);
       });
+    }
+
+    if (form.offices_assigned && Array.isArray(form.offices_assigned)) {
+      formData.append(
+        "offices_assigned",
+        JSON.stringify(form.offices_assigned),
+      );
     }
 
     if (
@@ -59,16 +72,23 @@ export const useUserApi = () => {
     });
   };
 
-  const updateUserApi = async (id: string, form: IUpdateUserForm) => {
+  const updateUserApi = async (
+    id: string,
+    form: IUpdateUserForm & { offices_assigned?: any[] },
+  ) => {
     const formData = new FormData();
 
     for (const key in form) {
       if (
-        form[key as keyof IUpdateUserForm] !== null &&
-        form[key as keyof IUpdateUserForm] !== undefined
+        form[key as keyof typeof form] !== null &&
+        form[key as keyof typeof form] !== undefined
       ) {
-        if (key !== "offices_assigned_ids" && key !== "agencies_assigned_ids") {
-          formData.append(key, form[key as keyof IUpdateUserForm] as any);
+        if (
+          key !== "offices_assigned_ids" &&
+          key !== "agencies_assigned_ids" &&
+          key !== "offices_assigned"
+        ) {
+          formData.append(key, form[key as keyof typeof form] as any);
         }
       }
     }
@@ -77,6 +97,13 @@ export const useUserApi = () => {
       form.offices_assigned_ids.forEach((item: any) => {
         formData.append("offices_assigned_ids[]", item);
       });
+    }
+
+    if (form.offices_assigned && Array.isArray(form.offices_assigned)) {
+      formData.append(
+        "offices_assigned",
+        JSON.stringify(form.offices_assigned),
+      );
     }
 
     if (
