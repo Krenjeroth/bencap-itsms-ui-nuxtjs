@@ -1,181 +1,70 @@
 <script setup lang="ts">
+import { useDebounceFn } from "@vueuse/core";
+import * as model from "./model/index";
+
 definePageMeta({
-  // middleware: ["sanctum:auth", "permission"],
   middleware: ["sanctum:auth"],
-  title: "Departments",
-  // permission: "department_index",
+  title: "Offices",
 });
 
 useHead({
-  title: "Departments",
+  title: "Offices",
 });
 
-import {
-  DepartmentsCreateModal,
-  DepartmentsUpdateModal,
-  DepartmentsDeleteModal,
-} from "#components";
-import * as model from "./model/index";
-const modal = useModal();
-const { actionToastResult } = useToastHandler();
-
-const departmentStore = useDepartmentStore();
+const officeStore = useOfficeStore();
 const {
-  departments: data,
+  offices: data,
   loading,
   page,
   pageCount,
   search,
   sort,
-  totalDepartments,
-  selectedStatus,
-} = storeToRefs(departmentStore);
+  totalOffices,
+} = storeToRefs(officeStore);
+
 const { columns, items } = model;
-departmentStore.fetchDepartments();
 
-const addDepartmentModal = () => {
-  modal.open(DepartmentsCreateModal, {
-    onReloadTable() {
-      departmentStore.fetchDepartments();
-    },
-    onSuccess() {
-      actionToastResult({
-        icon: "i-heroicons-check-circle",
-        // title: "Success !",
-        description: "Department created.",
-        id: "modal-success",
-        color: "green",
-      });
-    },
-    onError() {
-      actionToastResult({
-        icon: "i-heroicons-x-circle",
-        // title: "Error !",
-        description: "Something went wrong.",
-        id: "modal-error",
-        color: "red",
-      });
-    },
-    onClose() {
-      modal.close();
-    },
-  });
-};
+const fetchOffices = () => officeStore.fetchOffices();
 
-const editDepartmentModal = (department: any) => {
-  modal.open(DepartmentsUpdateModal, {
-    department,
-    onReloadTable() {
-      departmentStore.fetchDepartments();
-    },
-    onSuccess() {
-      actionToastResult({
-        icon: "i-heroicons-check-circle",
-        // title: "Success !",
-        description: "Department updated.",
-        id: "modal-success",
-        color: "green",
-      });
-    },
-    onError() {
-      actionToastResult({
-        icon: "i-heroicons-x-circle",
-        // title: "Error !",
-        description: "Something went wrong.",
-        id: "modal-error",
-        color: "red",
-      });
-    },
-    onNoDataChange() {
-      actionToastResult({
-        icon: "i-heroicons-exclamation-circle",
-        // title: "Error !",
-        description: "No data changes detected.",
-        id: "modal-warning",
-        color: "yellow",
-      });
-    },
-    onClose() {
-      modal.close();
-    },
-  });
-};
+const debouncedSearch = useDebounceFn(() => {
+  page.value = 1;
+  fetchOffices();
+}, 300);
 
-const deleteDepartmentModal = (department: any) => {
-  modal.open(DepartmentsDeleteModal, {
-    department,
-    onReloadTable() {
-      departmentStore.fetchDepartments();
-    },
-    onSuccess() {
-      actionToastResult({
-        icon: "i-heroicons-check-circle",
-        // title: "Success !",
-        description: "Department deleted.",
-        id: "modal-success",
-        color: "green",
-      });
-    },
-    onError() {
-      actionToastResult({
-        icon: "i-heroicons-x-circle",
-        // title: "Error !",
-        description: "Something went wrong.",
-        id: "modal-error",
-        color: "red",
-      });
-    },
-    onClose() {
-      modal.close();
-    },
-  });
-};
-
-// Watch search changes and fetch when updated
-watch(search, () => {
-  page.value = 1; // Reset page
-  departmentStore.fetchDepartments();
+await callOnce(async () => {
+  await officeStore.fetchOffices();
 });
 
-// ✅ Reset page to 1 when rows per page (`pageCount`) changes
+watch(search, () => {
+  debouncedSearch();
+});
+
+watch(page, () => {
+  fetchOffices();
+});
+
 watch(pageCount, () => {
   page.value = 1;
-  departmentStore.fetchDepartments();
-});
-
-// ✅ Ensure pagination updates correctly
-watch([page, pageCount], () => {
-  departmentStore.fetchDepartments();
-});
-
-watch(selectedStatus, () => {
-  page.value = 1;
-  departmentStore.fetchDepartments();
+  fetchOffices();
 });
 </script>
 
 <template>
   <div>
     <UiDatatable
-      :module-title="'Departments'"
+      :module-title="'Offices'"
       :columns="columns"
       :action-items="items"
       :table-data="data"
-      :add-data-modal="addDepartmentModal"
       :loading="loading"
-      :action-handlers="{
-        edit: editDepartmentModal,
-        delete: deleteDepartmentModal,
-      }"
-      :pagination="{ page, pageCount, total: totalDepartments }"
+      :pagination="{ page, pageCount, total: totalOffices }"
       :sorting="sort"
       :search="search"
-      :selected-dropdown-filter="selectedStatus"
+      :enable-add-data="false"
       @update:page="(value) => (page = value)"
       @update:pageCount="(value) => (pageCount = value)"
-      @update:sort="departmentStore.fetchDepartments"
+      @update:sort="officeStore.fetchOffices"
       @update:search="(value) => (search = value)"
-      @update:selected-dropdown-filter="(value) => (selectedStatus = value)"
     />
   </div>
 </template>
