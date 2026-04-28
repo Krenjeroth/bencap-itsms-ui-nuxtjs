@@ -70,27 +70,26 @@ export const UpdateUserValidationSchema = z
   })
   .superRefine((data, ctx) => {
     if (data.role === 2) {
-      if (
-        !data.offices_assigned_ids ||
-        data.offices_assigned_ids.length === 0
-      ) {
-        ctx.addIssue({
-          path: ["offices_assigned_ids"],
-          code: z.ZodIssueCode.custom,
-          message: "Offices assigned is required.",
-        });
-      }
-
-      if (
-        !data.agencies_assigned_ids ||
-        data.agencies_assigned_ids.length === 0
-      ) {
-        ctx.addIssue({
-          path: ["agencies_assigned_ids"],
-          code: z.ZodIssueCode.custom,
-          message: "Agencies assigned is required.",
-        });
-      }
+      // if (
+      //   !data.offices_assigned_ids ||
+      //   data.offices_assigned_ids.length === 0
+      // ) {
+      //   ctx.addIssue({
+      //     path: ["offices_assigned_ids"],
+      //     code: z.ZodIssueCode.custom,
+      //     message: "Offices assigned is required.",
+      //   });
+      // }
+      // if (
+      //   !data.agencies_assigned_ids ||
+      //   data.agencies_assigned_ids.length === 0
+      // ) {
+      //   ctx.addIssue({
+      //     path: ["agencies_assigned_ids"],
+      //     code: z.ZodIssueCode.custom,
+      //     message: "Agencies assigned is required.",
+      //   });
+      // }
     }
   });
 
