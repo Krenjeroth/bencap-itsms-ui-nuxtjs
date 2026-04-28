@@ -2,27 +2,42 @@ export { columns, items };
 
 const columns: ITableColumns[] = [
   {
-    key: "full_name",
-    label: "Dept. Name",
+    key: "office_code",
+    label: "Office Code",
     sortable: true,
-    direction: "desc",
+    direction: "asc",
     rowClass: "whitespace-pre-line max-w-fit",
   },
   {
-    key: "division",
-    label: "Division",
+    key: "office_desc",
+    label: "Office Name",
+    sortable: true,
     rowClass: "whitespace-pre-line max-w-fit",
-  },
-  {
-    key: "abbreviation",
-    label: "Abbreviation",
-    rowClass: "whitespace-pre-line max-w-fit",
-  },
-  {
-    key: "actions",
-    rowClass: "whitespace-pre-line max-w-fit text-center",
   },
 ];
+// const columns: ITableColumns[] = [
+//   {
+//     key: "full_name",
+//     label: "Dept. Name",
+//     sortable: true,
+//     direction: "desc",
+//     rowClass: "whitespace-pre-line max-w-fit",
+//   },
+//   {
+//     key: "division",
+//     label: "Division",
+//     rowClass: "whitespace-pre-line max-w-fit",
+//   },
+//   {
+//     key: "abbreviation",
+//     label: "Abbreviation",
+//     rowClass: "whitespace-pre-line max-w-fit",
+//   },
+//   {
+//     key: "actions",
+//     rowClass: "whitespace-pre-line max-w-fit text-center",
+//   },
+// ];
 
 const items: ITableActions = (row: any, handlers: IHandlers) => [
   [
