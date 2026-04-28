@@ -1,15 +1,17 @@
 <script setup lang="ts">
 const userStore = useUserStore();
 const { loading, errorBag, hasError, genderOptions } = storeToRefs(userStore);
+
 const roleStore = useRoleStore();
 const { roleSelect } = storeToRefs(roleStore);
+
 const { capitalizeAll } = useStringHandler();
+
 roleStore.getRoleSelect();
 
-const departmentStore = useDepartmentStore();
-const { loading: loadingDepartments, departmentSelect } =
-  storeToRefs(departmentStore);
-departmentStore.fetchDepartmentSelect();
+const officeStore = useOfficeStore();
+const { loading: loadingOffices, officeSelect } = storeToRefs(officeStore);
+await officeStore.fetchOfficeSelect();
 
 const agencyStore = useAgencyStore();
 const { loading: loadingAgencies, agencySelect } = storeToRefs(agencyStore);
@@ -45,6 +47,60 @@ const formState = ref<ICreateUserForm>({
   agencies_assigned_ids: [],
 });
 
+const selectedOfficeIdsSet = computed(() => {
+  return new Set(
+    (formState.value.offices_assigned_ids ?? []).map((id: any) => Number(id)),
+  );
+});
+
+const selectedOfficeOptions = computed({
+  get: () => {
+    const ids = selectedOfficeIdsSet.value;
+    return (officeSelect.value || []).filter((office: any) =>
+      ids.has(Number(office.id)),
+    );
+  },
+  set: (value) => {
+    formState.value.offices_assigned_ids = (value || []).map((office: any) =>
+      Number(office.id),
+    );
+  },
+});
+
+const selectedOfficeCodes = computed(() => {
+  const ids = selectedOfficeIdsSet.value;
+
+  return (officeSelect.value || [])
+    .filter((office: any) => ids.has(Number(office.id)))
+    .map(
+      (office: any) =>
+        office.office_code ?? office.abbreviation ?? office.label ?? office.id,
+    );
+});
+
+const selectedOfficeDisplayLabel = computed(() => {
+  const codes = selectedOfficeCodes.value;
+  const count = codes.length;
+
+  if (count === 0) return "";
+  if (count <= 2) return codes.join(", ");
+  return `${codes.slice(0, 2).join(", ")} +${count - 2} more`;
+});
+
+const officesAssignedPayloadComputed = computed(() => {
+  return (selectedOfficeOptions.value || []).map((office: any) => ({
+    id: Number(office.id),
+    office_code: office.office_code ?? office.abbreviation ?? null,
+    office_desc: office.office_desc ?? null,
+    abbreviation: office.abbreviation ?? office.office_code ?? null,
+    label:
+      office.label ??
+      (office.office_code && office.office_desc
+        ? `${office.office_code} - ${office.office_desc}`
+        : (office.abbreviation ?? office.office_code ?? office.office_desc)),
+  }));
+});
+
 const filePreview = ref<string | null>(null);
 const zodValidationError = ref<string | null>(null);
 
@@ -74,11 +130,6 @@ const roleComputed = computed({
   set: (value) => (formState.value.role = value ? Number(value) : undefined),
 });
 
-const officesAssignedComputed = computed({
-  get: () => formState.value.offices_assigned_ids ?? undefined,
-  set: (value) => (formState.value.offices_assigned_ids = value || []),
-});
-
 const agenciesAssignedComputed = computed({
   get: () => formState.value.agencies_assigned_ids ?? undefined,
   set: (value) => (formState.value.agencies_assigned_ids = value || []),
@@ -93,7 +144,6 @@ const handlePhotoUpload = (files: FileList | null) => {
   }
 
   const file = files[0];
-
   const zodValidationResult = CreatePhotoIdSchema.safeParse(file);
 
   if (!zodValidationResult.success) {
@@ -110,9 +160,14 @@ const handlePhotoUpload = (files: FileList | null) => {
 };
 
 const handleSubmit = async (
-  event: IFormSubmitEvent<TCreateUserValidationSchema>
+  event: IFormSubmitEvent<TCreateUserValidationSchema>,
 ) => {
-  await userStore.addUser(event.data);
+  const payload = {
+    ...event.data,
+    offices_assigned: officesAssignedPayloadComputed.value,
+  };
+
+  await userStore.addUser(payload as any);
 
   if (hasError.value) {
     onError();
@@ -120,17 +175,6 @@ const handleSubmit = async (
   }
 
   onSuccess();
-  return;
-};
-
-const searchDepartments = async (q: string) => {
-  if (!q || q.length < 2) return [];
-  if (departmentSelect.value.length === 0) {
-    await departmentStore.fetchDepartmentSelect();
-  }
-  return departmentSelect.value.filter((dept) =>
-    dept.abbreviation.toLowerCase().includes(q.toLowerCase())
-  );
 };
 
 const agencyOptions = ref<TAgencySelectOption[]>([]);
@@ -146,6 +190,7 @@ const searchAgencies = async (q: string) => {
 
 watch(roleComputed, (val) => {
   if (val === 2) {
+    selectedOfficeOptions.value = [];
     formState.value.offices_assigned_ids = [];
   }
 });
@@ -277,60 +322,80 @@ watch(roleComputed, (val) => {
         </UFormGroup>
       </div>
 
-      <div v-if="roleComputed === 2" class="space-y-6">
-        <UDivider label="Offices / Agencies Assigned" />
-        <div class="space-y-6 md:space-y-0 md:flex md:space-x-6">
-          <UFormGroup
-            label="Offices"
-            name="offices_assigned_ids"
-            :error="errorBag.offices_assigned_ids"
-            :ui="{ wrapper: 'md:w-full' }"
+      <!-- <div v-if="roleComputed === 2" class="space-y-6"> -->
+      <UDivider label="Offices / Agencies Assigned" />
+      <div class="space-y-6 md:space-y-0 md:flex md:space-x-6">
+        <UFormGroup
+          label="Offices"
+          name="offices_assigned_ids"
+          :error="errorBag.offices_assigned_ids"
+          :ui="{ wrapper: 'md:w-full' }"
+          truncate
+        >
+          <USelectMenu
+            v-model="selectedOfficeOptions"
+            :options="officeSelect"
+            searchable
+            :loading="loadingOffices"
+            placeholder="Type to search..."
+            by="id"
+            multiple
           >
-            <USelectMenu
-              v-model="officesAssignedComputed"
-              :options="departmentSelect"
-              :searchable="true"
-              :search="searchDepartments"
-              :loading="loadingDepartments"
-              placeholder="Type to search..."
-              value-attribute="id"
-              option-attribute="abbreviation"
-              multiple
-            >
-              <template #option-empty="{ query }">
-                <q>{{ query }}</q> not found
-              </template>
+            <template #label>
+              <span
+                v-if="selectedOfficeDisplayLabel"
+                class="block truncate pr-6"
+              >
+                {{ selectedOfficeDisplayLabel }}
+              </span>
+              <span v-else class="text-gray-400 block truncate pr-6">
+                Type to search...
+              </span>
+            </template>
 
-              <template #empty> No Department found </template>
-            </USelectMenu>
-          </UFormGroup>
+            <template #option="{ option }">
+              <div
+                class="flex items-center justify-between w-full gap-3 truncate"
+              >
+                <span class="truncate">{{ option.office_code }}</span>
+                <UIcon
+                  v-if="selectedOfficeIdsSet.has(Number(option.id))"
+                  name="i-heroicons-check-20-solid"
+                  class="w-5 h-5 text-primary-500 shrink-0"
+                />
+              </div>
+            </template>
 
-          <UFormGroup
-            label="Agencies"
-            name="agencies_assigned_ids"
-            :error="errorBag.agencies_assigned_ids"
-            :ui="{ wrapper: 'md:w-full' }"
+            <template #empty>No Office found</template>
+          </USelectMenu>
+        </UFormGroup>
+
+        <UFormGroup
+          label="Agencies"
+          name="agencies_assigned_ids"
+          :error="errorBag.agencies_assigned_ids"
+          :ui="{ wrapper: 'md:w-full' }"
+        >
+          <USelectMenu
+            v-model="agenciesAssignedComputed"
+            :options="agencySelect"
+            :searchable="true"
+            :search="searchAgencies"
+            :loading="loadingAgencies"
+            placeholder="Type to search..."
+            value-attribute="id"
+            option-attribute="abbreviation"
+            multiple
           >
-            <USelectMenu
-              v-model="agenciesAssignedComputed"
-              :options="agencySelect"
-              :searchable="true"
-              :search="searchAgencies"
-              :loading="loadingAgencies"
-              placeholder="Type to search..."
-              value-attribute="id"
-              option-attribute="abbreviation"
-              multiple
-            >
-              <template #option-empty="{ query }">
-                <q>{{ query }}</q> not found
-              </template>
+            <template #option-empty="{ query }">
+              <q>{{ query }}</q> not found
+            </template>
 
-              <template #empty> No Agency found </template>
-            </USelectMenu>
-          </UFormGroup>
-        </div>
+            <template #empty> No Agency found </template>
+          </USelectMenu>
+        </UFormGroup>
       </div>
+      <!-- </div> -->
 
       <UFormGroup
         label="Photo ID"
