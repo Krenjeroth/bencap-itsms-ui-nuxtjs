@@ -16,13 +16,10 @@ export const useTicketStore = defineStore("ticketStore", () => {
   const { hasError, errorBag, transformValidationErrors, resetErrorBag } =
     useErrorHandler();
   const { user: loggedInUser } = useSanctumAuth<IUser>();
-  const {
-    transformDatePickerDate,
-    transformDbDate,
-    transformDateDurationHumanize,
-  } = useDateHandler();
-  const { capitalizeSentences, strConvertUnderscoreToSpace, capitalizeWord } =
-    useStringHandler();
+  const { transformDatePickerDate, transformDateDurationHumanize } =
+    useDateHandler();
+  const { strConvertUnderscoreToSpace, capitalizeWord } = useStringHandler();
+
   enum SortDirection {
     ASC = "asc",
     DESC = "desc",
@@ -34,7 +31,6 @@ export const useTicketStore = defineStore("ticketStore", () => {
   ]);
 
   const tickets = ref([]);
-
   const loading = ref(false);
   const page = ref(1);
   const pageCount = ref(5);
@@ -55,11 +51,71 @@ export const useTicketStore = defineStore("ticketStore", () => {
     { label: "High", value: "high" },
   ]);
 
+  const formatClient = (ticket: any) => {
+    const inventoryEmployee =
+      ticket?.inventory?.inventory?.employee ??
+      ticket?.inventory?.employee ??
+      null;
+
+    const employeeName =
+      inventoryEmployee?.full_name ?? inventoryEmployee?.fullname ?? null;
+
+    const officeCode =
+      ticket?.inventory?.inventory?.employee?.office_code ??
+      ticket?.inventory?.employee?.office_code ??
+      null;
+
+    if (employeeName) {
+      return officeCode ? `${employeeName} (${officeCode})` : employeeName;
+    }
+
+    if (ticket?.full_name) {
+      return `${ticket.full_name} (${ticket?.agency?.abbreviation})`;
+    }
+
+    return "Unknown Client";
+  };
+
+  const formatClientMeta = (ticket: any) => {
+    const inventoryEmployee =
+      ticket?.inventory?.inventory?.employee ??
+      ticket?.inventory?.employee ??
+      null;
+
+    const departmentName =
+      inventoryEmployee?.department?.abbreviation ??
+      inventoryEmployee?.department?.name ??
+      null;
+
+    if (departmentName) {
+      return departmentName;
+    }
+
+    if (ticket?.agency?.abbreviation) {
+      return ticket.agency.abbreviation;
+    }
+
+    if (ticket?.agency?.name) {
+      return ticket.agency.name;
+    }
+
+    return "";
+  };
+
+  const formatItemType = (ticket: any) => {
+    if (ticket?.inventory?.brand_model) {
+      return ticket.inventory.brand_model.option_attribute_description;
+    }
+    if (ticket?.inventory?.item_type?.type) {
+      return ticket.inventory.item_type.type;
+    }
+    return ticket?.item_type?.type ?? "";
+  };
+
   const fetchTickets = async () => {
     loading.value = true;
     try {
       const queryParams = new URLSearchParams();
-
       queryParams.set("page", page.value.toString());
       queryParams.set("per_page", pageCount.value.toString());
 
@@ -69,13 +125,10 @@ export const useTicketStore = defineStore("ticketStore", () => {
       }
 
       if (search.value) queryParams.set("search", search.value);
-      if (selectedStatus.value) {
+      if (selectedStatus.value)
         queryParams.set("query_status", selectedStatus.value);
-      }
-
-      if (activeTab.value && activeTab.value !== "all") {
+      if (activeTab.value && activeTab.value !== "all")
         queryParams.set("tab", activeTab.value);
-      }
 
       const response = await fetchTicketsApi(queryParams);
 
@@ -83,21 +136,21 @@ export const useTicketStore = defineStore("ticketStore", () => {
         ...ticket,
 
         query_status_formatted: capitalizeWord(
-          strConvertUnderscoreToSpace(ticket.query_status)
+          strConvertUnderscoreToSpace(ticket.query_status),
         ),
         request_status_formatted: capitalizeWord(
-          strConvertUnderscoreToSpace(ticket.request_status)
+          strConvertUnderscoreToSpace(ticket.request_status),
         ),
         priority_formatted: capitalizeWord(
-          strConvertUnderscoreToSpace(ticket.priority)
+          strConvertUnderscoreToSpace(ticket.priority),
         ),
         date_formatted: `${transformDatePickerDate(
           ticket.date,
-          "MMM DD, YYYY"
+          "MMM DD, YYYY",
         )} (${transformDateDurationHumanize(ticket.date)})`,
         released_at_formatted: `${transformDatePickerDate(
           ticket.released_at,
-          "MM/DD/YY"
+          "MM/DD/YY",
         )}`,
         solution_formatted: `${
           ticket.solution
@@ -108,11 +161,10 @@ export const useTicketStore = defineStore("ticketStore", () => {
             : "None"
         }`,
 
-        client: ticket.inventory
-          ? ticket.inventory.inventory
-            ? `${ticket.inventory.inventory.employee.full_name} \n\r (${ticket.inventory.inventory.employee.department.abbreviation})`
-            : `${ticket.inventory.employee.full_name} \n\r (${ticket.inventory.employee.department.abbreviation})`
-          : `${ticket.full_name} \n\r (${ticket.agency.abbreviation})`,
+        property_number: ticket.is_other_agency ? "-" : ticket.property_number,
+
+        client: formatClient(ticket),
+        client_meta: formatClientMeta(ticket),
 
         item_type: ticket.inventory
           ? ticket.inventory.brand_model
@@ -140,8 +192,8 @@ export const useTicketStore = defineStore("ticketStore", () => {
       agency_id: form.agency?.id,
       inventory_id: form.inventory?.id,
       ticket_number: form.ticket_number,
-      query_status: "queued", // queued, checking_stock, awaiting_part, in_progress, resolved, cancelled
-      request_status: "open", // open, accepted, closed
+      query_status: "queued",
+      request_status: "open",
       date: transformDatePickerDate(new Date(), "YYYY-MM-DD HH:mm:ss"),
       item_type_id: form.item_type,
       it_service_id: Number(form.it_service),
@@ -166,7 +218,6 @@ export const useTicketStore = defineStore("ticketStore", () => {
       employee_id: form.is_other_agency ? null : form.employee?.id,
       agency_id: form.is_other_agency ? form.agency?.id : null,
       full_name: form.is_other_agency ? form.full_name : null,
-
       inventory_id: form.is_other_agency ? null : form.inventory?.id,
       item_type_id: form.is_other_agency ? form.item_type : null,
       it_service_id: Number(form.it_service),
@@ -273,7 +324,7 @@ export const useTicketStore = defineStore("ticketStore", () => {
 
   const setTicketServiceMethod = async (
     id: string,
-    form: ISetTicketServiceMethodForm
+    form: ISetTicketServiceMethodForm,
   ) => {
     loading.value = true;
     resetErrorBag();
@@ -288,7 +339,7 @@ export const useTicketStore = defineStore("ticketStore", () => {
 
   const setTicketReleaseDate = async (
     id: string,
-    form: ISetTicketReleaseDateForm
+    form: ISetTicketReleaseDateForm,
   ) => {
     loading.value = true;
     resetErrorBag();
