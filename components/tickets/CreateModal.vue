@@ -19,24 +19,17 @@ const { loading: loadingAgencies } = storeToRefs(agencyStore);
 agencyStore.fetchAgencySelect();
 
 const emit = defineEmits(["reloadTable", "success", "error", "close"]);
+const props = defineProps({ pageTitle: String });
 
-const props = defineProps({
-  pageTitle: String,
-});
-
-const { capitalizeAll, capitalizeSentences } = useStringHandler();
+const { capitalizeAll } = useStringHandler();
 
 const onClose = () => emit("close");
-
 const onSuccess = () => {
   emit("success");
   emit("reloadTable");
   onClose();
 };
-
-const onError = () => {
-  emit("error");
-};
+const onError = () => emit("error");
 
 const formState = ref<ICreateTicketForm>({
   inventory: undefined,
@@ -53,7 +46,7 @@ const formState = ref<ICreateTicketForm>({
 const concernComputed = computed({
   get: () => formState.value.concern,
   set: (value) => {
-    formState.value.concern = capitalizeAll(value);
+    formState.value.concern = value ? capitalizeAll(value) : undefined;
   },
 });
 
@@ -67,57 +60,50 @@ const contactNumberComputed = computed({
 const fullNameComputed = computed({
   get: () => formState.value.full_name ?? undefined,
   set: (value: string | undefined) => {
-    formState.value.full_name = capitalizeAll(value) ?? undefined;
+    formState.value.full_name = value ? capitalizeAll(value) : undefined;
   },
 });
 
+watch(
+  () => formState.value.is_other_agency,
+  (isOther) => {
+    if (isOther) formState.value.inventory = undefined;
+    else {
+      formState.value.agency = undefined;
+      formState.value.full_name = undefined;
+    }
+  },
+);
+
 const handleSubmit = async (
-  event: IFormSubmitEvent<TCreateTicketValidationSchema>
+  event: IFormSubmitEvent<TCreateTicketValidationSchema>,
 ) => {
   await ticketStore.addTicket(event.data);
-
-  if (hasError.value) {
-    onError();
-    return;
-  }
-
+  if (hasError.value) return onError();
   onSuccess();
-  return;
 };
 
-const inventoryOptions = ref<TInventorySelectOption[]>([]);
 const inventorySearchQuery = ref("");
-
 const searchInventories = async (q: string) => {
   inventorySearchQuery.value = q;
-  if (!inventorySearchQuery.value || inventorySearchQuery.value.length < 2)
-    return [];
-  const result = await inventoryStore.fetchInventorySearch(
-    inventorySearchQuery.value
-  );
-  inventoryOptions.value = result;
-  return result;
+  if (!q || q.length < 2) return [];
+  return await inventoryStore.fetchInventorySearch(q);
 };
 
 const searchItemTypes = async (q: string) => {
   if (!q || q.length < 2) return [];
-  if (itemTypeSelect.value.length === 0) {
+  if (itemTypeSelect.value.length === 0)
     await itemTypeStore.fetchItemTypeSelect();
-  }
   return itemTypeSelect.value.filter((itemType) =>
-    itemType.type.toLowerCase().includes(q.toLowerCase())
+    itemType.type.toLowerCase().includes(q.toLowerCase()),
   );
 };
 
-const agencyOptions = ref<TAgencySelectOption[]>([]);
 const agencySearchQuery = ref("");
-
 const searchAgencies = async (q: string) => {
   agencySearchQuery.value = q;
-  if (!agencySearchQuery.value || agencySearchQuery.value.length < 2) return [];
-  const result = await agencyStore.fetchAgencySearch(agencySearchQuery.value);
-  agencyOptions.value = result;
-  return result;
+  if (!q || q.length < 2) return [];
+  return await agencyStore.fetchAgencySearch(q);
 };
 </script>
 
@@ -161,7 +147,6 @@ const searchAgencies = async (q: string) => {
             <template #option="{ option }">
               <span class="truncate">{{ option.abbreviation }}</span>
             </template>
-
             <template #empty>
               <span v-if="agencySearchQuery.length < 2" class="text-gray-400"
                 >Type at least 2 characters...</span
@@ -187,10 +172,9 @@ const searchAgencies = async (q: string) => {
             value-attribute="id"
             option-attribute="type"
           >
-            <template #option-empty="{ query }">
-              <q>{{ query }}</q> not found
-            </template>
-
+            <template #option-empty="{ query }"
+              ><q>{{ query }}</q> not found</template
+            >
             <template #empty> No Item Type found </template>
           </USelectMenu>
         </UFormGroup>
@@ -223,7 +207,6 @@ const searchAgencies = async (q: string) => {
           <template #option="{ option }">
             <span>{{ option.inventory_option_attribute }}</span>
           </template>
-
           <template #empty>
             <span v-if="inventorySearchQuery.length < 2" class="text-gray-400"
               >Type at least 2 characters...</span
@@ -279,9 +262,7 @@ const searchAgencies = async (q: string) => {
       >
         <UButtonGroup
           orient="horizontal"
-          :ui="{
-            wrapper: { horizontal: 'w-full' },
-          }"
+          :ui="{ wrapper: { horizontal: 'w-full' } }"
         >
           <UInput v-model="contactNumberComputed" class="flex-1" />
         </UButtonGroup>
