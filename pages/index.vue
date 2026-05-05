@@ -1,3 +1,15 @@
+<script setup lang="ts">
+definePageMeta({
+  middleware: ["sanctum:auth"],
+  title: "Dashboard",
+  // permission: "user_index",
+});
+
+useHead({
+  title: "Dashboard",
+});
+</script>
+
 <template>
   <div>
     <h1>Pages Index</h1>
