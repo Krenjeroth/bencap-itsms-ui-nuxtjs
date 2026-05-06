@@ -62,7 +62,10 @@ export const useInventoryStore = defineStore("inventoryStore", () => {
           : `${inventoryResponse.inventory?.employee?.fullname}`,
         component_classification: inventoryResponse.inventory
           ? `Component`
-          : `Parent`,
+          : inventoryResponse?.item_type?.is_main_inventory &&
+              inventoryResponse?.item_type?.is_component
+            ? `Standalone`
+            : `Parent`,
         is_parent: inventoryResponse.inventory ? false : true,
         brand_model_formatted: inventoryResponse.brand_model
           ? inventoryResponse.brand_model?.name
@@ -120,7 +123,7 @@ export const useInventoryStore = defineStore("inventoryStore", () => {
 
     const formattedForm = {
       ...form,
-      employee_id: form.item_type === 1 ? form.employee?.id : null,
+      employee_id: form.employee?.id,
       brand_model_id: form.item_type !== 1 ? form.brand_model?.id : null,
       parent_component_id: form.item_type !== 1 ? form.inventory?.id : null,
       item_type_id: form.item_type,
