@@ -52,81 +52,52 @@ const onNoDataChange = () => {
   emit("noDataChange");
 };
 
-const formState = reactive<IUpdateInventoryForm>({
-  employee: props.inventoryItem?.employee || undefined,
-  item_type: props.inventoryItem?.item_type?.id || undefined,
-  brand_model: props.inventoryItem?.brand_model || undefined,
+const normalizeEmployee = (employee: any) => {
+  if (!employee) return undefined;
 
-  ip_address: props.inventoryItem?.ip_address || undefined,
-  mac_address: props.inventoryItem?.mac_address || undefined,
-  remarks: props.inventoryItem?.remarks || undefined,
+  return {
+    ...employee,
+    full_name: employee.full_name ?? employee.fullname ?? "",
+  };
+};
 
-  operating_system_name:
-    props.inventoryItem?.operating_system_name || undefined,
-  os_license_number: props.inventoryItem?.os_license_number || undefined,
-  anti_virus_name: props.inventoryItem?.anti_virus_name || undefined,
-  anti_virus_license_number:
-    props.inventoryItem?.anti_virus_license_number || undefined,
-  microsoft_office_name:
-    props.inventoryItem?.microsoft_office_name || undefined,
-  ms_office_license_number:
-    props.inventoryItem?.ms_office_license_number || undefined,
-  other_installed_applications:
-    props.inventoryItem?.other_installed_applications || undefined,
+const buildFormState = (item: any): IUpdateInventoryForm => ({
+  employee: normalizeEmployee(item?.employee),
+  item_type: item?.item_type?.id || undefined,
+  brand_model: item?.brand_model || undefined,
 
-  property_number: props.inventoryItem?.property_number || undefined,
-  date_acquired: props.inventoryItem?.date_acquired
-    ? transformDbDate(props.inventoryItem.date_acquired)
+  ip_address: item?.ip_address || undefined,
+  mac_address: item?.mac_address || undefined,
+  remarks: item?.remarks || undefined,
+
+  operating_system_name: item?.operating_system_name || undefined,
+  os_license_number: item?.os_license_number || undefined,
+  anti_virus_name: item?.anti_virus_name || undefined,
+  anti_virus_license_number: item?.anti_virus_license_number || undefined,
+  microsoft_office_name: item?.microsoft_office_name || undefined,
+  ms_office_license_number: item?.ms_office_license_number || undefined,
+  other_installed_applications: item?.other_installed_applications || undefined,
+
+  property_number: item?.property_number || undefined,
+  date_acquired: item?.date_acquired
+    ? transformDbDate(item.date_acquired)
     : undefined,
-  warranty_expiration_date: props.inventoryItem?.warranty_expiration_date
-    ? transformDbDate(props.inventoryItem.warranty_expiration_date)
+  warranty_expiration_date: item?.warranty_expiration_date
+    ? transformDbDate(item.warranty_expiration_date)
     : undefined,
-  serial_number: props.inventoryItem?.serial_number || undefined,
-  status: props.inventoryItem?.status || undefined,
+  serial_number: item?.serial_number || undefined,
+  status: item?.status || undefined,
 
-  // for inventory_internal_components table
-  internal_components: props.inventoryItem?.internal_components || [],
-  inventory: props.inventoryItem?.inventory || undefined, // Parent Component
+  internal_components: item?.internal_components || [],
+  inventory: item?.inventory || undefined,
 });
 
-const originalState = reactive<IUpdateInventoryForm>({
-  ...cloneDeep({
-    employee: props.inventoryItem?.employee || undefined,
-    item_type: props.inventoryItem?.item_type?.id || undefined,
-    brand_model: props.inventoryItem?.brand_model || undefined,
-
-    ip_address: props.inventoryItem?.ip_address || undefined,
-    mac_address: props.inventoryItem?.mac_address || undefined,
-    remarks: props.inventoryItem?.remarks || undefined,
-
-    operating_system_name:
-      props.inventoryItem?.operating_system_name || undefined,
-    os_license_number: props.inventoryItem?.os_license_number || undefined,
-    anti_virus_name: props.inventoryItem?.anti_virus_name || undefined,
-    anti_virus_license_number:
-      props.inventoryItem?.anti_virus_license_number || undefined,
-    microsoft_office_name:
-      props.inventoryItem?.microsoft_office_name || undefined,
-    ms_office_license_number:
-      props.inventoryItem?.ms_office_license_number || undefined,
-    other_installed_applications:
-      props.inventoryItem?.other_installed_applications || undefined,
-
-    property_number: props.inventoryItem?.property_number || undefined,
-    date_acquired: props.inventoryItem?.date_acquired
-      ? transformDbDate(props.inventoryItem.date_acquired)
-      : undefined,
-    warranty_expiration_date: props.inventoryItem?.warranty_expiration_date
-      ? transformDbDate(props.inventoryItem.warranty_expiration_date)
-      : undefined,
-    serial_number: props.inventoryItem?.serial_number || undefined,
-    status: props.inventoryItem?.status || undefined,
-
-    // for inventory_internal_components table
-    internal_components: props.inventoryItem?.internal_components || [],
-    inventory: props.inventoryItem?.inventory || undefined, // Parent Component
-  }),
-});
+const formState = reactive<IUpdateInventoryForm>(
+  buildFormState(props.inventoryItem),
+);
+const originalState = reactive<IUpdateInventoryForm>(
+  cloneDeep(buildFormState(props.inventoryItem)),
+);
 
 const fieldsToCompare: (keyof IUpdateInventoryForm)[] = [
   "employee",
@@ -313,15 +284,28 @@ const searchBrandModels = async (q: string) => {
 const employeeOptions = ref<TEmployeeSelectOption[]>([]);
 const employeeSearchQuery = ref("");
 
+const syncEmployeeOption = (employee?: TEmployeeSelectOption | null) => {
+  if (!employee) return;
+
+  const exists = employeeOptions.value.some((opt) => opt.id === employee.id);
+  if (!exists) {
+    employeeOptions.value = [employee, ...employeeOptions.value];
+  }
+};
+
 const searchEmployees = async (q: string) => {
   employeeSearchQuery.value = q;
-  if (!employeeSearchQuery.value || employeeSearchQuery.value.length < 2)
+  if (!employeeSearchQuery.value || employeeSearchQuery.value.length < 2) {
     return [];
+  }
+
   const result = await employeeStore.fetchEmployeeSearch(
     employeeSearchQuery.value,
   );
-  employeeOptions.value = result;
-  return result;
+
+  const normalized = result.map((employee: any) => normalizeEmployee(employee));
+  employeeOptions.value = normalized;
+  return normalized;
 };
 
 const inventoryMainAssetSearchOptions = ref<TInventorySelectOption[]>([]);
@@ -361,6 +345,18 @@ watch(itemTypeComputed, (val) => {
   }
   if (val !== 1) formState.internal_components = [];
 });
+
+watch(
+  () => props.inventoryItem,
+  (item) => {
+    const nextState = buildFormState(item);
+    Object.assign(formState, nextState);
+    Object.assign(originalState, cloneDeep(nextState));
+
+    syncEmployeeOption(item?.employee);
+  },
+  { immediate: true, deep: true },
+);
 
 const addRow = () => {
   if (!formState.internal_components) {
@@ -424,7 +420,16 @@ const removeRow = (index: number) => {
         </UFormGroup>
       </div>
 
-      <div v-if="itemTypeComputed === 1" class="space-y-6">
+      <div
+        v-if="
+          itemTypeComputed === 1 ||
+          itemTypeComputed === 164 ||
+          itemTypeComputed === 12 ||
+          itemTypeComputed === 17 ||
+          itemTypeComputed === 171
+        "
+        class="space-y-6"
+      >
         <UDivider label="Basic Information" />
         <div class="space-y-6 md:space-y-0 md:flex md:space-x-6">
           <UFormGroup
@@ -478,7 +483,7 @@ const removeRow = (index: number) => {
 
       <div
         :class="
-          itemTypeComputed === 1
+          itemTypeComputed === 1 || itemTypeComputed === 164
             ? 'grid grid-cols-2 gap-4'
             : 'grid grid-cols-1 gap-4'
         "
@@ -523,7 +528,10 @@ const removeRow = (index: number) => {
           <!-- Internal Components -->
           <!-- CHANGED: Added v-if check and removed manual error prop. UForm will now handle the errors for dynamic fields. -->
           <UFormGroup
-            v-if="itemTypeComputed === 1"
+            v-if="
+              itemTypeComputed === 1 || // System Unit
+              itemTypeComputed === 164 // Laptop
+            "
             label="Internal Components"
             name="internal_components"
             class="flex flex-col"
@@ -538,7 +546,10 @@ const removeRow = (index: number) => {
                 label="Model"
                 :name="`internal_components.${index}.brand_model`"
                 :ui="{ wrapper: 'md:w-full' }"
-                :required="itemTypeComputed === 1"
+                :required="
+                  itemTypeComputed === 1 || // System Unit
+                  itemTypeComputed === 164 // Laptop
+                "
                 :key="index"
               >
                 <UInputMenu
@@ -569,7 +580,10 @@ const removeRow = (index: number) => {
                 label="Qty"
                 :name="`internal_components.${index}.quantity`"
                 :ui="{ wrapper: 'md:w-16' }"
-                :required="itemTypeComputed === 1"
+                :required="
+                  itemTypeComputed === 1 || // System Unit
+                  itemTypeComputed === 164 // Laptop
+                "
               >
                 <UInput type="number" v-model="row.quantity" />
               </UFormGroup>
@@ -585,7 +599,10 @@ const removeRow = (index: number) => {
               </div>
             </div>
           </UFormGroup>
-          <div v-if="itemTypeComputed === 1" class="text-center">
+          <div
+            v-if="itemTypeComputed === 1 || itemTypeComputed === 164"
+            class="text-center"
+          >
             <UButton
               color="orange"
               size="sm"
@@ -596,7 +613,7 @@ const removeRow = (index: number) => {
         </div>
         <!-- ? Software -->
         <div
-          v-if="itemTypeComputed === 1"
+          v-if="itemTypeComputed === 1 || itemTypeComputed === 164"
           class="col-span-1 gap-4 flex flex-col"
         >
           <UDivider label="Software" />
@@ -665,12 +682,17 @@ const removeRow = (index: number) => {
 
       <div
         class="space-y-6 md:space-y-0 md:flex md:space-x-6"
-        v-if="itemTypeComputed !== 1"
+        v-if="itemTypeComputed !== 1 && itemTypeComputed !== 164"
       >
         <UFormGroup
           label="Parent Component"
           name="inventory"
           :ui="{ wrapper: 'md:w-full' }"
+          v-if="
+            itemTypeComputed !== 12 &&
+            itemTypeComputed !== 17 &&
+            itemTypeComputed !== 171
+          "
         >
           <UInputMenu
             v-model="inventoryComputed"
