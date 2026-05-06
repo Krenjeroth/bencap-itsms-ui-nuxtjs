@@ -61,31 +61,20 @@ const items: ITableActions = (row: any, handlers: IHandlers) => {
 
 const expandableDetails: ITableExpandableDetails = (row: any) => [
   {
-    key:
-      row.item_type.id === 1
-        ? "employee.office_desc"
-        : "inventory.employee.office_desc",
-    label: "Department",
-    value:
-      row.item_type.id === 1
-        ? row.employee?.office_desc
-        : row.inventory?.employee?.office_desc,
+    key: row.employee
+      ? "employee.office_desc"
+      : "inventory.employee.office_desc",
+    label: "Office",
+    value: row.employee
+      ? row.employee?.office_desc
+      : row.inventory?.employee?.office_desc,
     show: true,
   },
   {
-    key:
-      row.item_type.id === 1
-        ? "employee.division"
-        : "inventory.employee.division",
+    key: row.employee ? "employee.division" : "inventory.employee.division",
     label: "Division / Section / Unit",
-    value:
-      row.item_type.id === 1
-        ? row.employee?.unit
-        : row.inventory?.employee?.unit,
-    show:
-      row.item_type.id === 1
-        ? !!row.employee?.unit
-        : !!row.inventory?.employee?.unit,
+    value: getEmployeeOfficeDisplay(row),
+    show: !!getEmployeeOfficeDisplay(row),
   },
   {
     key: "ip_address",
@@ -214,3 +203,10 @@ const classificationOptions: ITableStatusOptions[] = [
   { key: "system_unit", label: "System Unit", value: "SYSTEM UNIT" },
   { key: "tool", label: "Tool", value: "TOOL" },
 ];
+
+const getEmployeeOfficeDisplay = (row: any) =>
+  row.employee?.division ??
+  row.employee?.unit ??
+  row.inventory?.employee?.division ??
+  row.inventory?.employee?.unit ??
+  null;
