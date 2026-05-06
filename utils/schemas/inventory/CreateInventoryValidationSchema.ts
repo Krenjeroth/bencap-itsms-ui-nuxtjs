@@ -154,7 +154,13 @@ export const CreateInventoryValidationSchema = z
   })
   .superRefine((data, ctx) => {
     // Corrected: Now checking data.item_type directly as a number
-    if (data.item_type === 1 || data.item_type === 164) {
+    if (
+      data.item_type === 1 ||
+      data.item_type === 164 ||
+      data.item_type === 12 ||
+      data.item_type === 17 ||
+      data.item_type === 171
+    ) {
       if (!data.employee || data.employee.id === null) {
         ctx.addIssue({
           path: ["employee"],
@@ -164,7 +170,11 @@ export const CreateInventoryValidationSchema = z
       }
 
       // Rule 1: The `internal_components` array must exist and not be empty.
-      if (!data.internal_components || data.internal_components.length === 0) {
+      if (
+        !data.internal_components ||
+        (data.internal_components.length === 0 &&
+          (data.item_type === 1 || data.item_type === 164))
+      ) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           message:
