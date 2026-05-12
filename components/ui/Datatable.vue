@@ -264,20 +264,22 @@ watch(localPage, (newPage) => {
         >
           {{ moduleTitle }}
         </h2>
-        <UButton
-          v-if="enableAddData"
-          :label="`Add ${moduleTitle}`"
-          @click="addDataModal"
-          color="primary"
-          variant="solid"
-        />
-        <UButton
-          icon="i-heroicons-document-arrow-down"
-          label="Generate Report"
-          color="gray"
-          variant="outline"
-          @click="generateReportModal"
-        />
+        <div class="flex items-center justify-between gap-2">
+          <UButton
+            v-if="enableAddData"
+            :label="`Add ${moduleTitle}`"
+            @click="addDataModal"
+            color="primary"
+            variant="solid"
+          />
+          <UButton
+            icon="i-heroicons-document-arrow-down"
+            label="Generate Report"
+            color="gray"
+            variant="outline"
+            @click="generateReportModal"
+          />
+        </div>
       </div>
     </template>
     <div
