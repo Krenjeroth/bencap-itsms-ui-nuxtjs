@@ -21,6 +21,7 @@ import {
   InventoriesUpdateModal,
   InventoriesDeleteModal,
   InventoriesAddComponentModal,
+  InventoriesGenerateReportModal,
 } from "#components";
 import * as model from "./model/index";
 const modal = useModal();
@@ -182,6 +183,31 @@ const deleteInventoryModal = (inventoryItem: any) => {
   });
 };
 
+const generateReportModal = () => {
+  modal.open(InventoriesGenerateReportModal, {
+    pageTitle: route.meta.title as string,
+    onSuccess() {
+      actionToastResult({
+        icon: "i-heroicons-check-circle",
+        description: "Inventory report download started.",
+        id: "modal-success",
+        color: "green",
+      });
+    },
+    onError() {
+      actionToastResult({
+        icon: "i-heroicons-x-circle",
+        description: "Something went wrong.",
+        id: "modal-error",
+        color: "red",
+      });
+    },
+    onClose() {
+      modal.close();
+    },
+  });
+};
+
 // Watch search changes and fetch when updated
 watch(search, () => {
   page.value = 1; // Reset page
@@ -222,6 +248,7 @@ watch(activeTab, () => {
       :enable-tab="true"
       :tab-items="tabItems"
       :add-data-modal="addInventoryModal"
+      :generate-report-modal="generateReportModal"
       :loading="loading"
       :action-handlers="{
         edit: editInventoryModal,
