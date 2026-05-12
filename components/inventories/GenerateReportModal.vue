@@ -166,7 +166,7 @@ watch(
           </USelectMenu>
         </UFormGroup>
 
-        <UFormGroup label="Status" name="status">
+        <!-- <UFormGroup label="Status" name="status">
           <USelectMenu
             v-model="formState.status"
             :options="statusOptions"
@@ -174,7 +174,7 @@ watch(
             value-attribute="value"
             option-attribute="label"
           />
-        </UFormGroup>
+        </UFormGroup> -->
 
         <UFormGroup label="Employee" name="employee">
           <UInputMenu
