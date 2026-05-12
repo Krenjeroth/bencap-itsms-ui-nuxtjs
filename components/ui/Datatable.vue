@@ -44,6 +44,10 @@ const props = defineProps({
     type: Function as PropType<() => void>,
     default: () => {},
   },
+  generateReportModal: {
+    type: Function as PropType<() => void>,
+    default: () => {},
+  },
   dropdownFilterBy: {
     type: Array,
     default: () => [],
@@ -266,6 +270,13 @@ watch(localPage, (newPage) => {
           @click="addDataModal"
           color="primary"
           variant="solid"
+        />
+        <UButton
+          icon="i-heroicons-document-arrow-down"
+          label="Generate Report"
+          color="gray"
+          variant="outline"
+          @click="generateReportModal"
         />
       </div>
     </template>
