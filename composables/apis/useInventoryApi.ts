@@ -19,7 +19,7 @@ export const useInventoryApi = () => {
 
   const fetchInventoriesApi = async (queryParams: URLSearchParams) => {
     return await sanctumFetch(
-      `${inventoryUrl.value}?${queryParams.toString()}`
+      `${inventoryUrl.value}?${queryParams.toString()}`,
     );
   };
 
@@ -52,11 +52,33 @@ export const useInventoryApi = () => {
   };
 
   const fetchInventoryMainAssetSearchApi = async (
-    queryParams?: URLSearchParams
+    queryParams?: URLSearchParams,
   ) => {
     const queryString = queryParams?.toString() || "";
     return await sanctumFetch(
-      `${inventoriesMainAssetSearchUrl.value}?${queryString}`
+      `${inventoriesMainAssetSearchUrl.value}?${queryString}`,
+    );
+  };
+
+  const exportInventoryReportExcelApi = async (
+    queryParams: URLSearchParams,
+  ) => {
+    return await $fetch(
+      "/api/inventories/reports/excel?" + queryParams.toString(),
+      {
+        method: "GET",
+        responseType: "blob",
+      },
+    );
+  };
+
+  const exportInventoryReportPdfApi = async (queryParams: URLSearchParams) => {
+    return await $fetch(
+      "/api/inventories/reports/pdf?" + queryParams.toString(),
+      {
+        method: "GET",
+        responseType: "blob",
+      },
     );
   };
 
@@ -67,5 +89,7 @@ export const useInventoryApi = () => {
     deleteInventoryApi,
     fetchInventorySearchApi,
     fetchInventoryMainAssetSearchApi,
+    exportInventoryReportExcelApi,
+    exportInventoryReportPdfApi,
   };
 };
