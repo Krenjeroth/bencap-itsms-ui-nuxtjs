@@ -7,16 +7,19 @@ export const useInventoryStore = defineStore("inventoryStore", () => {
     fetchInventorySearchApi,
     fetchInventoryMainAssetSearchApi,
   } = useInventoryApi();
+
+  const { apiUrl } = useUrlHandler();
   const { hasError, errorBag, transformValidationErrors, resetErrorBag } =
     useErrorHandler();
   const { capitalizeAll } = useStringHandler();
   const { transformDatePickerDate } = useDateHandler();
+
   enum SortDirection {
     ASC = "asc",
     DESC = "desc",
   }
-  const inventories = ref([]);
 
+  const inventories = ref([]);
   const inventorySelect = ref<TInventorySelectOption[]>([]);
   const loading = ref(false);
   const page = ref(1);
@@ -35,6 +38,7 @@ export const useInventoryStore = defineStore("inventoryStore", () => {
 
   const fetchInventories = async () => {
     loading.value = true;
+
     try {
       const queryParams = new URLSearchParams({
         page: page.value.toString(),
@@ -55,6 +59,8 @@ export const useInventoryStore = defineStore("inventoryStore", () => {
 
       const response = await fetchInventoriesApi(queryParams);
 
+      console.log(response);
+
       inventories.value = response.data.map((inventoryResponse: any) => ({
         ...inventoryResponse,
         actual_user: inventoryResponse.employee
@@ -72,12 +78,6 @@ export const useInventoryStore = defineStore("inventoryStore", () => {
             ? `${inventoryResponse.brand_model.item_type?.type} ${inventoryResponse.brand_model?.specification}, ${inventoryResponse.brand_model?.name}`
             : `${inventoryResponse.brand_model?.item_type?.type}, ${inventoryResponse.brand_model?.specification}`
           : inventoryResponse.item_type?.type,
-
-        // internal_components_brand_model_fomatted:
-        //   inventoryResponse.internal_components
-        //     ? `(${inventoryResponse.internal_components})`
-        //     : null,
-
         option_attribute: `${inventoryResponse.property_number} (${inventoryResponse.description})`,
       }));
 
@@ -98,7 +98,6 @@ export const useInventoryStore = defineStore("inventoryStore", () => {
       employee_id: form.employee?.id,
       brand_model_id: form.brand_model?.id,
       item_type_id: form.item_type,
-      // parent_component_id: form.inventory?.id,
       parent_component_id: form.parent_id,
       date_acquired: form.date_acquired
         ? transformDatePickerDate(form.date_acquired, "YYYY-MM-DD HH:mm:ss")
@@ -163,6 +162,7 @@ export const useInventoryStore = defineStore("inventoryStore", () => {
   const deleteInventory = async (id: string) => {
     loading.value = true;
     resetErrorBag();
+
     await deleteInventoryApi(id)
       .catch((err: any) => {
         transformValidationErrors(err);
@@ -178,6 +178,7 @@ export const useInventoryStore = defineStore("inventoryStore", () => {
         q,
         limit: "50",
       });
+
       const response = await fetchInventorySearchApi(queryParams);
       return response.data;
     } catch (err) {
@@ -192,11 +193,141 @@ export const useInventoryStore = defineStore("inventoryStore", () => {
         q,
         limit: "50",
       });
+
       const response = await fetchInventoryMainAssetSearchApi(queryParams);
       return response.data;
     } catch (err) {
       console.error("API Error:", err);
       return [];
+    }
+  };
+
+  const buildReportQueryParams = (filters: {
+    item_type?: number | null;
+    employee?: number | null;
+    office?: string | number | null;
+    status?: string | null;
+  }) => {
+    const queryParams = new URLSearchParams();
+
+    if (filters.item_type) {
+      queryParams.set("item_type", String(filters.item_type));
+    }
+
+    if (filters.employee) {
+      queryParams.set("employee", String(filters.employee));
+    }
+
+    if (filters.office) {
+      queryParams.set("office", String(filters.office));
+    }
+
+    if (filters.status) {
+      queryParams.set("status", filters.status);
+    }
+
+    return queryParams;
+  };
+
+  const buildReportUrl = (
+    endpoint: "inventories/reports/pdf" | "inventories/reports/excel",
+    filters: {
+      item_type?: number | null;
+      employee?: number | null;
+      office?: string | number | null;
+      status?: string | null;
+    },
+  ) => {
+    const queryParams = buildReportQueryParams(filters);
+    const baseUrl = apiUrl(endpoint);
+    const queryString = queryParams.toString();
+
+    return `${baseUrl}${queryString ? `?${queryString}` : ""}`;
+  };
+
+  const downloadFileFromUrl = async (url: string, filename: string) => {
+    console.log("Downloading from:", url);
+
+    const response = await fetch(url, {
+      method: "GET",
+      credentials: "include",
+      headers: {
+        Accept:
+          "application/pdf, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/octet-stream, application/json",
+        "X-Requested-With": "XMLHttpRequest",
+      },
+    });
+
+    const contentType = response.headers.get("content-type") || "";
+    console.log(response.status, contentType);
+
+    if (!response.ok) {
+      const text = await response.text();
+      throw new Error(text || "Download failed.");
+    }
+
+    if (contentType.includes("text/html")) {
+      const text = await response.text();
+      console.log(text);
+      throw new Error(
+        "File endpoint returned HTML instead of a downloadable file.",
+      );
+    }
+
+    const blob = await response.blob();
+
+    if (blob.size < 1000) {
+      throw new Error(`Downloaded file too small (${blob.size} bytes).`);
+    }
+
+    const blobUrl = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = blobUrl;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+
+    setTimeout(() => URL.revokeObjectURL(blobUrl), 1500);
+  };
+
+  const exportInventoryReportPdf = async (filters: {
+    item_type?: number | null;
+    employee?: number | null;
+    office?: string | number | null;
+    status?: string | null;
+  }) => {
+    loading.value = true;
+
+    try {
+      const url = buildReportUrl("inventories/reports/pdf", filters);
+
+      await downloadFileFromUrl(
+        url,
+        `inventory-report-${new Date().toISOString().slice(0, 10)}.pdf`,
+      );
+    } finally {
+      loading.value = false;
+    }
+  };
+
+  const exportInventoryReportExcel = async (filters: {
+    item_type?: number | null;
+    employee?: number | null;
+    office?: string | number | null;
+    status?: string | null;
+  }) => {
+    loading.value = true;
+
+    try {
+      const url = buildReportUrl("inventories/reports/excel", filters);
+
+      await downloadFileFromUrl(
+        url,
+        `inventory-report-${new Date().toISOString().slice(0, 10)}.xlsx`,
+      );
+    } finally {
+      loading.value = false;
     }
   };
 
@@ -212,6 +343,7 @@ export const useInventoryStore = defineStore("inventoryStore", () => {
     sort,
     totalInventories,
     selectedStatus,
+    selectedOffice,
     activeTab,
     fetchInventories,
     addInventory,
@@ -219,5 +351,7 @@ export const useInventoryStore = defineStore("inventoryStore", () => {
     deleteInventory,
     fetchInventorySearch,
     fetchInventoryMainAssetSearch,
+    exportInventoryReportExcel,
+    exportInventoryReportPdf,
   };
 });
