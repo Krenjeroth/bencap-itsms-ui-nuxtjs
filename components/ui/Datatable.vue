@@ -299,6 +299,7 @@ watch(localPage, (newPage) => {
           :options="props.dropdownFilterOptions"
           class="w-40"
         />
+        <slot name="filters" />
       </div>
     </div>
 
