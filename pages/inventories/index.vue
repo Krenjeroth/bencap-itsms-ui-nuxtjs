@@ -37,9 +37,15 @@ const {
   sort,
   totalInventories,
   selectedStatus,
+  selectedOfficeId,
   activeTab,
 } = storeToRefs(inventoryStore);
 const { columns, items, expandableDetails, tabItems } = model;
+
+const officeStore = useOfficeStore();
+const { officeSelect, loading: loadingOffices } = storeToRefs(officeStore);
+officeStore.fetchOfficeSelect();
+
 inventoryStore.fetchInventories();
 
 const addInventoryModal = () => {
@@ -205,7 +211,21 @@ const generateReportModal = () => {
     onClose() {
       modal.close();
     },
-  });
+  } as any);
+};
+
+const selectedOfficeOption = computed({
+  get: () =>
+    officeSelect.value.find(
+      (o: any) => String(o.id) === String(selectedOfficeId.value),
+    ) ?? null,
+  set: (option: any) => {
+    selectedOfficeId.value = option?.id ?? "";
+  },
+});
+
+const clearOfficeFilter = () => {
+  selectedOfficeId.value = "";
 };
 
 // Watch search changes and fetch when updated
@@ -231,6 +251,11 @@ watch(selectedStatus, () => {
 });
 
 watch(activeTab, () => {
+  page.value = 1;
+  inventoryStore.fetchInventories();
+});
+
+watch(selectedOfficeId, () => {
   page.value = 1;
   inventoryStore.fetchInventories();
 });
@@ -265,6 +290,32 @@ watch(activeTab, () => {
       @update:search="(value) => (search = value)"
       @update:selected-dropdown-filter="(value) => (selectedStatus = value)"
       @update:active-tab="(value) => (activeTab = value)"
-    />
+    >
+      <template #filters>
+        <div class="flex items-center gap-2 min-w-[220px]">
+          <USelectMenu
+            v-model="selectedOfficeOption"
+            :options="officeSelect"
+            option-attribute="label"
+            placeholder="Filter by Office..."
+            :searchable="true"
+            :loading="loadingOffices"
+            class="w-full"
+          >
+            <template #option="{ option }">
+              <span class="truncate">{{ option.label }}</span>
+            </template>
+          </USelectMenu>
+          <UButton
+            v-if="selectedOfficeId"
+            icon="i-heroicons-x-mark-20-solid"
+            color="gray"
+            variant="ghost"
+            size="xs"
+            @click="selectedOfficeId = ''"
+          />
+        </div>
+      </template>
+    </UiDatatable>
   </div>
 </template>
