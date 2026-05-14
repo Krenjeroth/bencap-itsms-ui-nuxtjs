@@ -32,6 +32,7 @@ export const useInventoryStore = defineStore("inventoryStore", () => {
   const totalInventories = ref(0);
   const selectedStatus = ref("");
   const selectedOffice = ref("");
+  const selectedOfficeId = ref<string | number>("");
   const activeTab = ref<"all" | "parent_components" | "child_components">(
     "all",
   );
@@ -40,24 +41,28 @@ export const useInventoryStore = defineStore("inventoryStore", () => {
     loading.value = true;
 
     try {
-      const queryParams = new URLSearchParams({
+      const params: Record<string, any> = {
         page: page.value.toString(),
         per_page: pageCount.value.toString(),
         sort: sort.value.column,
         order: sort.value.direction,
         search: search.value,
         ...(selectedStatus.value ? { status: selectedStatus.value } : {}),
-      });
+      };
 
       if (selectedOffice.value) {
-        queryParams.set("office_id", selectedOffice.value);
+        params.office_id = selectedOffice.value;
+      }
+
+      if (selectedOfficeId.value) {
+        params.office_id = selectedOfficeId.value;
       }
 
       if (activeTab.value && activeTab.value !== "all") {
-        queryParams.set("tab", activeTab.value);
+        params.tab = activeTab.value;
       }
 
-      const response = await fetchInventoriesApi(queryParams);
+      const response = await fetchInventoriesApi(new URLSearchParams(params));
 
       console.log(response);
 
@@ -245,7 +250,7 @@ export const useInventoryStore = defineStore("inventoryStore", () => {
     return `${baseUrl}${queryString ? `?${queryString}` : ""}`;
   };
 
-  const downloadFileFromUrl = async (url: string, filename: string) => {
+  const downloadFileFromUrl = async (url: string, fallbackFilename: string) => {
     console.log("Downloading from:", url);
 
     const response = await fetch(url, {
@@ -272,6 +277,17 @@ export const useInventoryStore = defineStore("inventoryStore", () => {
       throw new Error(
         "File endpoint returned HTML instead of a downloadable file.",
       );
+    }
+
+    // Read filename from Content-Disposition header
+    const disposition = response.headers.get("content-disposition") || "";
+    let filename = fallbackFilename;
+
+    if (disposition) {
+      const match = disposition.match(/filename[^;=\n]*=(['"]?)([^\n'"]*)\1/);
+      if (match?.[2]?.trim()) {
+        filename = match[2].trim();
+      }
     }
 
     const blob = await response.blob();
@@ -301,11 +317,7 @@ export const useInventoryStore = defineStore("inventoryStore", () => {
 
     try {
       const url = buildReportUrl("inventories/reports/pdf", filters);
-
-      await downloadFileFromUrl(
-        url,
-        `inventory-report-${new Date().toISOString().slice(0, 10)}.pdf`,
-      );
+      await downloadFileFromUrl(url, "Inventory-Report.pdf");
     } finally {
       loading.value = false;
     }
@@ -321,11 +333,7 @@ export const useInventoryStore = defineStore("inventoryStore", () => {
 
     try {
       const url = buildReportUrl("inventories/reports/excel", filters);
-
-      await downloadFileFromUrl(
-        url,
-        `inventory-report-${new Date().toISOString().slice(0, 10)}.xlsx`,
-      );
+      await downloadFileFromUrl(url, "Inventory-Report.xlsx");
     } finally {
       loading.value = false;
     }
@@ -344,6 +352,7 @@ export const useInventoryStore = defineStore("inventoryStore", () => {
     totalInventories,
     selectedStatus,
     selectedOffice,
+    selectedOfficeId,
     activeTab,
     fetchInventories,
     addInventory,
