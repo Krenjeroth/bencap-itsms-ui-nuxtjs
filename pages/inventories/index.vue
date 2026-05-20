@@ -273,6 +273,7 @@ watch(selectedOfficeId, () => {
       :enable-tab="true"
       :tab-items="tabItems"
       :add-data-modal="addInventoryModal"
+      :enable-generate-report="true"
       :generate-report-modal="generateReportModal"
       :loading="loading"
       :action-handlers="{
