@@ -40,6 +40,10 @@ const props = defineProps({
     type: Boolean,
     default: true,
   },
+  enableGenerateReport: {
+    type: Boolean,
+    default: false,
+  },
   addDataModal: {
     type: Function as PropType<() => void>,
     default: () => {},
@@ -273,6 +277,7 @@ watch(localPage, (newPage) => {
             variant="solid"
           />
           <UButton
+            v-if="enableGenerateReport"
             icon="i-heroicons-document-arrow-down"
             label="Generate Report"
             color="gray"
