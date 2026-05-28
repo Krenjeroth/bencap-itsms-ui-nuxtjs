@@ -28,6 +28,7 @@ import {
   TicketsReopenModal,
   TicketsSetServiceMethodModal,
   TicketsSetReleaseDateModal,
+  TicketsAssessModal,
 } from "#components";
 import * as model from "./model/index";
 const modal = useModal();
@@ -416,6 +417,48 @@ const setReleaseDateModal = (ticket: any) => {
   });
 };
 
+const assessModal = (ticket: any) => {
+  modal.open(TicketsAssessModal, {
+    ticket,
+    pageTitle: pageTitleSingular,
+    onReloadTable() {
+      ticketStore.fetchTickets();
+    },
+    onSuccess() {
+      actionToastResult({
+        icon: "i-heroicons-check-circle",
+        description: `IT Assessment submitted.`,
+        id: "modal-success",
+        color: "green",
+      });
+    },
+    onError() {
+      actionToastResult({
+        icon: "i-heroicons-x-circle",
+        description: "Something went wrong.",
+        id: "modal-error",
+        color: "red",
+      });
+    },
+    onClose() {
+      modal.close();
+    },
+  });
+};
+
+const printAssessment = async (ticket: any) => {
+  try {
+    await ticketStore.downloadAssessmentReport(ticket.id);
+  } catch {
+    actionToastResult({
+      icon: "i-heroicons-x-circle",
+      description: "Failed to download assessment report.",
+      id: "modal-error",
+      color: "red",
+    });
+  }
+};
+
 watch(search, () => {
   page.value = 1;
   ticketStore.fetchTickets();
@@ -475,6 +518,8 @@ watch(activeTab, () => {
         reopen: reopenModal,
         setServiceMethod: setServiceMethodModal,
         setReleaseDate: setReleaseDateModal,
+        assess: assessModal,
+        printAssessment: printAssessment,
       }"
       :pagination="{ page, pageCount, total: totalTickets }"
       :sorting="sort"
