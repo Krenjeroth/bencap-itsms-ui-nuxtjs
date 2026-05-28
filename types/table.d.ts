@@ -27,13 +27,16 @@ declare global {
     setServiceMethod?: (row: any) => void;
     setReleaseDate?: (row: any) => void;
     addComponent?: (row: any) => void;
+    assess?: (row: any) => void;
+    printAssessment?: (row: any) => void;
     // Add other handler functions here if needed in the future
   }
 
   interface ITableActions {
-    (row: ITableRow, handlers: Handlers): Array<
-      Array<{ label: string; icon: string; click: () => any }>
-    >;
+    (
+      row: ITableRow,
+      handlers: Handlers,
+    ): Array<Array<{ label: string; icon: string; click: () => any }>>;
   }
 
   interface ITableStatusOptions {
