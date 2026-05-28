@@ -151,6 +151,22 @@ const items: ITableActions = (row: any, handlers: IHandlers) => {
       return actions;
     }
 
+    if (row.query_status === "assessed") {
+      actions.push([
+        {
+          label: "Print Assessment",
+          icon: "material-symbols:print-outline",
+          click: () => handlers.printAssessment?.(row),
+        },
+        {
+          label: "Reopen",
+          icon: "material-symbols:door-open-outline",
+          click: () => handlers.reopen?.(row),
+        },
+      ]);
+      return actions;
+    }
+
     if (row.query_status !== "awaiting_part") {
       acceptedActions.push({
         label: "Await Part",
@@ -158,6 +174,12 @@ const items: ITableActions = (row: any, handlers: IHandlers) => {
         click: () => handlers.awaitPart?.(row),
       });
     }
+
+    acceptedActions.push({
+      label: "Assess",
+      icon: "material-symbols:lab-research-outline",
+      click: () => handlers.assess?.(row),
+    });
 
     acceptedActions.push({
       label: "Resolve",
@@ -203,6 +225,7 @@ const queryStatusOptions: ITableStatusOptions[] = [
   { key: "awaiting_part", label: "Awaiting Part", value: "awaiting_part" },
   { key: "resolved", label: "Resolved", value: "resolved" },
   { key: "cancelled", label: "Cancelled", value: "cancelled" },
+  { key: "assessed", label: "Assessed", value: "assessed" },
   // { key: "reopened", label: "Reopened", value: "reopened" },
 ];
 
