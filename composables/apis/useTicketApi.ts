@@ -96,7 +96,7 @@ export const useTicketApi = () => {
 
   const setTicketServiceMethodApi = async (
     id: string,
-    form: ISetTicketServiceMethodForm
+    form: ISetTicketServiceMethodForm,
   ) => {
     return await sanctumFetch(`${ticketsUrl.value}/${id}/set-service-method`, {
       method: "POST",
@@ -109,7 +109,7 @@ export const useTicketApi = () => {
 
   const setTicketReleasedDateApi = async (
     id: string,
-    form: ISetTicketReleaseDateForm
+    form: ISetTicketReleaseDateForm,
   ) => {
     return await sanctumFetch(`${ticketsUrl.value}/${id}/set-release-date`, {
       method: "POST",
@@ -118,6 +118,56 @@ export const useTicketApi = () => {
         Accept: "application/json",
       },
     });
+  };
+
+  const assessTicketApi = async (id: string, form: any) => {
+    return await sanctumFetch(`${ticketsUrl.value}/${id}/assess`, {
+      method: "POST",
+      body: form,
+      headers: {
+        Accept: "application/json",
+      },
+    });
+  };
+
+  const downloadAssessmentReportApi = async (id: string) => {
+    const { apiUrl } = useUrlHandler();
+    const url = apiUrl(`tickets/${id}/assessment-report`);
+
+    const response = await fetch(url, {
+      method: "GET",
+      credentials: "include",
+      headers: {
+        Accept: "application/pdf, application/octet-stream, application/json",
+        "X-Requested-With": "XMLHttpRequest",
+      },
+    });
+
+    const contentType = response.headers.get("content-type") || "";
+
+    if (!response.ok) {
+      const text = await response.text();
+      throw new Error(text || "Download failed.");
+    }
+
+    if (contentType.includes("text/html")) {
+      throw new Error("Endpoint returned HTML instead of a PDF.");
+    }
+
+    const disposition = response.headers.get("content-disposition") || "";
+    let filename = "assessment-report.pdf";
+    const match = disposition.match(/filename[^;=\n]*=(['"]?)([^\n'"]*)\1/);
+    if (match?.[2]?.trim()) filename = match[2].trim();
+
+    const blob = await response.blob();
+    const blobUrl = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = blobUrl;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(blobUrl), 1500);
   };
 
   return {
@@ -133,5 +183,7 @@ export const useTicketApi = () => {
     reopenTicketApi,
     setTicketServiceMethodApi,
     setTicketReleasedDateApi,
+    assessTicketApi,
+    downloadAssessmentReportApi,
   };
 };
