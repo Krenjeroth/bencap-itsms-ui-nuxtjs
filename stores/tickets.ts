@@ -12,6 +12,8 @@ export const useTicketStore = defineStore("ticketStore", () => {
     reopenTicketApi,
     setTicketServiceMethodApi,
     setTicketReleasedDateApi,
+    assessTicketApi,
+    downloadAssessmentReportApi,
   } = useTicketApi();
   const { hasError, errorBag, transformValidationErrors, resetErrorBag } =
     useErrorHandler();
@@ -360,6 +362,29 @@ export const useTicketStore = defineStore("ticketStore", () => {
       });
   };
 
+  const assessTicket = async (id: string, form: IAssessTicketForm) => {
+    loading.value = true;
+    resetErrorBag();
+
+    await assessTicketApi(id, form)
+      .catch((err: any) => {
+        transformValidationErrors(err);
+      })
+      .finally(() => {
+        loading.value = false;
+      });
+  };
+
+  const downloadAssessmentReport = async (id: string) => {
+    loading.value = true;
+
+    try {
+      await downloadAssessmentReportApi(id);
+    } finally {
+      loading.value = false;
+    }
+  };
+
   return {
     tickets,
     loading,
@@ -386,5 +411,7 @@ export const useTicketStore = defineStore("ticketStore", () => {
     reopenTicket,
     setTicketServiceMethod,
     setTicketReleaseDate,
+    assessTicket,
+    downloadAssessmentReport,
   };
 });
