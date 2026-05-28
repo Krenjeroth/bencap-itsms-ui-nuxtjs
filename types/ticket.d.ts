@@ -26,6 +26,16 @@ declare global {
     inventory_type: string;
   }
 
+  interface IAssessTicketForm {
+    findings: string;
+    recommendations: string;
+    reviewed_by: string;
+    reviewed_by_position: string;
+    replacement_available: boolean;
+    specifications?: undefined | string;
+    components?: string[];
+  }
+
   type TCreateTicketValidationSchema = z.output<
     typeof CreateTicketValidationSchema
   >;
