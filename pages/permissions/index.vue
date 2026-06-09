@@ -1,9 +1,10 @@
 <script setup lang="ts">
+const { can } = useCan();
+
 definePageMeta({
-  // middleware: ["sanctum:auth", "permission"],
-  middleware: ["sanctum:auth"],
+  middleware: ["sanctum:auth", "permission"],
   title: "Permissions",
-  // permission: "department_index",
+  permission: "permissions.view",
 });
 
 useHead({
@@ -167,6 +168,7 @@ watch(selectedStatus, () => {
         edit: editPermissionModal,
         delete: deletePermissionModal,
       }"
+      :enable-add-data="can('permissions.create')"
       :pagination="{ page, pageCount, total: totalPermissions }"
       :sorting="sort"
       :search="search"

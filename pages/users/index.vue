@@ -2,7 +2,7 @@
 definePageMeta({
   middleware: ["sanctum:auth", "permission"],
   title: "Users",
-  permission: "user_index",
+  permission: "users.view",
 });
 
 useHead({
@@ -17,6 +17,8 @@ import {
 import * as model from "./model/index";
 const modal = useModal();
 const { actionToastResult } = useToastHandler();
+
+const { can } = useCan();
 
 const userStore = useUserStore();
 const {
@@ -166,6 +168,7 @@ watch(selectedStatus, () => {
         edit: editUserModal,
         delete: deleteUserModal,
       }"
+      :enable-add-data="can('users.create')"
       :pagination="{ page, pageCount, total: totalUsers }"
       :sorting="sort"
       :search="search"

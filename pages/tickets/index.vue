@@ -1,11 +1,11 @@
 <script setup lang="ts">
 const route = useRoute();
+const { can } = useCan();
 
 definePageMeta({
-  // middleware: ["sanctum:auth", "permission"],
-  middleware: ["sanctum:auth"],
+  middleware: ["sanctum:auth", "permission"],
   title: "Tickets",
-  // permission: "department_index",
+  permission: "tickets.view",
 });
 
 useHead({
@@ -521,6 +521,7 @@ watch(activeTab, () => {
         assess: assessModal,
         printAssessment: printAssessment,
       }"
+      :enable-add-data="can('tickets.create')"
       :pagination="{ page, pageCount, total: totalTickets }"
       :sorting="sort"
       :search="search"

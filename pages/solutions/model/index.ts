@@ -1,6 +1,6 @@
 // const authStore = useAuthStore();
 const { hasRole } = useRoleHandler();
-
+const { can } = useCan();
 export { columns, items, classificationOptions, expandableDetails };
 
 const columns: ITableColumns[] = [
@@ -27,25 +27,26 @@ const columns: ITableColumns[] = [
 
 const items: ITableActions = (row: any, handlers: IHandlers) => {
   const actions: any[] = [];
-  const isAdmin = hasRole("admin");
-  const isPersonnel = hasRole("personnel");
+  const editDeleteActions: any[] = [];
 
-  if (isAdmin || isPersonnel) {
-    actions.push([
-      {
-        label: "Edit",
-        icon: "i-heroicons-pencil-square-20-solid",
-        click: () => handlers.edit?.(row),
-      },
-    ]);
+  if (can("solutions.update")) {
+    editDeleteActions.push({
+      label: "Edit",
+      icon: "i-heroicons-pencil-square-20-solid",
+      click: () => handlers.edit?.(row),
+    });
+  }
 
-    actions.push([
-      {
-        label: "Delete",
-        icon: "i-heroicons-trash-20-solid",
-        click: () => handlers.delete?.(row),
-      },
-    ]);
+  if (can("solutions.delete")) {
+    editDeleteActions.push({
+      label: "Delete",
+      icon: "i-heroicons-trash-20-solid",
+      click: () => handlers.delete?.(row),
+    });
+  }
+
+  if (editDeleteActions.length > 0) {
+    actions.push(editDeleteActions);
   }
 
   return actions;
@@ -56,16 +57,19 @@ const expandableDetails: ITableExpandableDetails = (row: any) => [
     key: "author.display_name",
     label: "Author",
     value: row.author.display_name,
+    show: true,
   },
   {
     key: "reference_url",
     label: "Reference URL",
     value: row.reference_url,
+    show: true,
   },
   {
     key: "description_updated_at_formatted",
     label: "Description Updated At",
     value: row.description_updated_at_formatted,
+    show: true,
   },
 ];
 

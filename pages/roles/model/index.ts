@@ -1,5 +1,5 @@
 export { columns, items };
-
+const { can } = useCan();
 const columns: ITableColumns[] = [
   {
     key: "title",
@@ -25,8 +25,9 @@ const items: ITableActions = (row: any, handlers: IHandlers) => [
       label: "Edit",
       icon: "i-heroicons-pencil-square-20-solid",
       click: () => handlers.edit?.(row),
+      hidden: !can("roles.update"),
     },
-  ],
+  ].filter((i) => !i.hidden),
   // [
   //   {
   //     label: "Archive",
@@ -42,6 +43,7 @@ const items: ITableActions = (row: any, handlers: IHandlers) => [
       label: "Delete",
       icon: "i-heroicons-trash-20-solid",
       click: () => handlers.delete?.(row),
+      hidden: !can("roles.delete"),
     },
-  ],
+  ].filter((i) => !i.hidden),
 ];

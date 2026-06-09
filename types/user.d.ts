@@ -3,11 +3,11 @@ import type { z } from "zod";
 declare global {
   interface IUser {
     id: string;
-    name: string;
+    username: string;
     email: string;
     profile: any;
-    permissions: string[];
-    roles: string[];
+    permissions: Record<string, true>;
+    roles: { id: number; title: string }[];
   }
 
   type TCreateUserValidationSchema = z.output<

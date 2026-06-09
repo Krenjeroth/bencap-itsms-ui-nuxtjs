@@ -1,6 +1,6 @@
 // const authStore = useAuthStore();
 const { hasRole } = useRoleHandler();
-
+const { can } = useCan();
 export { columns, items, expandableDetails, queryStatusOptions, tabItems };
 
 const columns: ITableColumns[] = [
@@ -71,18 +71,16 @@ const items: ITableActions = (row: any, handlers: IHandlers) => {
   const actions: any[] = [];
   const adminActions: any[] = [];
 
-  const isAdmin = hasRole("admin");
   const isPersonnel = hasRole("personnel");
+  const canUpdate = can("tickets.update");
 
-  // Always show Edit
-  if (isAdmin) {
+  if (canUpdate) {
     adminActions.unshift({
       label: "Edit",
       icon: "i-heroicons-pencil-square-20-solid",
       click: () => handlers.edit?.(row),
     });
 
-    // only show set release if query status === pulled out
     if (row.service_method === "pulled_out") {
       adminActions.push({
         label: "Set Release Date",
@@ -90,22 +88,13 @@ const items: ITableActions = (row: any, handlers: IHandlers) => {
         click: () => handlers.setReleaseDate?.(row),
       });
     }
-    actions.unshift(adminActions);
+
+    if (adminActions.length > 0) {
+      actions.unshift(adminActions);
+    }
   }
 
-  // Enable if personnel can set release date
-  // if (isPersonnel) {
-  //   actions.unshift([
-  //     {
-  //       label: "Set Release Date",
-  //       icon: "i-heroicons-calendar-20-solid",
-  //       click: () => handlers.edit?.(row),
-  //     },
-  //   ]);
-  // }
-
-  // Accept only if user hasn't accepted and ticket is still joinable
-  if (isPersonnel && row.can_accept) {
+  if (isPersonnel && row.can_accept && canUpdate) {
     actions.push([
       {
         label: "Accept",
@@ -115,19 +104,7 @@ const items: ITableActions = (row: any, handlers: IHandlers) => {
     ]);
   }
 
-  // Actions for accepted personnel
-  if (isAdmin || (isPersonnel && row.is_accepted_by_me)) {
-    const acceptedActions = [];
-
-    // if (row.query_status !== "checking_stock") {
-    //   acceptedActions.push({
-    //     label: "Check Stock",
-    //     icon: "material-symbols:checked-bag-question-outline",
-    //     click: () => handlers.checkStock?.(row),
-    //   });
-    // }
-
-    // Reopen action if ticket is resolved or closed
+  if (canUpdate || (isPersonnel && row.is_accepted_by_me)) {
     if (["resolved", "closed"].includes(row.query_status)) {
       actions.push([
         {
@@ -139,8 +116,7 @@ const items: ITableActions = (row: any, handlers: IHandlers) => {
       return actions;
     }
 
-    // Reopen action if ticket is cancelled or closed
-    if (["cancelled", "closed"].includes(row.query_status)) {
+    if (row.query_status === "cancelled") {
       actions.push([
         {
           label: "Reopen",
@@ -167,6 +143,8 @@ const items: ITableActions = (row: any, handlers: IHandlers) => {
       return actions;
     }
 
+    const acceptedActions: any[] = [];
+
     if (row.query_status !== "awaiting_part") {
       acceptedActions.push({
         label: "Await Part",
@@ -175,17 +153,18 @@ const items: ITableActions = (row: any, handlers: IHandlers) => {
       });
     }
 
-    acceptedActions.push({
-      label: "Assess",
-      icon: "material-symbols:lab-research-outline",
-      click: () => handlers.assess?.(row),
-    });
-
-    acceptedActions.push({
-      label: "Resolve",
-      icon: "material-symbols:check-circle-outline",
-      click: () => handlers.resolve?.(row),
-    });
+    acceptedActions.push(
+      {
+        label: "Assess",
+        icon: "material-symbols:lab-research-outline",
+        click: () => handlers.assess?.(row),
+      },
+      {
+        label: "Resolve",
+        icon: "material-symbols:check-circle-outline",
+        click: () => handlers.resolve?.(row),
+      },
+    );
 
     if (row.query_status !== "cancelled") {
       acceptedActions.push({
@@ -195,7 +174,9 @@ const items: ITableActions = (row: any, handlers: IHandlers) => {
       });
     }
 
-    actions.push(acceptedActions); // Group of accepted actions
+    if (acceptedActions.length > 0) {
+      actions.push(acceptedActions);
+    }
 
     actions.push([
       {

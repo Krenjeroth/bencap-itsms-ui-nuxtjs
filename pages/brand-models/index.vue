@@ -1,11 +1,11 @@
 <script setup lang="ts">
 const route = useRoute();
+const { can } = useCan();
 
 definePageMeta({
-  // middleware: ["sanctum:auth", "permission"],
-  middleware: ["sanctum:auth"],
+  middleware: ["sanctum:auth", "permission"],
   title: "Brand Models",
-  // permission: "department_index",
+  permission: "brand_models.view",
 });
 
 useHead({
@@ -176,6 +176,7 @@ watch(selectedStatus, () => {
         edit: editBrandModelModal,
         delete: deleteBrandModelModal,
       }"
+      :enable-add-data="can('brand_models.create')"
       :pagination="{ page, pageCount, total: totalBrandModels }"
       :sorting="sort"
       :search="search"

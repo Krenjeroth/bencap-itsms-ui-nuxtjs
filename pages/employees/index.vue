@@ -1,9 +1,10 @@
 <script setup lang="ts">
+const { can } = useCan();
+
 definePageMeta({
-  // middleware: ["sanctum:auth", "permission"],
-  middleware: ["sanctum:auth"],
+  middleware: ["sanctum:auth", "permission"],
   title: "Employees",
-  // permission: "department_index",
+  permission: "employees.view",
 });
 
 useHead({

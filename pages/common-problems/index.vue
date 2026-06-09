@@ -1,11 +1,11 @@
 <script setup lang="ts">
 const route = useRoute();
+const { can } = useCan();
 
 definePageMeta({
-  // middleware: ["sanctum:auth", "permission"],
-  middleware: ["sanctum:auth"],
+  middleware: ["sanctum:auth", "permission"],
   title: "Common Problems",
-  // permission: "department_index",
+  permission: "common_problems.view",
 });
 
 useHead({
@@ -176,6 +176,7 @@ watch(selectedStatus, () => {
         edit: editCommonProblemModal,
         delete: deleteCommonProblemModal,
       }"
+      :enable-add-data="can('common_problems.create')"
       :pagination="{ page, pageCount, total: totalCommonProblems }"
       :sorting="sort"
       :search="search"

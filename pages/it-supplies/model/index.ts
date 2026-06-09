@@ -1,5 +1,7 @@
 export { columns, items, classificationOptions, expandableDetails };
 
+const { can } = useCan();
+
 const columns: ITableColumns[] = [
   {
     key: "stock_number",
@@ -53,25 +55,17 @@ const items: ITableActions = (row: any, handlers: IHandlers) => [
       label: "Edit",
       icon: "i-heroicons-pencil-square-20-solid",
       click: () => handlers.edit?.(row),
+      hidden: !can("it_supplies.update"),
     },
-  ],
-  // [
-  //   {
-  //     label: "Archive",
-  //     icon: "i-heroicons-archive-box-20-solid",
-  //   },
-  //   {
-  //     label: "Move",
-  //     icon: "i-heroicons-arrow-right-circle-20-solid",
-  //   },
-  // ],
+  ].filter((i) => !i.hidden),
   [
     {
       label: "Delete",
       icon: "i-heroicons-trash-20-solid",
       click: () => handlers.delete?.(row),
+      hidden: !can("it_supplies.delete"),
     },
-  ],
+  ].filter((i) => !i.hidden),
 ];
 
 const expandableDetails: ITableExpandableDetails = (row: any) => [
@@ -94,31 +88,37 @@ const expandableDetails: ITableExpandableDetails = (row: any) => [
     key: "employee.full_name",
     label: "Issued To",
     value: row.employee.full_name,
+    show: true,
   },
   {
     key: "description",
     label: "Description",
     value: row.description,
+    show: true,
   },
   {
     key: "serial_number",
     label: "Serial Number",
     value: row.serial_number,
+    show: true,
   },
   {
     key: "ics_number",
     label: "ICS Number",
     value: row.ics_number,
+    show: true,
   },
   {
     key: "date_acquired",
     label: "Date Acquired",
     value: row.date_acquired,
+    show: true,
   },
   {
     key: "inventory_type",
     label: "Inventory Type",
     value: row.inventory_type,
+    show: true,
   },
 ];
 

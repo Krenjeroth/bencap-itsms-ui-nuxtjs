@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { useDebounceFn } from "@vueuse/core";
 import * as model from "./model/index";
+const { can } = useCan();
 
 definePageMeta({
-  middleware: ["sanctum:auth"],
+  middleware: ["sanctum:auth", "permission"],
   title: "Offices",
+  permission: "offices.view",
 });
 
 useHead({

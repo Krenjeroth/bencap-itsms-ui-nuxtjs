@@ -1,11 +1,11 @@
 <script setup lang="ts">
 const route = useRoute();
+const { can } = useCan();
 
 definePageMeta({
-  // middleware: ["sanctum:auth", "permission"],
-  middleware: ["sanctum:auth"],
+  middleware: ["sanctum:auth", "permission"],
   title: "Inventories",
-  // permission: "department_index",
+  permission: "inventories.view",
 });
 
 useHead({
@@ -281,6 +281,7 @@ watch(selectedOfficeId, () => {
         delete: deleteInventoryModal,
         addComponent: addComponentModal,
       }"
+      :enable-add-data="can('inventories.create')"
       :pagination="{ page, pageCount, total: totalInventories }"
       :sorting="sort"
       :search="search"
