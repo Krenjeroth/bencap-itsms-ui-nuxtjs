@@ -7,125 +7,141 @@ const props = defineProps({
 });
 const emit = defineEmits(["close-sidebar"]);
 
-const links = [
+const { can, canAny } = useCan();
+
+const links = computed(() => [
   [
     {
       label: "Control Panel",
+      hidden: !canAny(
+        "agencies.view",
+        "brands.view",
+        "brand_models.view",
+        "common_problems.view",
+        "departments.view",
+        "item_types.view",
+        "measurement_units.view",
+        "permissions.view",
+        "positions.view",
+        "roles.view",
+        "service_categories.view",
+        "service_types.view",
+        "users.view",
+      ),
     },
     {
       label: "Agencies",
       icon: "material-symbols:identity-platform-outline-rounded",
       to: "/agencies",
+      hidden: !can("agencies.view"),
     },
     {
       label: "Brands",
       icon: "material-symbols:shoppingmode-outline",
       to: "/brands",
+      hidden: !can("brands.view"),
     },
     {
       label: "Brand Models",
       icon: "material-symbols:memory-outline-rounded",
       to: "/brand-models",
+      hidden: !can("brand_models.view"),
     },
     {
       label: "Common Problems",
       icon: "material-symbols:sync-problem-outline-rounded",
       to: "/common-problems",
+      hidden: !can("common_problems.view"),
     },
     {
       label: "Departments",
       icon: "i-heroicons-building-office-2",
       to: "/departments",
+      hidden: !can("departments.view"),
     },
     {
       label: "Item Types",
       icon: "material-symbols:trolley-outline-rounded",
       to: "/item-types",
+      hidden: !can("item_types.view"),
     },
     {
       label: "Measurement Units",
       icon: "material-symbols:measuring-tape-outline-rounded",
       to: "/measurement-units",
+      hidden: !can("measurement_units.view"),
     },
     {
       label: "Permissions",
       icon: "i-heroicons-lock-closed",
       to: "/permissions",
+      hidden: !can("permissions.view"),
     },
     {
       label: "Positions",
       icon: "i-heroicons-briefcase",
       to: "/positions",
+      hidden: !can("positions.view"),
     },
     {
       label: "Roles",
       icon: "i-heroicons-user-group",
       to: "/roles",
+      hidden: !can("roles.view"),
     },
     {
       label: "IT Services",
       icon: "i-heroicons-wrench-screwdriver",
       to: "/it-services",
+      hidden: !can("it_services.view"),
     },
     {
       label: "Users",
       icon: "i-heroicons-users",
       to: "/users",
+      hidden: !can("users.view"),
     },
-  ],
+  ].filter((item) => !item.hidden),
+
   [
     {
       label: "Dashboard",
       icon: "i-heroicons-home",
       to: "/",
+      hidden: !can("dashboard.view"),
     },
     {
       label: "Employees",
       icon: "material-symbols:badge-outline",
       to: "/employees",
+      hidden: !can("employees.view"),
     },
     {
       label: "IT Supplies",
       icon: "i-heroicons-cpu-chip",
       to: "/it-supplies",
+      hidden: !can("it_supplies.view"),
     },
     {
       label: "Inventory",
       icon: "material-symbols:inventory-2-outline-rounded",
       to: "/inventories",
+      hidden: !can("inventories.view"),
     },
-    // {
-    //   label: "Items (Issuance)",
-    //   icon: "material-symbols:box-outline-rounded",
-    //   to: "/items",
-    // },
     {
       label: "Solutions",
       icon: "material-symbols:search-check-2-outline-rounded",
       to: "/solutions",
+      hidden: !can("solutions.view"),
     },
     {
       label: "Tickets",
       icon: "i-heroicons-ticket",
       to: "/tickets",
+      hidden: !can("tickets.view"),
     },
-    // {
-    //   label: "Analytics",
-    //   icon: "i-heroicons-chart-bar",
-    //   to: "/",
-    // },
-    // {
-    //   label: "Settings",
-    //   icon: "i-heroicons-cog-6-tooth",
-    //   to: "/",
-    // },
-    // {
-    //   label: "---LOGIN (DEV/DEB)---",
-    //   icon: "i-heroicons-bug-ant",
-    //   to: "/auth/login",
-    // },
-  ],
-];
+  ].filter((item) => !item.hidden),
+]);
 
 function handleOverlayClick(e: MouseEvent) {
   if (e.target === e.currentTarget) emit("close-sidebar");
