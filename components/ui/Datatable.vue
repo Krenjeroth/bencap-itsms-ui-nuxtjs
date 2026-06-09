@@ -133,14 +133,38 @@ const localActiveTab = computed({
 
 const localSort = ref(props.sorting);
 const selectedColumns = ref(props.columns);
+
+// Resolves and filters empty action groups for a given row
+const resolvedActions = (row: any) => {
+  const groups = props.actionItems(row, props.actionHandlers);
+  return groups.filter((group) => group.length > 0);
+};
+
+// Hide the actions column entirely if no row has any available actions
 const columnsTable = computed(() =>
   props.columns
-    .filter((column) => selectedColumns.value.includes(column))
+    .filter((column) => {
+      if (column.key === "actions") {
+        return props.tableData.some((row) =>
+          resolvedActions(row).some((group) => group.length > 0),
+        );
+      }
+      return selectedColumns.value.includes(column);
+    })
     .map((column) => ({
       ...column,
       responsiveClass: column.responsiveClass || "",
     })),
 );
+
+// const columnsTable = computed(() =>
+//   props.columns
+//     .filter((column) => selectedColumns.value.includes(column))
+//     .map((column) => ({
+//       ...column,
+//       responsiveClass: column.responsiveClass || "",
+//     })),
+// );
 
 const sortedTableData = computed(() => {
   const data = [...props.tableData];
@@ -567,7 +591,10 @@ watch(localPage, (newPage) => {
       </template>
 
       <template #actions-data="{ row }">
-        <UDropdown :items="actionItems(row, props.actionHandlers)">
+        <UDropdown
+          v-if="resolvedActions(row).some((group) => group.length > 0)"
+          :items="actionItems(row, props.actionHandlers)"
+        >
           <UButton
             color="gray"
             variant="ghost"
@@ -756,7 +783,10 @@ watch(localPage, (newPage) => {
       </template>
 
       <template #actions-data="{ row }">
-        <UDropdown :items="actionItems(row, props.actionHandlers)">
+        <UDropdown
+          v-if="resolvedActions(row).some((group) => group.length > 0)"
+          :items="actionItems(row, props.actionHandlers)"
+        >
           <UButton
             color="gray"
             variant="ghost"
