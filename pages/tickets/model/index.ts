@@ -71,8 +71,11 @@ const items: ITableActions = (row: any, handlers: IHandlers) => {
   const actions: any[] = [];
   const adminActions: any[] = [];
 
-  const isPersonnel = hasRole("personnel");
+  const isAdminPersonnel = hasRole("admin");
+  const isITAdminStaff = hasRole("it admin staff");
+  const isITTechnical = hasRole("it technical");
   const canUpdate = can("tickets.update");
+  const canPrintAssessment = can("tickets.print_assessment");
 
   if (canUpdate) {
     adminActions.unshift({
@@ -94,7 +97,11 @@ const items: ITableActions = (row: any, handlers: IHandlers) => {
     }
   }
 
-  if (isPersonnel && row.can_accept && canUpdate) {
+  if (
+    (isAdminPersonnel || isITAdminStaff || isITTechnical) &&
+    row.can_accept &&
+    canUpdate
+  ) {
     actions.push([
       {
         label: "Accept",
@@ -104,87 +111,110 @@ const items: ITableActions = (row: any, handlers: IHandlers) => {
     ]);
   }
 
-  if (canUpdate || (isPersonnel && row.is_accepted_by_me)) {
+  const canManageTicket =
+    canUpdate ||
+    ((isAdminPersonnel || isITAdminStaff || isITTechnical) &&
+      row.is_accepted_by_me);
+
+  const canAccessAssessedActions = canManageTicket || canPrintAssessment;
+
+  if (canAccessAssessedActions) {
     if (["resolved", "closed"].includes(row.query_status)) {
-      actions.push([
-        {
-          label: "Reopen",
-          icon: "material-symbols:door-open-outline",
-          click: () => handlers.reopen?.(row),
-        },
-      ]);
+      if (canManageTicket) {
+        actions.push([
+          {
+            label: "Reopen",
+            icon: "material-symbols:door-open-outline",
+            click: () => handlers.reopen?.(row),
+          },
+        ]);
+      }
       return actions;
     }
 
     if (row.query_status === "cancelled") {
-      actions.push([
-        {
-          label: "Reopen",
-          icon: "material-symbols:door-open-outline",
-          click: () => handlers.reopen?.(row),
-        },
-      ]);
+      if (canManageTicket) {
+        actions.push([
+          {
+            label: "Reopen",
+            icon: "material-symbols:door-open-outline",
+            click: () => handlers.reopen?.(row),
+          },
+        ]);
+      }
       return actions;
     }
 
     if (row.query_status === "assessed") {
-      actions.push([
-        {
+      const assessedActions: any[] = [];
+
+      if (canPrintAssessment) {
+        assessedActions.push({
           label: "Print Assessment",
           icon: "material-symbols:print-outline",
           click: () => handlers.printAssessment?.(row),
-        },
-        {
+        });
+      }
+
+      if (canManageTicket) {
+        assessedActions.push({
           label: "Reopen",
           icon: "material-symbols:door-open-outline",
           click: () => handlers.reopen?.(row),
-        },
-      ]);
+        });
+      }
+
+      if (assessedActions.length > 0) {
+        actions.push(assessedActions);
+      }
+
       return actions;
     }
 
-    const acceptedActions: any[] = [];
+    if (canManageTicket) {
+      const acceptedActions: any[] = [];
 
-    if (row.query_status !== "awaiting_part") {
-      acceptedActions.push({
-        label: "Await Part",
-        icon: "material-symbols:deployed-code-history-outline",
-        click: () => handlers.awaitPart?.(row),
-      });
+      if (row.query_status !== "awaiting_part") {
+        acceptedActions.push({
+          label: "Await Part",
+          icon: "material-symbols:deployed-code-history-outline",
+          click: () => handlers.awaitPart?.(row),
+        });
+      }
+
+      acceptedActions.push(
+        {
+          label: "Assess",
+          icon: "material-symbols:lab-research-outline",
+          click: () => handlers.assess?.(row),
+        },
+        {
+          label: "Resolve",
+          icon: "material-symbols:check-circle-outline",
+          click: () => handlers.resolve?.(row),
+        },
+      );
+
+      if (row.query_status !== "cancelled") {
+        acceptedActions.push({
+          label: "Cancel",
+          icon: "material-symbols:cancel-outline",
+          click: () => handlers.cancel?.(row),
+        });
+      }
+
+      if (acceptedActions.length > 0) {
+        actions.push(acceptedActions);
+      }
+
+      actions.push([
+        {
+          label: "Set Service Method",
+          icon: "material-symbols:build-circle-outline",
+          click: () => handlers.setServiceMethod?.(row),
+        },
+      ]);
     }
-
-    acceptedActions.push(
-      {
-        label: "Assess",
-        icon: "material-symbols:lab-research-outline",
-        click: () => handlers.assess?.(row),
-      },
-      {
-        label: "Resolve",
-        icon: "material-symbols:check-circle-outline",
-        click: () => handlers.resolve?.(row),
-      },
-    );
-
-    if (row.query_status !== "cancelled") {
-      acceptedActions.push({
-        label: "Cancel",
-        icon: "material-symbols:cancel-outline",
-        click: () => handlers.cancel?.(row),
-      });
-    }
-
-    if (acceptedActions.length > 0) {
-      actions.push(acceptedActions);
-    }
-
-    actions.push([
-      {
-        label: "Set Service Method",
-        icon: "material-symbols:build-circle-outline",
-        click: () => handlers.setServiceMethod?.(row),
-      },
-    ]);
   }
 
   return actions;
