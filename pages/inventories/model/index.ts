@@ -100,12 +100,8 @@ const expandableDetails: ITableExpandableDetails = (row: any) => [
   {
     key: "date_acquired",
     label: "Date Acquired",
-    value:
-      row.item_type.id === 1 ? row.date_acquired : row.inventory?.date_acquired,
-    show:
-      row.item_type.id === 1
-        ? !!row.date_acquired
-        : !!row.inventory?.date_acquired,
+    value: row.date_acquired ?? row.inventory?.date_acquired,
+    show: row.date_acquired ?? row.inventory?.date_acquired,
   },
   {
     key: "serial_number",
