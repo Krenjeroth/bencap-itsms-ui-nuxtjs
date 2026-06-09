@@ -5,3 +5,4 @@ export * from "./useStringHandler";
 export * from "./useColorHandler";
 export * from "./useUrlHandler";
 export * from "./useRoleHandler";
+export * from "./useCan";
