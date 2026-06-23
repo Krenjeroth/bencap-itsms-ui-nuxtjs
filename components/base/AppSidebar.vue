@@ -141,6 +141,17 @@ const links = computed(() => [
       hidden: !can("tickets.view"),
     },
   ].filter((item) => !item.hidden),
+
+  [
+    // Requests
+    { label: "Requests" }, // section header
+    {
+      label: "Other IT Services",
+      icon: "material-symbols:service-toolbox-outline-rounded",
+      to: "/requests/other-it-services",
+      hidden: !can("requests.other_it_services.view"),
+    },
+  ].filter((item) => !item.hidden),
 ]);
 
 function handleOverlayClick(e: MouseEvent) {

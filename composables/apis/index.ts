@@ -17,3 +17,4 @@ export * from "./useSolutionApi";
 export * from "./useAgencyApi";
 export * from "./useMeasurementUnitApi";
 export * from "./useOfficeApi";
+export * from "./useOtherItServiceRequestsApi";

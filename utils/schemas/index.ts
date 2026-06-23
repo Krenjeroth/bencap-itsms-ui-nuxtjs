@@ -15,3 +15,4 @@ export * from "./solution";
 export * from "./agency";
 export * from "./measurement-unit";
 export * from "./it-supply";
+export * from "./other-it-service-request";
