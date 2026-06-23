@@ -227,6 +227,13 @@ const expandableDetails: ITableExpandableDetails = (row: any) => [
     value: row.solution_formatted,
     show: true,
   },
+  {
+    key: "remarks",
+    label: "Remarks",
+    value:
+      row.inventory?.remarks ?? row.inventory?.inventory?.remarks ?? "None",
+    show: true,
+  },
 ];
 
 const queryStatusOptions: ITableStatusOptions[] = [
