@@ -60,13 +60,16 @@ const formState = reactive<IAddComponentInventoryForm>({
   property_number: `${props.inventoryItem?.property_number}-` || undefined,
   date_acquired: props.inventoryItem?.date_acquired
     ? transformDbDate(props.inventoryItem.date_acquired)
-    : undefined,
+    : props.inventoryItem?.date_acquired
+      ? transformDbDate(props.inventoryItem.inventory.date_acquired)
+      : undefined,
   serial_number: props.inventoryItem?.serial_number || undefined,
   status: props.inventoryItem?.status || undefined,
   parent_id: props.inventoryItem?.id || undefined,
 
   inventory: props.inventoryItem?.id || undefined, // Parent Component
 });
+console.log(props.inventoryItem);
 
 const serialNumberValue = computed({
   get: () => formState.serial_number ?? undefined,
@@ -104,7 +107,7 @@ const brandModelComputed = computed({
 });
 
 const handleSubmit = async (
-  event: IFormSubmitEvent<TUpdateInventoryValidationSchema>
+  event: IFormSubmitEvent<TUpdateInventoryValidationSchema>,
 ) => {
   await inventoryStore.addInventory(event.data);
 
@@ -125,14 +128,14 @@ const searchBrandModels = async (q: string) => {
   if (!searchQuery.value || searchQuery.value.length < 2) return [];
   if (itemTypeComputed.value === 1) {
     const result = await brandModelStore.fetchBrandModelSelect(
-      searchQuery.value
+      searchQuery.value,
     );
     brandModelOptions.value = result;
     return result;
   }
   const result = await brandModelStore.fetchBrandModelSearch(
     searchQuery.value,
-    itemTypeComputed.value
+    itemTypeComputed.value,
   );
   brandModelOptions.value = result;
   console.log(result);
@@ -147,7 +150,7 @@ const searchEmployees = async (q: string) => {
   if (!employeeSearchQuery.value || employeeSearchQuery.value.length < 2)
     return [];
   const result = await employeeStore.fetchEmployeeSearch(
-    employeeSearchQuery.value
+    employeeSearchQuery.value,
   );
   employeeOptions.value = result;
   return result;
@@ -164,7 +167,7 @@ const searchInventoryMainAsset = async (q: string) => {
   )
     return [];
   const result = await inventoryStore.fetchInventoryMainAssetSearch(
-    inventoryMainAssetSearchQuery.value
+    inventoryMainAssetSearchQuery.value,
   );
   inventoryMainAssetSearchOptions.value = result;
   return result;
@@ -176,7 +179,7 @@ const searchItemTypes = async (q: string) => {
     await itemTypeStore.fetchItemTypeSelect();
   }
   const filtered = itemTypeSelect.value.filter((itemType) =>
-    itemType.type.toLowerCase().includes(q.toLowerCase())
+    itemType.type.toLowerCase().includes(q.toLowerCase()),
   );
   return filtered;
 };
