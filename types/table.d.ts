@@ -29,6 +29,7 @@ declare global {
     addComponent?: (row: any) => void;
     assess?: (row: any) => void;
     printAssessment?: (row: any) => void;
+    print?: (row: any) => void;
     // Add other handler functions here if needed in the future
   }
 

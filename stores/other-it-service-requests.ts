@@ -12,6 +12,7 @@ export const useOtherItServiceRequestsStore = defineStore(
       useErrorHandler();
     const { transformDatePickerDate, transformDateDurationHumanize } =
       useDateHandler();
+    const { strConvertUnderscoreToSpace, capitalizeWord } = useStringHandler();
 
     enum SortDirection {
       ASC = "asc",
@@ -54,6 +55,9 @@ export const useOtherItServiceRequestsStore = defineStore(
                 "MMM DD, YYYY",
               )} (${transformDateDurationHumanize(request.date_of_request)})`
             : "-",
+          status_formatted: capitalizeWord(
+            strConvertUnderscoreToSpace(request.status),
+          ),
         }));
 
         totalRequests.value = Number(response.meta.total) || 0;

@@ -19,6 +19,7 @@ import * as model from "./model/index";
 const { can } = useCan();
 const modal = useModal();
 const { actionToastResult } = useToastHandler();
+const { getStatusColor } = useColorHandler();
 
 const requestStore = useOtherItServiceRequestsStore();
 const {
@@ -34,6 +35,17 @@ const {
 const { columns, items } = model;
 
 requestStore.fetchRequests();
+
+const statusLabel = (status: string) => {
+  const map: Record<string, string> = {
+    pending: "Pending",
+    in_progress: "In Progress",
+    completed: "Completed",
+    on_hold: "On Hold",
+    cancelled: "Cancelled",
+  };
+  return map[status] ?? status;
+};
 
 const addRequestModal = () => {
   modal.open(OtherItServiceRequestsCreateModal, {
@@ -100,8 +112,8 @@ const editRequestModal = (request: any) => {
   });
 };
 
-const printRequestModal = (request: any) => {
-  // to be implemented
+const printRequestModal = async (request: any) => {
+  await requestStore.printRequest(request.id);
 };
 
 watch(search, () => {

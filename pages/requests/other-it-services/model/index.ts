@@ -1,10 +1,37 @@
 const { can } = useCan();
-export { columns, items };
+export { columns, items, statusBadgeColor };
+
+const statusBadgeColor = (status: string) => {
+  const map: Record<string, string> = {
+    pending: "yellow",
+    in_progress: "blue",
+    completed: "green",
+    on_hold: "orange",
+    cancelled: "red",
+  };
+  return map[status] ?? "gray";
+};
+
+const statusLabel = (status: string) => {
+  const map: Record<string, string> = {
+    pending: "Pending",
+    in_progress: "In Progress",
+    completed: "Completed",
+    on_hold: "On Hold",
+    cancelled: "Cancelled",
+  };
+  return map[status] ?? status;
+};
 
 const columns: ITableColumns[] = [
   {
     key: "control_number",
     label: "Control No.",
+    rowClass: "whitespace-pre-line max-w-fit",
+  },
+  {
+    key: "status",
+    label: "Status",
     rowClass: "whitespace-pre-line max-w-fit",
   },
   {
