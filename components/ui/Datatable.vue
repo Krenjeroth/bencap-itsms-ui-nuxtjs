@@ -704,6 +704,12 @@ watch(localPage, (newPage) => {
         </div>
       </template>
 
+      <template #status-data="{ row }">
+        <UBadge variant="outline" :color="getStatusColor(row.status)">{{
+          row.status_formatted
+        }}</UBadge>
+      </template>
+
       <template #query_status_formatted-data="{ row }">
         <UBadge variant="outline" :color="getStatusColor(row.query_status)">{{
           row.query_status_formatted
