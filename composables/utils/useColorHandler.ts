@@ -59,6 +59,14 @@ export const useColorHandler = () => {
       case "offline":
         return "gray";
 
+      // ? Other IT Service Request Status
+      case "pending":
+        return "yellow";
+      case "completed":
+        return "green";
+      case "on_hold":
+        return "orange";
+
       default:
         return "gray";
     }
