@@ -81,10 +81,14 @@ const buildFormState = (item: any): IUpdateInventoryForm => ({
   property_number: item?.property_number || undefined,
   date_acquired: item?.date_acquired
     ? transformDbDate(item.date_acquired)
-    : undefined,
+    : item?.inventory?.date_acquired
+      ? transformDbDate(item.inventory.date_acquired)
+      : undefined,
   warranty_expiration_date: item?.warranty_expiration_date
     ? transformDbDate(item.warranty_expiration_date)
-    : undefined,
+    : item?.inventory?.warranty_expiration_date
+      ? transformDbDate(item.inventory.warranty_expiration_date)
+      : undefined,
   serial_number: item?.serial_number || undefined,
   status: item?.status || undefined,
 
@@ -95,6 +99,7 @@ const buildFormState = (item: any): IUpdateInventoryForm => ({
 const formState = reactive<IUpdateInventoryForm>(
   buildFormState(props.inventoryItem),
 );
+console.log(formState);
 const originalState = reactive<IUpdateInventoryForm>(
   cloneDeep(buildFormState(props.inventoryItem)),
 );
