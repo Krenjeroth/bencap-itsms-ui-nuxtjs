@@ -28,6 +28,13 @@ const formState = reactive({
   status: undefined as string | undefined,
 });
 
+const officeError = ref("");
+
+const validateForm = () => {
+  officeError.value = formState.office?.id ? "" : "Office is required.";
+  return !officeError.value;
+};
+
 const itemTypeComputed = computed({
   get: () => formState.item_type ?? undefined,
   set: (value) => {
@@ -46,6 +53,7 @@ const officeComputed = computed({
   get: () => formState.office ?? undefined,
   set: (value) => {
     formState.office = value || undefined;
+    if (value?.id) officeError.value = "";
   },
 });
 
@@ -68,7 +76,6 @@ const searchEmployees = async (q: string) => {
 };
 
 const officeOptions = ref<any[]>(officeSelect.value ?? []);
-// const officeSearchQuery = ref("");
 const officeQuery = ref("");
 
 const searchOffices = async (q: string) => {
@@ -110,6 +117,8 @@ const buildFilters = () => ({
 });
 
 const handleExportExcel = async () => {
+  if (!validateForm()) return;
+
   try {
     await inventoryStore.exportInventoryReportExcel(buildFilters());
     emit("success");
@@ -120,6 +129,8 @@ const handleExportExcel = async () => {
 };
 
 const handleExportPdf = async () => {
+  if (!validateForm()) return;
+
   try {
     await inventoryStore.exportInventoryReportPdf(buildFilters());
     emit("success");
@@ -197,7 +208,7 @@ watch(
           </UInputMenu>
         </UFormGroup>
 
-        <UFormGroup label="Office" name="office">
+        <UFormGroup label="Office" name="office" required :error="officeError">
           <USelectMenu
             v-model="officeComputed"
             :options="officeSelect"
@@ -220,13 +231,14 @@ watch(
           variant="outline"
           @click="handleExportPdf"
           :loading="loading"
+          :disabled="!formState.office?.id"
         >
           Export PDF
         </UButton>
 
-        <UButton color="primary" @click="handleExportExcel" :loading="loading">
+        <!-- <UButton color="primary" @click="handleExportExcel" :loading="loading">
           Export Excel
-        </UButton>
+        </UButton> -->
       </div>
     </div>
   </BaseModal>
