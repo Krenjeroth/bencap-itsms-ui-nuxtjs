@@ -9,7 +9,7 @@ export const UpdateTicketValidationSchema = z
       })
       .nullable()
       .optional(),
-    item_type: z.number(),
+    item_type: z.number().optional(),
     it_service: z.union([z.string(), z.number()]),
     concern: z
       .string({
@@ -26,7 +26,7 @@ export const UpdateTicketValidationSchema = z
         },
         {
           message: "Invalid Phone number format",
-        }
+        },
       )
       .nullable()
       .optional(),
