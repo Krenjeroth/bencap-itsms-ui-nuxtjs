@@ -129,7 +129,7 @@ const isOtherAgencyComputed = computed({
 });
 
 const handleSubmit = async (
-  event: IFormSubmitEvent<TUpdateTicketValidationSchema>
+  event: IFormSubmitEvent<TUpdateTicketValidationSchema>,
 ) => {
   if (!isChangedComputed.value) {
     onNoDataChange();
@@ -155,7 +155,7 @@ const searchInventories = async (q: string) => {
   if (!inventorySearchQuery.value || inventorySearchQuery.value.length < 2)
     return [];
   const result = await inventoryStore.fetchInventorySearch(
-    inventorySearchQuery.value
+    inventorySearchQuery.value,
   );
   inventoryOptions.value = result;
   return result;
@@ -167,7 +167,7 @@ const searchItemTypes = async (q: string) => {
     await itemTypeStore.fetchItemTypeSelect();
   }
   return itemTypeSelect.value.filter((itemType) =>
-    itemType.type.toLowerCase().includes(q.toLowerCase())
+    itemType.type.toLowerCase().includes(q.toLowerCase()),
   );
 };
 
