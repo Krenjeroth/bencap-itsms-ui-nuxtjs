@@ -43,7 +43,7 @@ const {
 const { columns, items, expandableDetails, tabItems } = model;
 
 const officeStore = useOfficeStore();
-const { officeSelect, loading: loadingOffices } = storeToRefs(officeStore);
+const { officeSelect, loadingOfficeSelect } = storeToRefs(officeStore);
 officeStore.fetchOfficeSelect();
 
 inventoryStore.fetchInventories();
@@ -301,7 +301,7 @@ watch(selectedOfficeId, () => {
             option-attribute="label"
             placeholder="Filter by Office..."
             :searchable="true"
-            :loading="loadingOffices"
+            :loading="loadingOfficeSelect"
             class="w-full"
           >
             <template #option="{ option }">

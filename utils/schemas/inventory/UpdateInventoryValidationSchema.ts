@@ -10,6 +10,14 @@ export const UpdateInventoryValidationSchema = z
       })
       .nullable()
       .optional(),
+    office: z
+      .object({
+        id: z.number(),
+        office_code: z.string().nullable().optional(),
+        office_desc: z.string(),
+      })
+      .nullable()
+      .optional(),
     inventory: z
       .object({
         id: z.number(),
@@ -185,7 +193,6 @@ export const UpdateInventoryValidationSchema = z
         // Rule 2: Each item in the array must have a `brand_model` selected.
         data.internal_components.forEach((component, index) => {
           if (!component.brand_model) {
-            console.log(component, component.brand_model, index);
             ctx.addIssue({
               code: z.ZodIssueCode.custom,
               message: "Model is required. - " + index,

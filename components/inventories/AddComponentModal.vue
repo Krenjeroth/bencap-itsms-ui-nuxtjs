@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { format } from "date-fns";
-import { cloneDeep } from "lodash";
 const inventoryStore = useInventoryStore();
 const {
   loading: loadingInventories,
@@ -60,16 +59,13 @@ const formState = reactive<IAddComponentInventoryForm>({
   property_number: `${props.inventoryItem?.property_number}-` || undefined,
   date_acquired: props.inventoryItem?.date_acquired
     ? transformDbDate(props.inventoryItem.date_acquired)
-    : props.inventoryItem?.date_acquired
-      ? transformDbDate(props.inventoryItem.inventory.date_acquired)
-      : undefined,
+    : undefined,
   serial_number: props.inventoryItem?.serial_number || undefined,
   status: props.inventoryItem?.status || undefined,
   parent_id: props.inventoryItem?.id || undefined,
 
   inventory: props.inventoryItem?.id || undefined, // Parent Component
 });
-console.log(props.inventoryItem);
 
 const serialNumberValue = computed({
   get: () => formState.serial_number ?? undefined,
@@ -107,9 +103,43 @@ const brandModelComputed = computed({
 });
 
 const handleSubmit = async (
-  event: IFormSubmitEvent<TUpdateInventoryValidationSchema>,
+  event: IFormSubmitEvent<TAddComponentValidationSchema>,
 ) => {
-  await inventoryStore.addInventory(event.data);
+  const payload: TStoreInventoryPayload = {
+    employee_id: null,
+    // ✅ Inherit office directly from the parent item, no picker needed
+    office_id: props.inventoryItem?.office_id ?? null,
+    office_code: props.inventoryItem?.office_code ?? null,
+    office_name: props.inventoryItem?.office_name ?? null,
+
+    item_type_id: formState.item_type ?? null,
+    brand_model_id: formState.brand_model?.id ?? null,
+    parent_component_id: formState.inventory
+      ? Number(formState.inventory)
+      : null,
+
+    ip_address: null,
+    mac_address: null,
+    remarks: null,
+
+    operating_system_name: null,
+    os_license_number: null,
+    anti_virus_name: null,
+    anti_virus_license_number: null,
+    microsoft_office_name: null,
+    ms_office_license_number: null,
+    other_installed_applications: null,
+
+    property_number: formState.property_number ?? "",
+    date_acquired: formState.date_acquired ?? null,
+    warranty_expiration_date: null,
+    serial_number: formState.serial_number ?? null,
+    status: formState.status ?? "active",
+
+    internal_components: [],
+  };
+
+  await inventoryStore.addInventory(payload);
 
   if (hasError.value) {
     onError();
@@ -138,7 +168,6 @@ const searchBrandModels = async (q: string) => {
     itemTypeComputed.value,
   );
   brandModelOptions.value = result;
-  console.log(result);
   return result;
 };
 
@@ -259,26 +288,6 @@ const searchItemTypes = async (q: string) => {
       <div class="space-y-6 md:space-y-0 md:flex md:space-x-6">
         <UFormGroup label="Parent Component" :ui="{ wrapper: 'md:w-full' }">
           <UInput v-model="parentPropertyNumberComputed" disabled />
-          <!-- <UInputMenu
-            v-model="inventoryComputed"
-            :search="searchInventoryMainAsset"
-            :loading="loadingInventories"
-            placeholder="Search by property number..."
-            option-attribute="property_number"
-          >
-            <template #option="{ option }">
-              <span class="truncate">{{ option.property_number }}</span>
-            </template>
-
-            <template #empty>
-              <span v-if="searchQuery.length < 2" class="text-gray-400"
-                >Type at least 2 characters...</span
-              >
-              <span v-else class="text-gray-400"
-                >No Parent Component found</span
-              >
-            </template>
-          </UInputMenu> -->
         </UFormGroup>
 
         <UFormGroup

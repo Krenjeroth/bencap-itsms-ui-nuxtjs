@@ -1,5 +1,12 @@
 export { columns, items, classificationOptions, expandableDetails, tabItems };
 
+const getEmployeeOfficeDisplay = (row: any) =>
+  row.employee?.division ??
+  row.employee?.unit ??
+  row.inventory?.employee?.division ??
+  row.inventory?.employee?.unit ??
+  null;
+
 const columns: ITableColumns[] = [
   {
     key: "property_number",
@@ -9,6 +16,11 @@ const columns: ITableColumns[] = [
   {
     key: "actual_user",
     label: "Actual User",
+    rowClass: "whitespace-pre-line max-w-fit",
+  },
+  {
+    key: "office_name",
+    label: "Item Location",
     rowClass: "whitespace-pre-line max-w-fit",
   },
   {
@@ -64,18 +76,18 @@ const expandableDetails: ITableExpandableDetails = (row: any) => [
     key: row.employee
       ? "employee.office_desc"
       : "inventory.employee.office_desc",
-    label: "Office",
+    label: "Employee Office",
     value: row.employee
       ? row.employee?.office_desc
       : row.inventory?.employee?.office_desc,
     show: true,
   },
-  {
-    key: row.employee ? "employee.division" : "inventory.employee.division",
-    label: "Division / Section / Unit",
-    value: getEmployeeOfficeDisplay(row),
-    show: !!getEmployeeOfficeDisplay(row),
-  },
+  // {
+  //   key: row.employee ? "employee.division" : "inventory.employee.division",
+  //   label: "Division / Section / Unit",
+  //   value: getEmployeeOfficeDisplay(row),
+  //   show: !!getEmployeeOfficeDisplay(row),
+  // },
   {
     key: "ip_address",
     label: "IP Address",
@@ -199,10 +211,3 @@ const classificationOptions: ITableStatusOptions[] = [
   { key: "system_unit", label: "System Unit", value: "SYSTEM UNIT" },
   { key: "tool", label: "Tool", value: "TOOL" },
 ];
-
-const getEmployeeOfficeDisplay = (row: any) =>
-  row.employee?.division ??
-  row.employee?.unit ??
-  row.inventory?.employee?.division ??
-  row.inventory?.employee?.unit ??
-  null;

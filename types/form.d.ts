@@ -195,6 +195,12 @@ declare global {
     status?: string | null;
     internal_components?: Array | null;
     parent_id?: number;
+
+    office?: {
+      id: number;
+      office_code?: string | null;
+      office_desc: string;
+    };
   }
 
   interface IUpdateInventoryForm {
@@ -230,6 +236,14 @@ declare global {
     warranty_expiration_date?: TDatePickerDate;
     status?: string | null;
     internal_components?: Array | null;
+
+    office?:
+      | {
+          id: number;
+          office_code?: string | null;
+          office_desc: string;
+        }
+      | undefined;
   }
 
   interface IAddComponentInventoryForm {

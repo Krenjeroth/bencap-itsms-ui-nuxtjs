@@ -23,14 +23,17 @@ export const useInventoryApi = () => {
     );
   };
 
-  const addInventoryApi = async (form: ICreateInventoryForm) => {
+  const addInventoryApi = async (form: TStoreInventoryPayload) => {
     return await sanctumFetch(`${inventoryUrl.value}`, {
       method: "POST",
       body: form,
     });
   };
 
-  const updateInventoryApi = async (id: string, form: IUpdateInventoryForm) => {
+  const updateInventoryApi = async (
+    id: string,
+    form: TUpdateInventoryPayload,
+  ) => {
     return await sanctumFetch(`${inventoryUrl.value}/${id}`, {
       method: "PUT",
       body: form,

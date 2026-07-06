@@ -10,7 +10,9 @@ export const useOfficeStore = defineStore("officeStore", () => {
 
   const offices = ref<any[]>([]);
   const officeSelect = ref<any[]>([]);
-  const loading = ref(false);
+  const loadingOfficeSelect = ref(false);
+  const loadingOfficeSearch = ref(false);
+  const loading = ref(false); // used by fetchOffices (paginated table)
   const page = ref(1);
   const pageCount = ref(5);
   const search = ref("");
@@ -54,7 +56,7 @@ export const useOfficeStore = defineStore("officeStore", () => {
   };
 
   const fetchOfficeSelect = async () => {
-    loading.value = true;
+    loadingOfficeSelect.value = true;
     try {
       const queryParams = new URLSearchParams({
         page: "1",
@@ -72,27 +74,29 @@ export const useOfficeStore = defineStore("officeStore", () => {
       officeSelect.value = [];
       return [];
     } finally {
-      loading.value = false;
+      loadingOfficeSelect.value = false;
     }
   };
 
   const fetchOfficeSearch = async (q: string) => {
     if (!q || q.length < 2) return [];
 
+    loadingOfficeSearch.value = true;
     try {
       const queryParams = new URLSearchParams({
-        search: q,
+        q,
       });
 
       const response = await fetchOfficeSearchApi(queryParams);
       const result = (response.data ?? response ?? []).map(
         normalizeOfficeOption,
       );
-      officeSelect.value = result;
       return result;
     } catch (err) {
       console.error("Office search error:", err);
       return [];
+    } finally {
+      loadingOfficeSearch.value = false;
     }
   };
 
@@ -100,6 +104,8 @@ export const useOfficeStore = defineStore("officeStore", () => {
     offices,
     officeSelect,
     loading,
+    loadingOfficeSelect,
+    loadingOfficeSearch,
     errorBag,
     hasError,
     page,

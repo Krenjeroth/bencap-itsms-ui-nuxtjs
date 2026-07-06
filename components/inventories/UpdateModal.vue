@@ -15,6 +15,10 @@ const employeeStore = useEmployeeStore();
 const { loading: loadingEmployees } = storeToRefs(employeeStore);
 
 const itemTypeStore = useItemTypeStore();
+
+const officeStore = useOfficeStore();
+const { loadingOfficeSearch: loadingOffices } = storeToRefs(officeStore);
+
 const { loading: loadingItemTypes, itemTypeSelect } =
   storeToRefs(itemTypeStore);
 itemTypeStore.fetchItemTypeSelect();
@@ -61,6 +65,22 @@ const normalizeEmployee = (employee: any) => {
   };
 };
 
+const normalizeOffice = (item: any) => {
+  if (!item?.office_id && !item?.office_name && !item?.office_code) {
+    return undefined;
+  }
+
+  return {
+    id: item?.office_id,
+    office_code: item?.office_code ?? "",
+    office_desc: item?.office_name ?? "",
+    label:
+      item?.office_code && item?.office_name
+        ? `${item.office_code} - ${item.office_name}`
+        : (item?.office_name ?? item?.office_code ?? ""),
+  };
+};
+
 const buildFormState = (item: any): IUpdateInventoryForm => ({
   employee: normalizeEmployee(item?.employee),
   item_type: item?.item_type?.id || undefined,
@@ -94,12 +114,13 @@ const buildFormState = (item: any): IUpdateInventoryForm => ({
 
   internal_components: item?.internal_components || [],
   inventory: item?.inventory || undefined,
+
+  office: normalizeOffice(item),
 });
 
 const formState = reactive<IUpdateInventoryForm>(
   buildFormState(props.inventoryItem),
 );
-console.log(formState);
 const originalState = reactive<IUpdateInventoryForm>(
   cloneDeep(buildFormState(props.inventoryItem)),
 );
@@ -130,6 +151,8 @@ const fieldsToCompare: (keyof IUpdateInventoryForm)[] = [
   // for inventory_internal_components table
   "internal_components",
   "inventory",
+
+  "office",
 ];
 
 const isChangedComputed = computed(() => {
@@ -232,6 +255,13 @@ const employeeComputed = computed({
   },
 });
 
+const officeComputed = computed({
+  get: () => formState.office ?? undefined,
+  set: (value) => {
+    formState.office = value ? value : undefined;
+  },
+});
+
 const brandModelComputed = computed({
   get: () => formState.brand_model ?? undefined,
   set: (value) => {
@@ -254,7 +284,38 @@ const handleSubmit = async (
     return;
   }
 
-  await inventoryStore.updateInventory(props.inventoryItem?.id, event.data);
+  const payload: TUpdateInventoryPayload = {
+    employee_id: formState.employee?.id ?? null,
+    office_id: formState.office?.id ?? null,
+    office_code: formState.office?.office_code ?? null,
+    office_name: formState.office?.office_desc ?? null,
+    item_type_id: formState.item_type ?? null,
+    brand_model_id: formState.brand_model?.id ?? null,
+    parent_component_id: formState.inventory?.id ?? null,
+
+    ip_address: formState.ip_address ?? null,
+    mac_address: formState.mac_address ?? null,
+    remarks: formState.remarks ?? null,
+
+    operating_system_name: formState.operating_system_name ?? null,
+    os_license_number: formState.os_license_number ?? null,
+    anti_virus_name: formState.anti_virus_name ?? null,
+    anti_virus_license_number: formState.anti_virus_license_number ?? null,
+    microsoft_office_name: formState.microsoft_office_name ?? null,
+    ms_office_license_number: formState.ms_office_license_number ?? null,
+    other_installed_applications:
+      formState.other_installed_applications ?? null,
+
+    property_number: formState.property_number ?? "",
+    date_acquired: formState.date_acquired ?? null,
+    warranty_expiration_date: formState.warranty_expiration_date ?? null,
+    serial_number: formState.serial_number ?? null,
+    status: formState.status ?? null,
+
+    internal_components: formState.internal_components ?? [],
+  };
+
+  await inventoryStore.updateInventory(props.inventoryItem?.id, payload);
 
   if (hasError.value) {
     onError();
@@ -313,6 +374,29 @@ const searchEmployees = async (q: string) => {
   return normalized;
 };
 
+const officeOptions = ref<any[]>([]);
+const officeSearchQuery = ref("");
+
+const syncOfficeOption = (office?: any) => {
+  if (!office?.id) return;
+
+  const exists = officeOptions.value.some((opt) => opt.id === office.id);
+  if (!exists) {
+    officeOptions.value = [office, ...officeOptions.value];
+  }
+};
+
+const searchOffices = async (q: string) => {
+  officeSearchQuery.value = q;
+  if (!officeSearchQuery.value || officeSearchQuery.value.length < 2) {
+    return [];
+  }
+
+  const result = await officeStore.fetchOfficeSearch(officeSearchQuery.value);
+  officeOptions.value = result ?? [];
+  return officeOptions.value;
+};
+
 const inventoryMainAssetSearchOptions = ref<TInventorySelectOption[]>([]);
 const inventoryMainAssetSearchQuery = ref("");
 
@@ -359,6 +443,7 @@ watch(
     Object.assign(originalState, cloneDeep(nextState));
 
     syncEmployeeOption(item?.employee);
+    syncOfficeOption(nextState.office);
   },
   { immediate: true, deep: true },
 );
@@ -459,6 +544,30 @@ const removeRow = (index: number) => {
                   >Type at least 2 characters...</span
                 >
                 <span v-else class="text-gray-400">No Employee found</span>
+              </template>
+            </UInputMenu>
+          </UFormGroup>
+
+          <UFormGroup
+            label="Office Location"
+            name="office"
+            :ui="{ wrapper: 'md:w-full' }"
+          >
+            <UInputMenu
+              v-model="officeComputed"
+              :search="searchOffices"
+              :loading="loadingOffices"
+              placeholder="Type to search office..."
+              option-attribute="label"
+            >
+              <template #option="{ option }">
+                <span class="truncate">{{ option.label }}</span>
+              </template>
+              <template #empty>
+                <span v-if="officeSearchQuery.length < 2" class="text-gray-400"
+                  >Type at least 2 characters...</span
+                >
+                <span v-else class="text-gray-400">No Office found</span>
               </template>
             </UInputMenu>
           </UFormGroup>

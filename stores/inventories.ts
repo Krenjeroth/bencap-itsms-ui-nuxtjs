@@ -64,8 +64,6 @@ export const useInventoryStore = defineStore("inventoryStore", () => {
 
       const response = await fetchInventoriesApi(new URLSearchParams(params));
 
-      console.log(response);
-
       inventories.value = response.data.map((inventoryResponse: any) => ({
         ...inventoryResponse,
         actual_user: inventoryResponse.employee
@@ -84,6 +82,15 @@ export const useInventoryStore = defineStore("inventoryStore", () => {
             : `${inventoryResponse.brand_model?.item_type?.type}, ${inventoryResponse.brand_model?.specification}`
           : inventoryResponse.item_type?.type,
         option_attribute: `${inventoryResponse.property_number} (${inventoryResponse.description})`,
+
+        office_code:
+          inventoryResponse.office_code ??
+          inventoryResponse.inventory?.office_code ??
+          null,
+        office_name:
+          inventoryResponse.office_name ??
+          inventoryResponse.inventory?.office_name ??
+          null,
       }));
 
       totalInventories.value = Number(response.meta.total) || 0;
@@ -94,23 +101,23 @@ export const useInventoryStore = defineStore("inventoryStore", () => {
     }
   };
 
-  const addInventory = async (form: ICreateInventoryForm) => {
+  const addInventory = async (form: TStoreInventoryPayload) => {
     loading.value = true;
     resetErrorBag();
 
     const formattedForm = {
       ...form,
-      employee_id: form.employee?.id,
-      brand_model_id: form.brand_model?.id,
-      item_type_id: form.item_type,
-      parent_component_id: form.parent_id,
       date_acquired: form.date_acquired
         ? transformDatePickerDate(form.date_acquired, "YYYY-MM-DD HH:mm:ss")
         : null,
-      status: "active",
+      warranty_expiration_date: form.warranty_expiration_date
+        ? transformDatePickerDate(
+            form.warranty_expiration_date,
+            "YYYY-MM-DD HH:mm:ss",
+          )
+        : null,
+      status: form.status ?? "active",
     };
-
-    console.log(formattedForm);
 
     await addInventoryApi(formattedForm)
       .catch((err: any) => {
@@ -121,38 +128,78 @@ export const useInventoryStore = defineStore("inventoryStore", () => {
       });
   };
 
-  const updateInventory = async (id: string, form: IUpdateInventoryForm) => {
+  const updateInventory = async (id: string, form: TUpdateInventoryPayload) => {
     loading.value = true;
     resetErrorBag();
 
     const formattedForm = {
       ...form,
-      employee_id: form.employee?.id,
-      brand_model_id: form.item_type !== 1 ? form.brand_model?.id : null,
-      parent_component_id: form.item_type !== 1 ? form.inventory?.id : null,
-      item_type_id: form.item_type,
       date_acquired: form.date_acquired
         ? transformDatePickerDate(form.date_acquired, "YYYY-MM-DD HH:mm:ss")
         : null,
+      warranty_expiration_date: form.warranty_expiration_date
+        ? transformDatePickerDate(
+            form.warranty_expiration_date,
+            "YYYY-MM-DD HH:mm:ss",
+          )
+        : null,
 
-      ip_address: form.item_type === 1 ? form.ip_address : null,
-      mac_address: form.item_type === 1 ? form.mac_address : null,
-      remarks: form.item_type === 1 ? form.remarks : null,
+      brand_model_id:
+        form.item_type_id !== 1 && form.item_type_id !== 164
+          ? form.brand_model_id
+          : null,
+      parent_component_id:
+        form.item_type_id !== 12 &&
+        form.item_type_id !== 17 &&
+        form.item_type_id !== 171 &&
+        form.item_type_id !== 1 &&
+        form.item_type_id !== 164
+          ? form.parent_component_id
+          : null,
+
+      ip_address:
+        form.item_type_id === 1 || form.item_type_id === 164
+          ? form.ip_address
+          : null,
+      mac_address:
+        form.item_type_id === 1 || form.item_type_id === 164
+          ? form.mac_address
+          : null,
+      remarks:
+        form.item_type_id === 1 || form.item_type_id === 164
+          ? form.remarks
+          : null,
 
       operating_system_name:
-        form.item_type === 1 ? form.operating_system_name : null,
-      os_license_number: form.item_type === 1 ? form.os_license_number : null,
-      anti_virus_name: form.item_type === 1 ? form.anti_virus_name : null,
+        form.item_type_id === 1 || form.item_type_id === 164
+          ? form.operating_system_name
+          : null,
+      os_license_number:
+        form.item_type_id === 1 || form.item_type_id === 164
+          ? form.os_license_number
+          : null,
+      anti_virus_name:
+        form.item_type_id === 1 || form.item_type_id === 164
+          ? form.anti_virus_name
+          : null,
       anti_virus_license_number:
-        form.item_type === 1 ? form.anti_virus_license_number : null,
+        form.item_type_id === 1 || form.item_type_id === 164
+          ? form.anti_virus_license_number
+          : null,
       microsoft_office_name:
-        form.item_type === 1 ? form.microsoft_office_name : null,
+        form.item_type_id === 1 || form.item_type_id === 164
+          ? form.microsoft_office_name
+          : null,
       ms_office_license_number:
-        form.item_type === 1 ? form.ms_office_license_number : null,
+        form.item_type_id === 1 || form.item_type_id === 164
+          ? form.ms_office_license_number
+          : null,
       other_installed_applications:
-        form.item_type === 1 ? form.other_installed_applications : null,
+        form.item_type_id === 1 || form.item_type_id === 164
+          ? form.other_installed_applications
+          : null,
 
-      status: "active",
+      status: form.status ?? "active",
     };
 
     await updateInventoryApi(id, formattedForm)
@@ -251,8 +298,6 @@ export const useInventoryStore = defineStore("inventoryStore", () => {
   };
 
   const downloadFileFromUrl = async (url: string, fallbackFilename: string) => {
-    console.log("Downloading from:", url);
-
     const response = await fetch(url, {
       method: "GET",
       credentials: "include",
@@ -264,7 +309,6 @@ export const useInventoryStore = defineStore("inventoryStore", () => {
     });
 
     const contentType = response.headers.get("content-type") || "";
-    console.log(response.status, contentType);
 
     if (!response.ok) {
       const text = await response.text();
@@ -273,7 +317,6 @@ export const useInventoryStore = defineStore("inventoryStore", () => {
 
     if (contentType.includes("text/html")) {
       const text = await response.text();
-      console.log(text);
       throw new Error(
         "File endpoint returned HTML instead of a downloadable file.",
       );

@@ -2,13 +2,6 @@ import { z } from "zod";
 
 export const AddComponentValidationSchema = z.object({
   item_type: z.number(),
-  // inventory: z
-  //   .object({
-  //     id: z.number(),
-  //     property_number: z.string(),
-  //   })
-  //   .nullable()
-  //   .optional(),
   brand_model: z.object({
     id: z.number(),
     name: z.string().nullable().optional(),
@@ -16,6 +9,7 @@ export const AddComponentValidationSchema = z.object({
   }),
 
   serial_number: z.string().nullable().optional(),
+  date_acquired: z.date().nullable().optional(),
   parent_id: z.number(),
   property_number: z.string(),
 });

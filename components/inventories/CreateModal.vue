@@ -14,6 +14,10 @@ const employeeStore = useEmployeeStore();
 const { loading: loadingEmployees } = storeToRefs(employeeStore);
 
 const itemTypeStore = useItemTypeStore();
+
+const officeStore = useOfficeStore();
+const { loadingOfficeSearch: loadingOffices } = storeToRefs(officeStore);
+
 const { loading: loadingItemTypes, itemTypeSelect } =
   storeToRefs(itemTypeStore);
 itemTypeStore.fetchItemTypeSelect();
@@ -64,6 +68,8 @@ const formState = reactive<ICreateInventoryForm>({
   // for inventory_internal_components table
   internal_components: [],
   inventory: undefined,
+
+  office: undefined,
 });
 
 const serialNumberValue = computed({
@@ -157,6 +163,13 @@ const employeeComputed = computed({
   },
 });
 
+const officeComputed = computed({
+  get: () => formState.office ?? undefined,
+  set: (value) => {
+    formState.office = value ? value : undefined;
+  },
+});
+
 const brandModelComputed = computed({
   get: () => formState.brand_model ?? undefined,
   set: (value) => {
@@ -174,8 +187,38 @@ const inventoryComputed = computed({
 const handleSubmit = async (
   event: IFormSubmitEvent<TCreateInventoryValidationSchema>,
 ) => {
-  console.log(event.data);
-  await inventoryStore.addInventory(event.data);
+  const payload: TStoreInventoryPayload = {
+    employee_id: formState.employee?.id ?? null,
+    office_id: formState.office?.id ?? null,
+    office_code: formState.office?.office_code ?? null,
+    office_name: formState.office?.office_desc ?? null,
+    item_type_id: formState.item_type ?? null,
+    brand_model_id: formState.brand_model?.id ?? null,
+    parent_component_id: formState.inventory?.id ?? null,
+
+    ip_address: formState.ip_address ?? null,
+    mac_address: formState.mac_address ?? null,
+    remarks: formState.remarks ?? null,
+
+    operating_system_name: formState.operating_system_name ?? null,
+    os_license_number: formState.os_license_number ?? null,
+    anti_virus_name: formState.anti_virus_name ?? null,
+    anti_virus_license_number: formState.anti_virus_license_number ?? null,
+    microsoft_office_name: formState.microsoft_office_name ?? null,
+    ms_office_license_number: formState.ms_office_license_number ?? null,
+    other_installed_applications:
+      formState.other_installed_applications ?? null,
+
+    property_number: formState.property_number ?? "",
+    date_acquired: formState.date_acquired ?? null,
+    warranty_expiration_date: formState.warranty_expiration_date ?? null,
+    serial_number: formState.serial_number ?? null,
+    status: formState.status ?? null,
+
+    internal_components: formState.internal_components ?? [],
+  };
+
+  await inventoryStore.addInventory(payload);
 
   if (hasError.value) {
     onError();
@@ -183,7 +226,6 @@ const handleSubmit = async (
   }
 
   onSuccess();
-  return;
 };
 
 const brandModelOptions = ref<TBrandModelSelectOption[]>([]);
@@ -204,7 +246,6 @@ const searchBrandModels = async (q: string) => {
     itemTypeComputed.value,
   );
   brandModelOptions.value = result;
-  console.log(result);
   return result;
 };
 
@@ -220,6 +261,17 @@ const searchEmployees = async (q: string) => {
   );
   employeeOptions.value = result;
   return result;
+};
+
+const officeSearchQuery = ref("");
+
+const searchOffices = async (q: string) => {
+  officeSearchQuery.value = q;
+  if (!officeSearchQuery.value || officeSearchQuery.value.length < 2) {
+    return [];
+  }
+
+  return await officeStore.fetchOfficeSearch(officeSearchQuery.value);
 };
 
 const inventoryMainAssetSearchOptions = ref<TInventorySelectOption[]>([]);
@@ -357,6 +409,30 @@ const removeRow = (index: number) => {
                   >Type at least 2 characters...</span
                 >
                 <span v-else class="text-gray-400">No Employee found</span>
+              </template>
+            </UInputMenu>
+          </UFormGroup>
+
+          <UFormGroup
+            label="Item Location"
+            name="office"
+            :ui="{ wrapper: 'md:w-full' }"
+          >
+            <UInputMenu
+              v-model="officeComputed"
+              :search="searchOffices"
+              :loading="loadingOffices"
+              placeholder="Type to search office..."
+              option-attribute="label"
+            >
+              <template #option="{ option }">
+                <span class="truncate">{{ option.label }}</span>
+              </template>
+              <template #empty>
+                <span v-if="officeSearchQuery.length < 2" class="text-gray-400"
+                  >Type at least 2 characters...</span
+                >
+                <span v-else class="text-gray-400">No Office found</span>
               </template>
             </UInputMenu>
           </UFormGroup>
