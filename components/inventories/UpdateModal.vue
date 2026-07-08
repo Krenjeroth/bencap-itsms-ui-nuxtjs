@@ -113,7 +113,12 @@ const buildFormState = (item: any): IUpdateInventoryForm => ({
   status: item?.status || undefined,
 
   internal_components: item?.internal_components || [],
-  inventory: item?.inventory || undefined,
+  inventory: item?.inventory
+    ? {
+        id: item.inventory.id,
+        property_number: item.inventory.property_number,
+      }
+    : undefined,
 
   office: normalizeOffice(item),
 });
@@ -291,7 +296,8 @@ const handleSubmit = async (
     office_name: formState.office?.office_desc ?? null,
     item_type_id: formState.item_type ?? null,
     brand_model_id: formState.brand_model?.id ?? null,
-    parent_component_id: formState.inventory?.id ?? null,
+    parent_component_id:
+      formState.inventory?.id ?? props.inventoryItem?.inventory?.id ?? null,
 
     ip_address: formState.ip_address ?? null,
     mac_address: formState.mac_address ?? null,
