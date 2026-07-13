@@ -42,6 +42,12 @@ const onError = () => {
   emit("error");
 };
 
+const normalizeDivisionOption = (division: any) => ({
+  id: division.id,
+  division: division.division,
+  label: division.division,
+});
+
 const formState = reactive<ICreateInventoryForm>({
   employee: undefined,
   item_type: undefined,
@@ -70,6 +76,7 @@ const formState = reactive<ICreateInventoryForm>({
   inventory: undefined,
 
   office: undefined,
+  division: undefined,
 });
 
 const serialNumberValue = computed({
@@ -192,6 +199,8 @@ const handleSubmit = async (
     office_id: formState.office?.id ?? null,
     office_code: formState.office?.office_code ?? null,
     office_name: formState.office?.office_desc ?? null,
+    division_id: formState.division?.id ?? null,
+    division_name: formState.division?.division ?? null,
     item_type_id: formState.item_type ?? null,
     brand_model_id: formState.brand_model?.id ?? null,
     parent_component_id: formState.inventory?.id ?? null,
@@ -301,6 +310,23 @@ const searchItemTypes = async (q: string) => {
   );
   return filtered;
 };
+
+const divisionComputed = computed({
+  get: () => formState.division ?? undefined,
+  set: (value) => {
+    formState.division = value ? value : undefined;
+  },
+});
+
+const divisionOptions = computed(() => {
+  return officeComputed.value?.divisions?.map(normalizeDivisionOption) ?? [];
+});
+
+watch(officeComputed, (newOffice, oldOffice) => {
+  if (newOffice?.id !== oldOffice?.id) {
+    formState.division = undefined;
+  }
+});
 
 watch(itemTypeComputed, (val) => {
   if (val === 1 && formState.internal_components.length === 0) {
@@ -435,6 +461,22 @@ const removeRow = (index: number) => {
                 <span v-else class="text-gray-400">No Office found</span>
               </template>
             </UInputMenu>
+          </UFormGroup>
+
+          <UFormGroup
+            v-if="divisionOptions.length > 0"
+            label="Division"
+            name="division"
+            :ui="{ wrapper: 'md:w-full' }"
+          >
+            <USelectMenu
+              v-model="divisionComputed"
+              :options="divisionOptions"
+              option-attribute="label"
+              placeholder="Select Division..."
+            >
+              <template #empty> No Division found </template>
+            </USelectMenu>
           </UFormGroup>
         </div>
 

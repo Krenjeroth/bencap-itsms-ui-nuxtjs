@@ -15,6 +15,14 @@ export const CreateInventoryValidationSchema = z
         id: z.number(),
         office_code: z.string().nullable().optional(),
         office_desc: z.string(),
+        divisions: z.array(z.any()).optional(),
+      })
+      .nullable()
+      .optional(),
+    division: z
+      .object({
+        id: z.number(),
+        division: z.string(),
       })
       .nullable()
       .optional(),
@@ -225,5 +233,18 @@ export const CreateInventoryValidationSchema = z
       //     message: "Serial number is required.",
       //   });
       // }
+    }
+
+    if (
+      data.office?.divisions &&
+      Array.isArray(data.office.divisions) &&
+      data.office.divisions.length > 0 &&
+      !data.division?.id
+    ) {
+      ctx.addIssue({
+        path: ["division"],
+        code: z.ZodIssueCode.custom,
+        message: "Division is required for this office.",
+      });
     }
   });

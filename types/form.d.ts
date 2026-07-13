@@ -196,11 +196,8 @@ declare global {
     internal_components?: Array | null;
     parent_id?: number;
 
-    office?: {
-      id: number;
-      office_code?: string | null;
-      office_desc: string;
-    };
+    office?: TOfficeFormOption;
+    division?: TDivisionFormOption;
   }
 
   interface IUpdateInventoryForm {
@@ -237,13 +234,8 @@ declare global {
     status?: string | null;
     internal_components?: Array | null;
 
-    office?:
-      | {
-          id: number;
-          office_code?: string | null;
-          office_desc: string;
-        }
-      | undefined;
+    office?: TOfficeFormOption;
+    division?: TDivisionFormOption;
   }
 
   interface IAddComponentInventoryForm {

@@ -28,6 +28,7 @@ export const useOfficeStore = defineStore("officeStore", () => {
       office.abbreviation ?? office.office_code ?? office.office_desc,
     office_code: office.office_code ?? null,
     office_desc: office.office_desc ?? null,
+    divisions: office.divisions ?? [],
     label:
       office.office_code && office.office_desc
         ? `${office.office_code} - ${office.office_desc}`
@@ -46,6 +47,7 @@ export const useOfficeStore = defineStore("officeStore", () => {
       });
 
       const response = await fetchOfficesApi(queryParams);
+
       offices.value = response.data ?? [];
       totalOffices.value = Number(response.meta?.total) || 0;
     } catch (err) {

@@ -24,6 +24,27 @@ declare global {
     office_name?: string | null;
   }
 
+  type TOfficeFormOption = {
+    id: number;
+    office_code?: string | null;
+    office_desc: string;
+    divisions?: {
+      id: number;
+      office_id: number;
+      division: string;
+      units?: {
+        id: number;
+        division_id: number;
+        unit: string;
+      }[];
+    }[];
+  };
+
+  type TDivisionFormOption = {
+    id: number;
+    division: string;
+  };
+
   type TInventorySelectOption = {
     id: number | string;
     // item_type: string;
@@ -49,6 +70,8 @@ declare global {
     office_id: number | null;
     office_code: string | null;
     office_name: string | null;
+    division_id: number | null;
+    division_name: string | null;
     item_type_id: number | null;
     brand_model_id: number | null;
     parent_component_id: number | null;

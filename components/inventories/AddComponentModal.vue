@@ -111,6 +111,8 @@ const handleSubmit = async (
     office_id: props.inventoryItem?.office_id ?? null,
     office_code: props.inventoryItem?.office_code ?? null,
     office_name: props.inventoryItem?.office_name ?? null,
+    division_id: props.inventoryItem?.division_id ?? null,
+    division_name: props.inventoryItem?.division_name ?? null,
 
     item_type_id: formState.item_type ?? null,
     brand_model_id: formState.brand_model?.id ?? null,

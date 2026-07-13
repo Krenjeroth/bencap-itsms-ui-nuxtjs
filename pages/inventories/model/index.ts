@@ -19,7 +19,7 @@ const columns: ITableColumns[] = [
     rowClass: "whitespace-pre-line max-w-fit",
   },
   {
-    key: "office_name",
+    key: "item_location",
     label: "Item Location",
     rowClass: "whitespace-pre-line max-w-fit",
   },
