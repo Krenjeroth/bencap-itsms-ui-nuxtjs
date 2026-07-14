@@ -25,14 +25,21 @@ const formState = reactive({
   item_type: undefined as number | undefined,
   employee: undefined as any,
   office: undefined as any,
+  division: undefined as any,
   status: undefined as string | undefined,
 });
 
 const officeError = ref("");
+const divisionError = ref("");
 
 const validateForm = () => {
   officeError.value = formState.office?.id ? "" : "Office is required.";
-  return !officeError.value;
+  divisionError.value =
+    divisionOptions.value.length > 0 && !formState.division?.id
+      ? "Division is required."
+      : "";
+
+  return !officeError.value && !divisionError.value;
 };
 
 const itemTypeComputed = computed({
@@ -55,6 +62,24 @@ const officeComputed = computed({
     formState.office = value || undefined;
     if (value?.id) officeError.value = "";
   },
+});
+
+const divisionComputed = computed({
+  get: () => formState.division ?? undefined,
+  set: (value) => {
+    formState.division = value || undefined;
+    if (value?.id) divisionError.value = "";
+  },
+});
+
+const divisionOptions = computed(() => {
+  return (
+    officeComputed.value?.divisions?.map((d: any) => ({
+      id: d.id,
+      division: d.division,
+      label: d.division,
+    })) ?? []
+  );
 });
 
 const employeeOptions = ref<any[]>([]);
@@ -113,6 +138,9 @@ const buildFilters = () => ({
   item_type: formState.item_type ?? null,
   employee: formState.employee?.id ?? null,
   office: formState.office?.id ?? null,
+  office_name: formState.office?.office_desc ?? null,
+  division: formState.division?.id ?? null,
+  division_name: formState.division?.division ?? null,
   status: formState.status ?? null,
 });
 
@@ -221,6 +249,27 @@ watch(
               <span class="truncate">{{ option.label }}</span>
             </template>
             <template #empty>No Office found</template>
+          </USelectMenu>
+        </UFormGroup>
+
+        <UFormGroup
+          v-if="divisionOptions.length > 0"
+          label="Division"
+          name="division"
+          required
+          :error="divisionError"
+        >
+          <USelectMenu
+            v-model="divisionComputed"
+            :options="divisionOptions"
+            :searchable="true"
+            placeholder="Select division..."
+            option-attribute="label"
+          >
+            <template #option="{ option }">
+              <span class="truncate">{{ option.label }}</span>
+            </template>
+            <template #empty>No Division found</template>
           </USelectMenu>
         </UFormGroup>
       </div>

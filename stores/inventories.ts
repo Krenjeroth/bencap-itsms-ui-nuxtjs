@@ -313,6 +313,9 @@ export const useInventoryStore = defineStore("inventoryStore", () => {
     item_type?: number | null;
     employee?: number | null;
     office?: string | number | null;
+    office_name?: string | null;
+    division?: string | number | null;
+    division_name?: string | null;
     status?: string | null;
   }) => {
     const queryParams = new URLSearchParams();
@@ -329,6 +332,18 @@ export const useInventoryStore = defineStore("inventoryStore", () => {
       queryParams.set("office", String(filters.office));
     }
 
+    if (filters.office_name) {
+      queryParams.set("office_name", filters.office_name);
+    }
+
+    if (filters.division) {
+      queryParams.set("division", String(filters.division));
+    }
+
+    if (filters.division_name) {
+      queryParams.set("division_name", filters.division_name);
+    }
+
     if (filters.status) {
       queryParams.set("status", filters.status);
     }
@@ -342,6 +357,9 @@ export const useInventoryStore = defineStore("inventoryStore", () => {
       item_type?: number | null;
       employee?: number | null;
       office?: string | number | null;
+      office_name?: string | null;
+      division?: string | number | null;
+      division_name?: string | null;
       status?: string | null;
     },
   ) => {
@@ -409,6 +427,9 @@ export const useInventoryStore = defineStore("inventoryStore", () => {
     item_type?: number | null;
     employee?: number | null;
     office?: string | number | null;
+    office_name?: string | null;
+    division?: string | number | null;
+    division_name?: string | null;
     status?: string | null;
   }) => {
     loading.value = true;
