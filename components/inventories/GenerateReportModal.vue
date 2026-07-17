@@ -34,12 +34,7 @@ const divisionError = ref("");
 
 const validateForm = () => {
   officeError.value = formState.office?.id ? "" : "Office is required.";
-  divisionError.value =
-    divisionOptions.value.length > 0 && !formState.division?.id
-      ? "Division is required."
-      : "";
-
-  return !officeError.value && !divisionError.value;
+  return !officeError.value;
 };
 
 const itemTypeComputed = computed({
@@ -60,6 +55,7 @@ const officeComputed = computed({
   get: () => formState.office ?? undefined,
   set: (value) => {
     formState.office = value || undefined;
+    formState.division = undefined;
     if (value?.id) officeError.value = "";
   },
 });
@@ -68,18 +64,21 @@ const divisionComputed = computed({
   get: () => formState.division ?? undefined,
   set: (value) => {
     formState.division = value || undefined;
-    if (value?.id) divisionError.value = "";
+    divisionError.value = "";
   },
 });
 
 const divisionOptions = computed(() => {
-  return (
+  const options =
     officeComputed.value?.divisions?.map((d: any) => ({
       id: d.id,
       division: d.division,
       label: d.division,
-    })) ?? []
-  );
+    })) ?? [];
+
+  if (options.length === 0) return [];
+
+  return [{ id: null, division: "All", label: "All Divisions" }, ...options];
 });
 
 const employeeOptions = ref<any[]>([]);
@@ -140,7 +139,9 @@ const buildFilters = () => ({
   office: formState.office?.id ?? null,
   office_name: formState.office?.office_desc ?? null,
   division: formState.division?.id ?? null,
-  division_name: formState.division?.division ?? null,
+  division_name: formState.division?.id
+    ? (formState.division?.division ?? null)
+    : null,
   status: formState.status ?? null,
 });
 
