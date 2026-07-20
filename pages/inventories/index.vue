@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { watchDebounced } from "@vueuse/core";
+import { debounce } from "lodash";
+
 const route = useRoute();
 const { can } = useCan();
 
@@ -228,11 +231,13 @@ const clearOfficeFilter = () => {
   selectedOfficeId.value = "";
 };
 
-// Watch search changes and fetch when updated
-watch(search, () => {
-  page.value = 1; // Reset page
+const debouncedFetch = debounce(() => {
+  page.value = 1;
   inventoryStore.fetchInventories();
-});
+}, 400);
+
+// Watch search changes and fetch when updated
+watch(search, debouncedFetch);
 
 // ✅ Reset page to 1 when rows per page (`pageCount`) changes
 watch(pageCount, () => {
