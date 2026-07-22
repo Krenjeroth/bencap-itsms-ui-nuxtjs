@@ -102,6 +102,10 @@ const brandModelComputed = computed({
   },
 });
 
+const componentItemTypeOptions = computed(() =>
+  itemTypeSelect.value.filter((itemType: any) => itemType.is_component),
+);
+
 const handleSubmit = async (
   event: IFormSubmitEvent<TAddComponentValidationSchema>,
 ) => {
@@ -209,10 +213,9 @@ const searchItemTypes = async (q: string) => {
   if (itemTypeSelect.value.length === 0) {
     await itemTypeStore.fetchItemTypeSelect();
   }
-  const filtered = itemTypeSelect.value.filter((itemType) =>
+  return componentItemTypeOptions.value.filter((itemType: any) =>
     itemType.type.toLowerCase().includes(q.toLowerCase()),
   );
-  return filtered;
 };
 </script>
 
@@ -236,7 +239,7 @@ const searchItemTypes = async (q: string) => {
         >
           <USelectMenu
             v-model="itemTypeComputed"
-            :options="itemTypeSelect"
+            :options="componentItemTypeOptions"
             :searchable="true"
             :search="searchItemTypes"
             :loading="loadingItemTypes"
