@@ -226,7 +226,7 @@ const selectedOfficeOption = computed({
   get: () =>
     officeSelect.value.find(
       (o: any) => String(o.id) === String(selectedOfficeId.value),
-    ) ?? null,
+    ) ?? undefined,
   set: (option: any) => {
     selectedOfficeId.value = option?.id ?? "";
   },
@@ -246,7 +246,7 @@ const selectedItemTypeOption = computed({
     itemTypeSelect.value.find(
       (itemType: any) =>
         String(itemType.id) === String(selectedItemTypeId.value),
-    ) ?? null,
+    ) ?? undefined,
   set: (option: any) => {
     selectedItemTypeId.value = option?.id ?? "";
   },
