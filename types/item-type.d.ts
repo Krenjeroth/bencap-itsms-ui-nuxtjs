@@ -13,6 +13,8 @@ declare global {
   type TItemTypeSelectOption = {
     id: number | string;
     type: string;
+    is_main_inventory: boolean;
+    is_component: boolean;
   };
 
   type TCreateItemTypeValidationSchema = z.output<
