@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { format } from "date-fns";
-import { cloneDeep } from "lodash";
+import { cloneDeep, isEqual } from "lodash";
+
 const inventoryStore = useInventoryStore();
 const {
   loading: loadingInventories,
@@ -16,12 +17,13 @@ const { loading: loadingEmployees } = storeToRefs(employeeStore);
 
 const itemTypeStore = useItemTypeStore();
 
-const officeStore = useOfficeStore();
-const { loadingOfficeSearch: loadingOffices } = storeToRefs(officeStore);
-
 const { loading: loadingItemTypes, itemTypeSelect } =
   storeToRefs(itemTypeStore);
+
 itemTypeStore.fetchItemTypeSelect();
+
+const officeStore = useOfficeStore();
+const { loadingOfficeSearch: loadingOffices } = storeToRefs(officeStore);
 
 const { transformDbDate } = useDateHandler();
 
@@ -189,11 +191,11 @@ const fieldsToCompare: (keyof IUpdateInventoryForm)[] = [
   "serial_number",
   "status",
 
-  // for inventory_internal_components table
   "internal_components",
   "inventory",
 
   "office",
+  "division",
 ];
 
 const isChangedComputed = computed(() => {
@@ -317,6 +319,22 @@ const inventoryComputed = computed({
   },
 });
 
+const selectedItemType = computed<TItemTypeSelectOption | undefined>(() =>
+  itemTypeSelect.value.find((t) => t.id === itemTypeComputed.value),
+);
+
+const isMainOnly = computed(
+  () =>
+    !!selectedItemType.value?.is_main_inventory &&
+    !selectedItemType.value?.is_component,
+);
+
+const canBeComponent = computed(() => !!selectedItemType.value?.is_component);
+
+const showsBasicInformation = computed(
+  () => !!selectedItemType.value?.is_main_inventory,
+);
+
 const handleSubmit = async (
   event: IFormSubmitEvent<TUpdateInventoryValidationSchema>,
 ) => {
@@ -334,8 +352,9 @@ const handleSubmit = async (
     division_name: formState.division?.division ?? null,
     item_type_id: formState.item_type ?? null,
     brand_model_id: formState.brand_model?.id ?? null,
-    parent_component_id:
-      formState.inventory?.id ?? props.inventoryItem?.inventory?.id ?? null,
+    parent_component_id: canBeComponent.value
+      ? (formState.inventory?.id ?? props.inventoryItem?.inventory?.id ?? null)
+      : null,
 
     ip_address: formState.ip_address ?? null,
     mac_address: formState.mac_address ?? null,
@@ -367,22 +386,30 @@ const handleSubmit = async (
   }
 
   onSuccess();
-  return;
 };
 
 const brandModelOptions = ref<TBrandModelSelectOption[]>([]);
 const searchQuery = ref("");
 
+const useGenericBrandModelSelect = computed(() => {
+  // For now, this is only true for System Unit (id === 1).
+  // In the future, this can be based on a flag like
+  // selectedItemType.value?.use_generic_brand_model_select.
+  return itemTypeComputed.value === 1;
+});
+
 const searchBrandModels = async (q: string) => {
   searchQuery.value = q;
   if (!searchQuery.value || searchQuery.value.length < 2) return [];
-  if (itemTypeComputed.value === 1) {
+
+  if (useGenericBrandModelSelect.value) {
     const result = await brandModelStore.fetchBrandModelSelect(
       searchQuery.value,
     );
     brandModelOptions.value = result;
     return result;
   }
+
   const result = await brandModelStore.fetchBrandModelSearch(
     searchQuery.value,
     itemTypeComputed.value,
@@ -486,14 +513,21 @@ watch(officeComputed, (newOffice, oldOffice) => {
   }
 });
 
-watch(itemTypeComputed, (val) => {
-  if (val === 1 && formState.internal_components.length === 0) {
+watch(itemTypeComputed, () => {
+  if (isMainOnly.value && formState.internal_components.length === 0) {
     formState.internal_components.push({
       brand_model: undefined,
       quantity: 1,
     });
   }
-  if (val !== 1) formState.internal_components = [];
+
+  if (!isMainOnly.value) {
+    formState.internal_components = [];
+  }
+
+  if (!canBeComponent.value) {
+    formState.inventory = undefined;
+  }
 });
 
 watch(
@@ -574,16 +608,7 @@ const removeRow = (index: number) => {
         </UFormGroup>
       </div>
 
-      <div
-        v-if="
-          itemTypeComputed === 1 ||
-          itemTypeComputed === 164 ||
-          itemTypeComputed === 12 ||
-          itemTypeComputed === 17 ||
-          itemTypeComputed === 171
-        "
-        class="space-y-6"
-      >
+      <div v-if="showsBasicInformation" class="space-y-6">
         <UDivider label="Basic Information" />
         <div class="space-y-6 md:space-y-0 md:flex md:space-x-6">
           <UFormGroup
@@ -677,9 +702,7 @@ const removeRow = (index: number) => {
 
       <div
         :class="
-          itemTypeComputed === 1 || itemTypeComputed === 164
-            ? 'grid grid-cols-2 gap-4'
-            : 'grid grid-cols-1 gap-4'
+          isMainOnly ? 'grid grid-cols-2 gap-4' : 'grid grid-cols-1 gap-4'
         "
       >
         <!-- ? Hardware -->
@@ -722,14 +745,11 @@ const removeRow = (index: number) => {
           <!-- Internal Components -->
           <!-- CHANGED: Added v-if check and removed manual error prop. UForm will now handle the errors for dynamic fields. -->
           <UFormGroup
-            v-if="
-              itemTypeComputed === 1 || // System Unit
-              itemTypeComputed === 164 // Laptop
-            "
+            v-if="isMainOnly"
             label="Internal Components"
             name="internal_components"
             class="flex flex-col"
-            :required="itemTypeComputed === 1"
+            :required="isMainOnly"
           >
             <div
               class="flex space-y-6 md:space-y-4 md:flex md:space-x-4 items-end"
@@ -740,10 +760,7 @@ const removeRow = (index: number) => {
                 label="Model"
                 :name="`internal_components.${index}.brand_model`"
                 :ui="{ wrapper: 'md:w-full' }"
-                :required="
-                  itemTypeComputed === 1 || // System Unit
-                  itemTypeComputed === 164 // Laptop
-                "
+                :required="isMainOnly"
                 :key="index"
               >
                 <UInputMenu
@@ -774,10 +791,7 @@ const removeRow = (index: number) => {
                 label="Qty"
                 :name="`internal_components.${index}.quantity`"
                 :ui="{ wrapper: 'md:w-16' }"
-                :required="
-                  itemTypeComputed === 1 || // System Unit
-                  itemTypeComputed === 164 // Laptop
-                "
+                :required="isMainOnly"
               >
                 <UInput type="number" v-model="row.quantity" />
               </UFormGroup>
@@ -793,10 +807,7 @@ const removeRow = (index: number) => {
               </div>
             </div>
           </UFormGroup>
-          <div
-            v-if="itemTypeComputed === 1 || itemTypeComputed === 164"
-            class="text-center"
-          >
+          <div v-if="isMainOnly" class="text-center">
             <UButton
               color="orange"
               size="sm"
@@ -806,10 +817,7 @@ const removeRow = (index: number) => {
           </div>
         </div>
         <!-- ? Software -->
-        <div
-          v-if="itemTypeComputed === 1 || itemTypeComputed === 164"
-          class="col-span-1 gap-4 flex flex-col"
-        >
+        <div v-if="isMainOnly" class="col-span-1 gap-4 flex flex-col">
           <UDivider label="Software" />
           <div class="space-y-6 md:space-y-0 md:flex md:space-x-6">
             <UFormGroup
@@ -876,17 +884,13 @@ const removeRow = (index: number) => {
 
       <div
         class="space-y-6 md:space-y-0 md:flex md:space-x-6"
-        v-if="itemTypeComputed !== 1 && itemTypeComputed !== 164"
+        v-if="!isMainOnly"
       >
         <UFormGroup
           label="Parent Component"
           name="inventory"
           :ui="{ wrapper: 'md:w-full' }"
-          v-if="
-            itemTypeComputed !== 12 &&
-            itemTypeComputed !== 17 &&
-            itemTypeComputed !== 171
-          "
+          v-if="canBeComponent"
         >
           <UInputMenu
             v-model="inventoryComputed"
