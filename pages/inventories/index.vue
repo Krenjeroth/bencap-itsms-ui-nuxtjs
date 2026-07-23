@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { watchDebounced } from "@vueuse/core";
 import { debounce } from "lodash";
 
 const route = useRoute();
@@ -41,6 +40,7 @@ const {
   totalInventories,
   selectedStatus,
   selectedOfficeId,
+  selectedItemTypeId,
   activeTab,
 } = storeToRefs(inventoryStore);
 const { columns, items, expandableDetails, tabItems } = model;
@@ -48,6 +48,11 @@ const { columns, items, expandableDetails, tabItems } = model;
 const officeStore = useOfficeStore();
 const { officeSelect, loadingOfficeSelect } = storeToRefs(officeStore);
 officeStore.fetchOfficeSelect();
+
+const itemTypeStore = useItemTypeStore();
+const { itemTypeSelect, loading: loadingItemTypes } =
+  storeToRefs(itemTypeStore);
+itemTypeStore.fetchItemTypeSelect();
 
 inventoryStore.fetchInventories();
 
@@ -236,16 +241,39 @@ const debouncedFetch = debounce(() => {
   inventoryStore.fetchInventories();
 }, 400);
 
+const selectedItemTypeOption = computed({
+  get: () =>
+    itemTypeSelect.value.find(
+      (itemType: any) =>
+        String(itemType.id) === String(selectedItemTypeId.value),
+    ) ?? null,
+  set: (option: any) => {
+    selectedItemTypeId.value = option?.id ?? "";
+  },
+});
+
+const clearItemTypeFilter = () => {
+  selectedItemTypeId.value = "";
+};
+
 // Watch search changes and fetch when updated
 watch(search, debouncedFetch);
 
 // ✅ Reset page to 1 when rows per page (`pageCount`) changes
-watch(pageCount, () => {
-  page.value = 1;
-  inventoryStore.fetchInventories();
-});
+// watch(pageCount, () => {
+//   page.value = 1;
+//   inventoryStore.fetchInventories();
+// });
 
 // ✅ Ensure pagination updates correctly
+// watch([page, pageCount], () => {
+//   inventoryStore.fetchInventories();
+// });
+
+watch(pageCount, () => {
+  page.value = 1;
+});
+
 watch([page, pageCount], () => {
   inventoryStore.fetchInventories();
 });
@@ -261,6 +289,11 @@ watch(activeTab, () => {
 });
 
 watch(selectedOfficeId, () => {
+  page.value = 1;
+  inventoryStore.fetchInventories();
+});
+
+watch(selectedItemTypeId, () => {
   page.value = 1;
   inventoryStore.fetchInventories();
 });
@@ -299,28 +332,54 @@ watch(selectedOfficeId, () => {
       @update:active-tab="(value) => (activeTab = value)"
     >
       <template #filters>
-        <div class="flex items-center gap-2 min-w-[220px]">
-          <USelectMenu
-            v-model="selectedOfficeOption"
-            :options="officeSelect"
-            option-attribute="label"
-            placeholder="Filter by Office..."
-            :searchable="true"
-            :loading="loadingOfficeSelect"
-            class="w-full"
-          >
-            <template #option="{ option }">
-              <span class="truncate">{{ option.label }}</span>
-            </template>
-          </USelectMenu>
-          <UButton
-            v-if="selectedOfficeId"
-            icon="i-heroicons-x-mark-20-solid"
-            color="gray"
-            variant="ghost"
-            size="xs"
-            @click="selectedOfficeId = ''"
-          />
+        <div class="flex flex-wrap items-center gap-2">
+          <div class="flex items-center gap-2 min-w-[220px]">
+            <USelectMenu
+              v-model="selectedOfficeOption"
+              :options="officeSelect"
+              option-attribute="label"
+              placeholder="Filter by Office..."
+              :searchable="true"
+              :loading="loadingOfficeSelect"
+              class="w-full"
+            >
+              <template #option="{ option }">
+                <span class="truncate">{{ option.label }}</span>
+              </template>
+            </USelectMenu>
+            <UButton
+              v-if="selectedOfficeId"
+              icon="i-heroicons-x-mark-20-solid"
+              color="gray"
+              variant="ghost"
+              size="xs"
+              @click="clearOfficeFilter"
+            />
+          </div>
+
+          <div class="flex items-center gap-2 min-w-[220px]">
+            <USelectMenu
+              v-model="selectedItemTypeOption"
+              :options="itemTypeSelect"
+              option-attribute="type"
+              placeholder="Filter by Item Type..."
+              :searchable="true"
+              :loading="loadingItemTypes"
+              class="w-full"
+            >
+              <template #option="{ option }">
+                <span class="truncate">{{ option.type }}</span>
+              </template>
+            </USelectMenu>
+            <UButton
+              v-if="selectedItemTypeId"
+              icon="i-heroicons-x-mark-20-solid"
+              color="gray"
+              variant="ghost"
+              size="xs"
+              @click="clearItemTypeFilter"
+            />
+          </div>
         </div>
       </template>
     </UiDatatable>
