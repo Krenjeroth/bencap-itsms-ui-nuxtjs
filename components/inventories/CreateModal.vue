@@ -203,6 +203,10 @@ const isMainOnly = computed(
 
 const canBeComponent = computed(() => !!selectedItemType.value?.is_component);
 
+const useGenericBrandModelSelect = computed(() => {
+  return [1, 164].includes(Number(itemTypeComputed.value));
+});
+
 const handleSubmit = async (
   event: IFormSubmitEvent<TCreateInventoryValidationSchema>,
 ) => {
@@ -257,13 +261,15 @@ const searchQuery = ref("");
 const searchBrandModels = async (q: string) => {
   searchQuery.value = q;
   if (!searchQuery.value || searchQuery.value.length < 2) return [];
-  if (itemTypeComputed.value === 1) {
+
+  if (useGenericBrandModelSelect.value) {
     const result = await brandModelStore.fetchBrandModelSelect(
       searchQuery.value,
     );
     brandModelOptions.value = result;
     return result;
   }
+
   const result = await brandModelStore.fetchBrandModelSearch(
     searchQuery.value,
     itemTypeComputed.value,

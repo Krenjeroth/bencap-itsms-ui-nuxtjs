@@ -392,10 +392,7 @@ const brandModelOptions = ref<TBrandModelSelectOption[]>([]);
 const searchQuery = ref("");
 
 const useGenericBrandModelSelect = computed(() => {
-  // For now, this is only true for System Unit (id === 1).
-  // In the future, this can be based on a flag like
-  // selectedItemType.value?.use_generic_brand_model_select.
-  return itemTypeComputed.value === 1;
+  return [1, 164].includes(Number(itemTypeComputed.value));
 });
 
 const searchBrandModels = async (q: string) => {

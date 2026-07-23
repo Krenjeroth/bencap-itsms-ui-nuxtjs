@@ -7,6 +7,11 @@ const getEmployeeOfficeDisplay = (row: any) =>
   row.inventory?.employee?.unit ??
   null;
 
+const isMainInventoryRow = (row: any) => !!row.item_type?.is_main_inventory;
+
+const getInventorySource = (row: any) =>
+  isMainInventoryRow(row) ? row : row.inventory;
+
 const columns: ITableColumns[] = [
   {
     key: "property_number",
@@ -42,7 +47,6 @@ const items: ITableActions = (row: any, handlers: IHandlers) => {
   const actions: any[] = [];
   const adminActions: any[] = [];
 
-  // Always show Edit
   adminActions.push({
     label: "Edit",
     icon: "i-heroicons-pencil-square-20-solid",
@@ -56,6 +60,7 @@ const items: ITableActions = (row: any, handlers: IHandlers) => {
       click: () => handlers.addComponent?.(row),
     });
   }
+
   if (adminActions.length > 0) {
     actions.unshift(adminActions);
   }
@@ -71,105 +76,108 @@ const items: ITableActions = (row: any, handlers: IHandlers) => {
   return actions;
 };
 
-const expandableDetails: ITableExpandableDetails = (row: any) => [
-  {
-    key: row.employee
-      ? "employee.office_desc"
-      : "inventory.employee.office_desc",
-    label: "Employee Office",
-    value: row.employee
-      ? row.employee?.office_desc
-      : row.inventory?.employee?.office_desc,
-    show: true,
-  },
-  // {
-  //   key: row.employee ? "employee.division" : "inventory.employee.division",
-  //   label: "Division / Section / Unit",
-  //   value: getEmployeeOfficeDisplay(row),
-  //   show: !!getEmployeeOfficeDisplay(row),
-  // },
-  {
-    key: "ip_address",
-    label: "IP Address",
-    value: row.item_type.id === 1 ? row.ip_address : row.inventory?.ip_address,
-    show:
-      row.item_type.id === 1 ? !!row.ip_address : !!row.inventory?.ip_address,
-  },
-  {
-    key: "mac_address",
-    label: "MAC Address",
-    value:
-      row.item_type.id === 1 ? row.mac_address : row.inventory?.mac_address,
-    show:
-      row.item_type.id === 1 ? !!row.mac_address : !!row.inventory?.mac_address,
-  },
-  {
-    key: "remarks",
-    label: "Remarks",
-    value: row.item_type.id === 1 ? row.remarks : row.inventory?.remarks,
-    show: row.item_type.id === 1 ? !!row.remarks : !!row.inventory?.remarks,
-  },
-  {
-    key: "date_acquired",
-    label: "Date Acquired",
-    value: row.date_acquired ?? row.inventory?.date_acquired,
-    show: row.date_acquired ?? row.inventory?.date_acquired,
-  },
-  {
-    key: "serial_number",
-    label: "Serial Number",
-    value: row.serial_number,
-    show: !!row.serial_number,
-  },
-  {
-    key: "operating_system_name",
-    label: "Operating System Name",
-    value: row.operating_system_name,
-    show: row.item_type.id === 1,
-  },
-  {
-    key: "os_license_number",
-    label: "OS License Number",
-    value: row.os_license_number,
-    show: row.item_type.id === 1,
-  },
-  {
-    key: "anti_virus_name",
-    label: "Anti Virus Name",
-    value: row.anti_virus_name,
-    show: row.item_type.id === 1,
-  },
-  {
-    key: "anti_virus_license_number",
-    label: "Anti Virus License Number",
-    value: row.anti_virus_license_number,
-    show: row.item_type.id === 1,
-  },
-  {
-    key: "microsoft_office_name",
-    label: "Microsoft Office Name",
-    value: row.microsoft_office_name,
-    show: row.item_type.id === 1,
-  },
-  {
-    key: "ms_office_license_number",
-    label: "MS Office License Number",
-    value: row.ms_office_license_number,
-    show: row.item_type.id === 1,
-  },
-  {
-    key: "internal_components.id",
-    label: "Internal Components",
-    value: row.internal_components,
-    show: row.item_type.id === 1,
-  },
-  {
-    key: "other_installed_applications",
-    label: "Other Installed Applications",
-    value: row.other_installed_applications,
-    show: row.item_type.id === 1,
-  },
-];
+const expandableDetails: ITableExpandableDetails = (row: any) => {
+  const source = getInventorySource(row);
+
+  return [
+    {
+      key: row.employee
+        ? "employee.office_desc"
+        : "inventory.employee.office_desc",
+      label: "Employee Office",
+      value: row.employee
+        ? row.employee?.office_desc
+        : row.inventory?.employee?.office_desc,
+      show: true,
+    },
+    // {
+    //   key: row.employee ? "employee.division" : "inventory.employee.division",
+    //   label: "Division / Section / Unit",
+    //   value: getEmployeeOfficeDisplay(row),
+    //   show: !!getEmployeeOfficeDisplay(row),
+    // },
+    {
+      key: "ip_address",
+      label: "IP Address",
+      value: source?.ip_address,
+      show: !!source?.ip_address,
+    },
+    {
+      key: "mac_address",
+      label: "MAC Address",
+      value: source?.mac_address,
+      show: !!source?.mac_address,
+    },
+    {
+      key: "remarks",
+      label: "Remarks",
+      value: source?.remarks,
+      show: !!source?.remarks,
+    },
+    {
+      key: "date_acquired",
+      label: "Date Acquired",
+      value: row.date_acquired ?? row.inventory?.date_acquired,
+      show: !!(row.date_acquired ?? row.inventory?.date_acquired),
+    },
+    {
+      key: "serial_number",
+      label: "Serial Number",
+      value: row.serial_number,
+      show: !!row.serial_number,
+    },
+    {
+      key: "operating_system_name",
+      label: "Operating System Name",
+      value: source?.operating_system_name,
+      show: !!source?.operating_system_name,
+    },
+    {
+      key: "os_license_number",
+      label: "OS License Number",
+      value: source?.os_license_number,
+      show: !!source?.os_license_number,
+    },
+    {
+      key: "anti_virus_name",
+      label: "Anti Virus Name",
+      value: source?.anti_virus_name,
+      show: !!source?.anti_virus_name,
+    },
+    {
+      key: "anti_virus_license_number",
+      label: "Anti Virus License Number",
+      value: source?.anti_virus_license_number,
+      show: !!source?.anti_virus_license_number,
+    },
+    {
+      key: "microsoft_office_name",
+      label: "Microsoft Office Name",
+      value: source?.microsoft_office_name,
+      show: !!source?.microsoft_office_name,
+    },
+    {
+      key: "ms_office_license_number",
+      label: "MS Office License Number",
+      value: source?.ms_office_license_number,
+      show: !!source?.ms_office_license_number,
+    },
+    {
+      key: "internal_components.id",
+      label: "Internal Components",
+      value: source?.internal_components,
+      show:
+        Array.isArray(source?.internal_components) &&
+        source.internal_components.length > 0,
+    },
+    {
+      key: "other_installed_applications",
+      label: "Other Installed Applications",
+      value: source?.other_installed_applications,
+      show: !!source?.other_installed_applications,
+    },
+  ];
+};
 
 const tabItems = [
   { label: "All", value: "all", icon: "i-heroicons-list-bullet" },
