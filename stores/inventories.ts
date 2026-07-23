@@ -36,6 +36,7 @@ export const useInventoryStore = defineStore("inventoryStore", () => {
   const activeTab = ref<"all" | "parent_components" | "child_components">(
     "all",
   );
+  const selectedItemTypeId = ref("");
 
   const fetchInventories = async () => {
     loading.value = true;
@@ -54,8 +55,8 @@ export const useInventoryStore = defineStore("inventoryStore", () => {
         params.office_id = selectedOffice.value;
       }
 
-      if (selectedOfficeId.value) {
-        params.office_id = selectedOfficeId.value;
+      if (selectedItemTypeId.value) {
+        params.item_type = String(selectedItemTypeId.value);
       }
 
       if (activeTab.value && activeTab.value !== "all") {
@@ -93,7 +94,6 @@ export const useInventoryStore = defineStore("inventoryStore", () => {
               : `${inventoryResponse.brand_model?.item_type?.type}, ${inventoryResponse.brand_model?.specification}`
             : inventoryResponse.item_type?.type,
           option_attribute: `${inventoryResponse.property_number} (${inventoryResponse.description})`,
-
           office_code:
             inventoryResponse.office_code ??
             inventoryResponse.inventory?.office_code ??
@@ -104,49 +104,11 @@ export const useInventoryStore = defineStore("inventoryStore", () => {
             inventoryResponse.inventory?.division_id ??
             null,
           division_name: divisionName,
-
           item_location: divisionName
             ? `${officeName} (${divisionName})`
             : officeName,
         };
       });
-
-      // inventories.value = response.data.map((inventoryResponse: any) => ({
-      //   ...inventoryResponse,
-      //   actual_user: inventoryResponse.employee
-      //     ? `${inventoryResponse.employee?.fullname}`
-      //     : `${inventoryResponse.inventory?.employee?.fullname}`,
-      //   component_classification: inventoryResponse.inventory
-      //     ? `Component`
-      //     : inventoryResponse?.item_type?.is_main_inventory &&
-      //         inventoryResponse?.item_type?.is_component
-      //       ? `Standalone`
-      //       : `Parent`,
-      //   is_parent: inventoryResponse.inventory ? false : true,
-      //   brand_model_formatted: inventoryResponse.brand_model
-      //     ? inventoryResponse.brand_model?.name
-      //       ? `${inventoryResponse.brand_model.item_type?.type} ${inventoryResponse.brand_model?.specification}, ${inventoryResponse.brand_model?.name}`
-      //       : `${inventoryResponse.brand_model?.item_type?.type}, ${inventoryResponse.brand_model?.specification}`
-      //     : inventoryResponse.item_type?.type,
-      //   option_attribute: `${inventoryResponse.property_number} (${inventoryResponse.description})`,
-
-      //   office_code:
-      //     inventoryResponse.office_code ??
-      //     inventoryResponse.inventory?.office_code ??
-      //     null,
-      //   office_name:
-      //     inventoryResponse.office_name ??
-      //     inventoryResponse.inventory?.office_name ??
-      //     null,
-      //   division_id:
-      //     inventoryResponse.division_id ??
-      //     inventoryResponse.inventory?.division_id ??
-      //     null,
-      //   division_name:
-      //     inventoryResponse.division_name ??
-      //     inventoryResponse.inventory?.division_name ??
-      //     null,
-      // }));
 
       totalInventories.value = Number(response.meta.total) || 0;
     } catch (err: any) {
@@ -472,6 +434,7 @@ export const useInventoryStore = defineStore("inventoryStore", () => {
     selectedStatus,
     selectedOffice,
     selectedOfficeId,
+    selectedItemTypeId,
     activeTab,
     fetchInventories,
     addInventory,
