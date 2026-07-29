@@ -58,6 +58,21 @@ const onNoDataChange = () => {
   emit("noDataChange");
 };
 
+const sanitizeInternalComponents = (rows: any[] = []) =>
+  rows.filter((row) => row?.id);
+
+const sanitizeOriginalInternalComponents = (rows: any[] = []) =>
+  rows.filter((row) => row?.id);
+
+const isMeaningfulInternalComponentRow = (row: any) =>
+  !!(
+    row?.id ||
+    row?.brand_model?.id ||
+    row?.specific_serial_number ||
+    row?.slot ||
+    row?.notes
+  );
+
 const normalizeEmployee = (employee: any) => {
   if (!employee) return undefined;
 
@@ -68,12 +83,12 @@ const normalizeEmployee = (employee: any) => {
 };
 
 const normalizeOffice = (item: any) => {
-  if (!item?.office_id && !item?.office_name && !item?.office_code) {
+  if (!item?.office_id) {
     return undefined;
   }
 
   return {
-    id: item?.office_id,
+    id: item.office_id,
     office_code: item?.office_code ?? "",
     office_desc: item?.office_name ?? "",
     divisions: item?.office?.divisions ?? item?.divisions ?? [],
@@ -85,10 +100,10 @@ const normalizeOffice = (item: any) => {
 };
 
 const normalizeDivision = (item: any) => {
-  if (!item?.division_id && !item?.division_name) return undefined;
+  if (!item?.division_id) return undefined;
 
   return {
-    id: item?.division_id,
+    id: item.division_id,
     division: item?.division_name ?? "",
     label: item?.division_name ?? "",
   };
@@ -99,6 +114,16 @@ const normalizeDivisionOption = (division: any) => ({
   division: division.division,
   label: division.division,
 });
+
+const normalizeInternalComponentsForCompare = (rows: any[] = []) =>
+  rows.filter(isMeaningfulInternalComponentRow).map((row) => ({
+    id: row.id ?? null,
+    brand_model_id: row.brand_model?.id ?? null,
+    quantity: Number(row.quantity ?? 0),
+    specific_serial_number: row.specific_serial_number ?? null,
+    slot: row.slot ?? null,
+    notes: row.notes ?? null,
+  }));
 
 const hydrateSelectedOffice = async () => {
   if (!formState.office?.id) return;
@@ -114,6 +139,10 @@ const hydrateSelectedOffice = async () => {
 
   if (matched) {
     formState.office = matched;
+    originalState.value = Object.freeze({
+      ...cloneDeep(originalState.value),
+      office: cloneDeep(matched),
+    }) as IUpdateInventoryForm;
     syncOfficeOption(matched);
   }
 };
@@ -149,7 +178,9 @@ const buildFormState = (item: any): IUpdateInventoryForm => ({
   serial_number: item?.serial_number || undefined,
   status: item?.status || undefined,
 
-  internal_components: item?.internal_components || [],
+  internal_components: sanitizeOriginalInternalComponents(
+    item?.internal_components || [],
+  ),
   inventory: item?.inventory
     ? {
         id: item.inventory.id,
@@ -164,7 +195,8 @@ const buildFormState = (item: any): IUpdateInventoryForm => ({
 const formState = reactive<IUpdateInventoryForm>(
   buildFormState(props.inventoryItem),
 );
-const originalState = reactive<IUpdateInventoryForm>(
+
+const originalState = ref<IUpdateInventoryForm>(
   cloneDeep(buildFormState(props.inventoryItem)),
 );
 
@@ -200,8 +232,17 @@ const fieldsToCompare: (keyof IUpdateInventoryForm)[] = [
 
 const isChangedComputed = computed(() => {
   return fieldsToCompare.some((key) => {
-    const a = formState[key];
-    const b = originalState[key];
+    const a =
+      key === "internal_components"
+        ? normalizeInternalComponentsForCompare(formState.internal_components)
+        : formState[key];
+
+    const b =
+      key === "internal_components"
+        ? normalizeInternalComponentsForCompare(
+            originalState.value.internal_components,
+          )
+        : originalState.value[key];
 
     return !isEqual(a, b);
   });
@@ -514,7 +555,10 @@ watch(itemTypeComputed, () => {
   if (isMainOnly.value && formState.internal_components.length === 0) {
     formState.internal_components.push({
       brand_model: undefined,
+      specific_serial_number: undefined,
       quantity: 1,
+      slot: undefined,
+      notes: undefined,
     });
   }
 
@@ -532,7 +576,9 @@ watch(
   async (item) => {
     const nextState = buildFormState(item);
     Object.assign(formState, nextState);
-    Object.assign(originalState, cloneDeep(nextState));
+    originalState.value = Object.freeze(
+      cloneDeep(nextState),
+    ) as IUpdateInventoryForm;
 
     syncEmployeeOption(item?.employee);
 

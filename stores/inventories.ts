@@ -51,8 +51,8 @@ export const useInventoryStore = defineStore("inventoryStore", () => {
         ...(selectedStatus.value ? { status: selectedStatus.value } : {}),
       };
 
-      if (selectedOffice.value) {
-        params.office_id = selectedOffice.value;
+      if (selectedOfficeId.value) {
+        params.office_id = String(selectedOfficeId.value);
       }
 
       if (selectedItemTypeId.value) {

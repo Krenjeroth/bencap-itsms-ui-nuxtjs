@@ -175,6 +175,7 @@ export const UpdateInventoryValidationSchema = z
       data.item_type === 164 ||
       data.item_type === 12 ||
       data.item_type === 17 ||
+      data.item_type === 170 ||
       data.item_type === 171
     ) {
       if (!data.employee || data.employee.id === null) {
@@ -209,6 +210,19 @@ export const UpdateInventoryValidationSchema = z
           }
         });
       }
+
+      if (
+        data.office?.divisions &&
+        Array.isArray(data.office.divisions) &&
+        data.office.divisions.length > 0 &&
+        !data.division?.id
+      ) {
+        ctx.addIssue({
+          path: ["division"],
+          code: z.ZodIssueCode.custom,
+          message: "Division is required for this office.",
+        });
+      }
     } else {
       if (!data.inventory || data.inventory.id === null) {
         ctx.addIssue({
@@ -233,18 +247,5 @@ export const UpdateInventoryValidationSchema = z
       //     message: "Serial number is required.",
       //   });
       // }
-    }
-
-    if (
-      data.office?.divisions &&
-      Array.isArray(data.office.divisions) &&
-      data.office.divisions.length > 0 &&
-      !data.division?.id
-    ) {
-      ctx.addIssue({
-        path: ["division"],
-        code: z.ZodIssueCode.custom,
-        message: "Division is required for this office.",
-      });
     }
   });
