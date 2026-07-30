@@ -26,12 +26,13 @@ export const CreateTicketValidationSchema = z
         },
         {
           message: "Invalid Phone number format",
-        }
+        },
       )
       .nullable()
       .optional(),
     is_other_agency: z.boolean(),
     full_name: z.string().optional(),
+    client_name: z.string().optional().nullable(),
     agency: z
       .object({
         id: z.number(),
@@ -42,11 +43,11 @@ export const CreateTicketValidationSchema = z
   })
   .superRefine((data, ctx) => {
     if (data.is_other_agency) {
-      if (!data.full_name || data.full_name.trim() === "") {
+      if (!data.client_name || data.client_name.trim() === "") {
         ctx.addIssue({
-          path: ["full_name"],
+          path: ["client_name"],
           code: z.ZodIssueCode.custom,
-          message: 'Full name is required when "Other Agency" is selected',
+          message: 'Client name is required when "Other Agency" is selected',
         });
       }
       if (!data.agency || data.agency.id === null) {

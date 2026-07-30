@@ -39,6 +39,7 @@ const formState = ref<ICreateTicketForm>({
   priority: "low",
   contact_number: undefined,
   is_other_agency: false,
+  client_name: undefined,
   full_name: undefined,
   agency: undefined,
 });
@@ -57,20 +58,55 @@ const contactNumberComputed = computed({
   },
 });
 
-const fullNameComputed = computed({
-  get: () => formState.value.full_name ?? undefined,
+const syncFullName = () => {
+  if (formState.value.is_other_agency) {
+    formState.value.full_name = undefined;
+    return;
+  }
+
+  const inventory = formState.value.inventory;
+  formState.value.full_name =
+    inventory?.employee?.full_name ??
+    inventory?.employee?.fullname ??
+    inventory?.full_name ??
+    null;
+};
+
+// const fullNameComputed = computed({
+//   get: () => formState.value.full_name ?? undefined,
+//   set: (value: string | undefined) => {
+//     formState.value.full_name = value ? capitalizeAll(value) : undefined;
+//   },
+// });
+
+const clientNameComputed = computed({
+  get: () => formState.value.client_name ?? undefined,
   set: (value: string | undefined) => {
-    formState.value.full_name = value ? capitalizeAll(value) : undefined;
+    formState.value.client_name = value ? capitalizeAll(value) : undefined;
   },
 });
 
 watch(
+  () => formState.value.inventory,
+  (inventory) => {
+    if (formState.value.is_other_agency) {
+      formState.value.full_name = undefined;
+      return;
+    }
+
+    formState.value.full_name =
+      inventory?.employee?.fullname ?? inventory?.employee?.full_name ?? null;
+  },
+);
+
+watch(
   () => formState.value.is_other_agency,
   (isOther) => {
-    if (isOther) formState.value.inventory = undefined;
-    else {
-      formState.value.agency = undefined;
+    if (isOther) {
+      formState.value.inventory = undefined;
       formState.value.full_name = undefined;
+    } else {
+      formState.value.agency = undefined;
     }
   },
 );
@@ -78,7 +114,16 @@ watch(
 const handleSubmit = async (
   event: IFormSubmitEvent<TCreateTicketValidationSchema>,
 ) => {
-  await ticketStore.addTicket(event.data);
+  const payload = {
+    ...event.data,
+    full_name: formState.value.is_other_agency
+      ? undefined
+      : (formState.value.inventory?.employee?.full_name ??
+        formState.value.inventory?.employee?.fullname ??
+        formState.value.full_name ??
+        null),
+  };
+  await ticketStore.addTicket(payload);
   if (hasError.value) return onError();
   onSuccess();
 };
@@ -181,13 +226,23 @@ const searchAgencies = async (q: string) => {
       </div>
 
       <UFormGroup
-        v-if="formState.is_other_agency"
-        label="Full Name"
-        name="full_name"
-        :error="errorBag.full_name"
+        :label="
+          formState.is_other_agency
+            ? 'Client Name'
+            : 'Client Name (if different from inventory owner)'
+        "
+        name="client_name"
+        :error="errorBag.client_name"
         :ui="{ wrapper: 'md:w-full' }"
       >
-        <UInput v-model="fullNameComputed" />
+        <UInput
+          v-model="clientNameComputed"
+          :placeholder="
+            formState.is_other_agency
+              ? ''
+              : 'Leave blank if same as inventory owner'
+          "
+        />
       </UFormGroup>
 
       <UFormGroup

@@ -136,7 +136,6 @@ export const useTicketStore = defineStore("ticketStore", () => {
 
       tickets.value = response.data.map((ticket: any) => ({
         ...ticket,
-
         query_status_formatted: capitalizeWord(
           strConvertUnderscoreToSpace(ticket.query_status),
         ),
@@ -162,12 +161,9 @@ export const useTicketStore = defineStore("ticketStore", () => {
               : `${ticket.solution.title} — ${ticket.solution.author.display_name}`
             : "None"
         }`,
-
         property_number: ticket.is_other_agency ? "-" : ticket.property_number,
-
         client: formatClient(ticket),
         client_meta: formatClientMeta(ticket),
-
         item_type:
           ticket?.inventory?.brand_model?.option_attribute_description ??
           ticket?.inventory?.item_type?.type ??
@@ -187,6 +183,13 @@ export const useTicketStore = defineStore("ticketStore", () => {
     loading.value = true;
     resetErrorBag();
 
+    const fullName = form.is_other_agency
+      ? undefined
+      : (form.inventory?.full_name ??
+        form.inventory?.employee_name ??
+        form.inventory?.actual_user ??
+        null);
+
     const formattedForm = {
       ...form,
       profile_id: loggedInUser.value?.profile?.id,
@@ -194,6 +197,8 @@ export const useTicketStore = defineStore("ticketStore", () => {
       agency_id: form.agency?.id,
       inventory_id: form.inventory?.id,
       ticket_number: form.ticket_number,
+      full_name: form.full_name,
+      client_name: form.client_name,
       query_status: "queued",
       request_status: "open",
       date: transformDatePickerDate(new Date(), "YYYY-MM-DD HH:mm:ss"),

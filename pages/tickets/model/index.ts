@@ -15,8 +15,13 @@ const columns: ITableColumns[] = [
     rowClass: "whitespace-pre-line max-w-fit",
   },
   {
-    key: "client",
-    label: "Client",
+    key: "full_name",
+    label: "Full Name",
+    rowClass: "whitespace-pre-line max-w-fit",
+  },
+  {
+    key: "client_name",
+    label: "Client Name",
     rowClass: "whitespace-pre-line max-w-fit",
   },
   {
@@ -28,7 +33,6 @@ const columns: ITableColumns[] = [
     key: "concern",
     label: "Concern",
     rowClass: "whitespace-pre-line max-w-fit",
-    // responsiveClass: "hidden md:table-cell",
   },
   {
     key: "query_status_formatted",

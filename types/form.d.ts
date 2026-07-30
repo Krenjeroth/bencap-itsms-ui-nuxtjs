@@ -293,6 +293,7 @@ declare global {
     // } | null;
     agency?: Agency | null;
     agency_id?: number | null;
+    client_name?: string | null;
   }
 
   interface IUpdateTicketForm {
@@ -315,6 +316,7 @@ declare global {
     full_name?: string | null;
     agency?: Agency | null;
     agency_id?: number | null;
+    client_name?: string | null;
   }
 
   interface ICreateSolutionForm {
