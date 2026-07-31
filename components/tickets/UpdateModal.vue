@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { cloneDeep } from "lodash";
+import { cloneDeep, isEqual } from "lodash";
 const ticketStore = useTicketStore();
 const { loading, errorBag, hasError, priorities } = storeToRefs(ticketStore);
 
@@ -60,6 +60,7 @@ const formState = ref<IUpdateTicketForm>({
   contact_number: props.ticket?.contact_number || undefined,
   is_other_agency: props.ticket?.is_other_agency || false,
   full_name: props.ticket?.full_name || undefined,
+  client_name: props.ticket?.client_name || undefined,
   agency: props.ticket?.agency || undefined,
 });
 
@@ -74,6 +75,7 @@ const originalState = ref<IUpdateTicketForm>({
     contact_number: props.ticket?.contact_number || undefined,
     is_other_agency: props.ticket?.is_other_agency || false,
     full_name: props.ticket?.full_name || undefined,
+    client_name: props.ticket?.client_name || undefined,
     agency: props.ticket?.agency || undefined,
   }),
 });
@@ -88,6 +90,7 @@ const fieldsToCompare: (keyof IUpdateTicketForm)[] = [
   "contact_number",
   "is_other_agency",
   "full_name",
+  "client_name",
   "agency",
 ];
 
@@ -114,10 +117,10 @@ const contactNumberComputed = computed({
   },
 });
 
-const fullNameComputed = computed({
-  get: () => formState.value.full_name ?? undefined,
+const clientNameComputed = computed({
+  get: () => formState.value.client_name ?? undefined,
   set: (value: string | undefined) => {
-    formState.value.full_name = capitalizeAll(value) ?? undefined;
+    formState.value.client_name = value ? capitalizeAll(value) : undefined;
   },
 });
 
@@ -181,6 +184,31 @@ const searchAgencies = async (q: string) => {
   agencyOptions.value = result;
   return result;
 };
+
+watch(
+  () => formState.value.inventory,
+  (inventory: any) => {
+    if (formState.value.is_other_agency) return;
+
+    formState.value.full_name =
+      inventory?.employee?.fullname ??
+      inventory?.employee?.full_name ??
+      formState.value.full_name ??
+      null;
+  },
+);
+
+watch(
+  () => formState.value.is_other_agency,
+  (isOther) => {
+    if (isOther) {
+      formState.value.inventory = undefined;
+      formState.value.full_name = undefined;
+    } else {
+      formState.value.agency = undefined;
+    }
+  },
+);
 </script>
 
 <template>
@@ -259,13 +287,23 @@ const searchAgencies = async (q: string) => {
       </div>
 
       <UFormGroup
-        v-if="formState.is_other_agency"
-        label="Full Name"
-        name="full_name"
-        :error="errorBag.full_name"
+        :label="
+          formState.is_other_agency
+            ? 'Client Name'
+            : 'Client Name (if different from inventory owner)'
+        "
+        name="client_name"
+        :error="errorBag.client_name"
         :ui="{ wrapper: 'md:w-full' }"
       >
-        <UInput v-model="fullNameComputed" />
+        <UInput
+          v-model="clientNameComputed"
+          :placeholder="
+            formState.is_other_agency
+              ? ''
+              : 'Leave blank if same as inventory owner'
+          "
+        />
       </UFormGroup>
 
       <UFormGroup
