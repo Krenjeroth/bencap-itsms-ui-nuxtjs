@@ -164,11 +164,10 @@ export const useTicketStore = defineStore("ticketStore", () => {
         property_number: ticket.is_other_agency ? "-" : ticket.property_number,
         client: formatClient(ticket),
         client_meta: formatClientMeta(ticket),
-        item_type:
-          ticket?.inventory?.brand_model?.option_attribute_description ??
-          ticket?.inventory?.item_type?.type ??
-          ticket?.item_type?.type ??
-          "Unknown Item Type",
+        item_type_label: ticket?.item_type
+          ? `${ticket.item_type.type} (${ticket.item_type.classification})`
+          : "Unknown Item Type",
+        item_type_id: ticket?.item_type?.id ?? ticket?.item_type_id ?? null,
       }));
 
       totalTickets.value = Number(response.meta.total) || 0;
@@ -183,26 +182,19 @@ export const useTicketStore = defineStore("ticketStore", () => {
     loading.value = true;
     resetErrorBag();
 
-    const fullName = form.is_other_agency
-      ? undefined
-      : (form.inventory?.full_name ??
-        form.inventory?.employee_name ??
-        form.inventory?.actual_user ??
-        null);
-
     const formattedForm = {
       ...form,
       profile_id: loggedInUser.value?.profile?.id,
       employee_id: form.employee?.id,
       agency_id: form.agency?.id,
-      inventory_id: form.inventory?.id,
+      inventory_id: form.inventory?.id ?? null,
       ticket_number: form.ticket_number,
-      full_name: form.full_name,
+      full_name: form.full_name ?? null,
       client_name: form.client_name,
       query_status: "queued",
       request_status: "open",
       date: transformDatePickerDate(new Date(), "YYYY-MM-DD HH:mm:ss"),
-      item_type_id: form.item_type,
+      item_type_id: Number(form.item_type),
       it_service_id: Number(form.it_service),
       service_method: "on_site",
     };
@@ -224,10 +216,10 @@ export const useTicketStore = defineStore("ticketStore", () => {
       ...form,
       employee_id: form.is_other_agency ? null : form.employee?.id,
       agency_id: form.is_other_agency ? form.agency?.id : null,
-      full_name: form.full_name,
-      client_name: form.client_name,
-      inventory_id: form.is_other_agency ? null : form.inventory?.id,
-      item_type_id: form.is_other_agency ? form.item_type : null,
+      full_name: form.full_name ?? null,
+      client_name: form.client_name ?? null,
+      inventory_id: form.inventory?.id ?? null,
+      item_type_id: Number(form.item_type),
       it_service_id: Number(form.it_service),
     };
 

@@ -58,6 +58,13 @@ const contactNumberComputed = computed({
   },
 });
 
+const clientNameComputed = computed({
+  get: () => formState.value.client_name ?? undefined,
+  set: (value: string | undefined) => {
+    formState.value.client_name = value ? capitalizeAll(value) : undefined;
+  },
+});
+
 const syncFullName = () => {
   if (formState.value.is_other_agency) {
     formState.value.full_name = undefined;
@@ -72,30 +79,10 @@ const syncFullName = () => {
     null;
 };
 
-// const fullNameComputed = computed({
-//   get: () => formState.value.full_name ?? undefined,
-//   set: (value: string | undefined) => {
-//     formState.value.full_name = value ? capitalizeAll(value) : undefined;
-//   },
-// });
-
-const clientNameComputed = computed({
-  get: () => formState.value.client_name ?? undefined,
-  set: (value: string | undefined) => {
-    formState.value.client_name = value ? capitalizeAll(value) : undefined;
-  },
-});
-
 watch(
   () => formState.value.inventory,
-  (inventory) => {
-    if (formState.value.is_other_agency) {
-      formState.value.full_name = undefined;
-      return;
-    }
-
-    formState.value.full_name =
-      inventory?.employee?.fullname ?? inventory?.employee?.full_name ?? null;
+  () => {
+    syncFullName();
   },
 );
 
@@ -114,16 +101,7 @@ watch(
 const handleSubmit = async (
   event: IFormSubmitEvent<TCreateTicketValidationSchema>,
 ) => {
-  const payload = {
-    ...event.data,
-    full_name: formState.value.is_other_agency
-      ? undefined
-      : (formState.value.inventory?.employee?.full_name ??
-        formState.value.inventory?.employee?.fullname ??
-        formState.value.full_name ??
-        null),
-  };
-  await ticketStore.addTicket(payload);
+  await ticketStore.addTicket(event.data);
   if (hasError.value) return onError();
   onSuccess();
 };
@@ -137,8 +115,9 @@ const searchInventories = async (q: string) => {
 
 const searchItemTypes = async (q: string) => {
   if (!q || q.length < 2) return [];
-  if (itemTypeSelect.value.length === 0)
+  if (itemTypeSelect.value.length === 0) {
     await itemTypeStore.fetchItemTypeSelect();
+  }
   return itemTypeSelect.value.filter((itemType) =>
     itemType.type.toLowerCase().includes(q.toLowerCase()),
   );
@@ -193,35 +172,12 @@ const searchAgencies = async (q: string) => {
               <span class="truncate">{{ option.abbreviation }}</span>
             </template>
             <template #empty>
-              <span v-if="agencySearchQuery.length < 2" class="text-gray-400"
-                >Type at least 2 characters...</span
-              >
+              <span v-if="agencySearchQuery.length < 2" class="text-gray-400">
+                Type at least 2 characters...
+              </span>
               <span v-else class="text-gray-400">No Agency found</span>
             </template>
           </UInputMenu>
-        </UFormGroup>
-
-        <UFormGroup
-          label="Item Type"
-          name="item_type"
-          :error="errorBag.item_type"
-          :ui="{ wrapper: 'md:w-full' }"
-        >
-          <USelectMenu
-            v-model="formState.item_type"
-            :options="itemTypeSelect"
-            :searchable="true"
-            :search="searchItemTypes"
-            :loading="loadingItemTypes"
-            placeholder="Type to search..."
-            value-attribute="id"
-            option-attribute="type"
-          >
-            <template #option-empty="{ query }"
-              ><q>{{ query }}</q> not found</template
-            >
-            <template #empty> No Item Type found </template>
-          </USelectMenu>
         </UFormGroup>
       </div>
 
@@ -246,7 +202,29 @@ const searchAgencies = async (q: string) => {
       </UFormGroup>
 
       <UFormGroup
-        v-if="!formState.is_other_agency"
+        label="Item Type"
+        name="item_type"
+        :error="errorBag.item_type"
+        :ui="{ wrapper: 'md:w-full' }"
+      >
+        <USelectMenu
+          v-model="formState.item_type"
+          :options="itemTypeSelect"
+          :searchable="true"
+          :search="searchItemTypes"
+          :loading="loadingItemTypes"
+          placeholder="Type to search..."
+          value-attribute="id"
+          option-attribute="type"
+        >
+          <template #option-empty="{ query }">
+            <q>{{ query }}</q> not found
+          </template>
+          <template #empty> No Item Type found </template>
+        </USelectMenu>
+      </UFormGroup>
+
+      <UFormGroup
         label="Inventory"
         name="inventory"
         :error="errorBag.inventory"
@@ -263,9 +241,9 @@ const searchAgencies = async (q: string) => {
             <span>{{ option.inventory_option_attribute }}</span>
           </template>
           <template #empty>
-            <span v-if="inventorySearchQuery.length < 2" class="text-gray-400"
-              >Type at least 2 characters...</span
-            >
+            <span v-if="inventorySearchQuery.length < 2" class="text-gray-400">
+              Type at least 2 characters...
+            </span>
             <span v-else class="text-gray-400">No Inventory found</span>
           </template>
         </UInputMenu>

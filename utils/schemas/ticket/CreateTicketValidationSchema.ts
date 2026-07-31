@@ -9,7 +9,7 @@ export const CreateTicketValidationSchema = z
       })
       .nullable()
       .optional(),
-    item_type: z.number().optional(),
+    item_type: z.number(),
     it_service: z.string(),
     concern: z
       .string({

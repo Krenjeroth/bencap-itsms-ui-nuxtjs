@@ -9,7 +9,7 @@ export const UpdateTicketValidationSchema = z
       })
       .nullable()
       .optional(),
-    item_type: z.number().optional(),
+    item_type: z.number(),
     it_service: z.union([z.string(), z.number()]),
     concern: z
       .string({
@@ -50,18 +50,12 @@ export const UpdateTicketValidationSchema = z
           message: 'Client name is required when "Other Agency" is selected',
         });
       }
+
       if (!data.agency || data.agency.id === null) {
         ctx.addIssue({
           path: ["agency"],
           code: z.ZodIssueCode.custom,
           message: 'Agency is required when "Other Agency" is selected',
-        });
-      }
-      if (!data.item_type || data.item_type === null) {
-        ctx.addIssue({
-          path: ["item_type"],
-          code: z.ZodIssueCode.custom,
-          message: 'Item type is required when "Other Agency" is selected',
         });
       }
     }

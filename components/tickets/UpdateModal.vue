@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { cloneDeep, isEqual } from "lodash";
+
 const ticketStore = useTicketStore();
 const { loading, errorBag, hasError, priorities } = storeToRefs(ticketStore);
 
@@ -35,26 +36,20 @@ const props = defineProps({
 const { capitalizeAll } = useStringHandler();
 
 const onClose = () => emit("close");
-
 const onSuccess = () => {
   emit("success");
   emit("reloadTable");
   onClose();
 };
-
-const onError = () => {
-  emit("error");
-};
-
-const onNoDataChange = () => {
-  emit("noDataChange");
-};
+const onError = () => emit("error");
+const onNoDataChange = () => emit("noDataChange");
 
 const formState = ref<IUpdateTicketForm>({
   employee: props.ticket?.employee || undefined,
   inventory: props.ticket?.inventory || undefined,
-  item_type: props.ticket?.item_type?.id || undefined,
-  it_service: props.ticket?.it_service.id || undefined,
+  item_type:
+    props.ticket?.item_type_id ?? props.ticket?.item_type?.id ?? undefined,
+  it_service: props.ticket?.it_service?.id || undefined,
   concern: props.ticket?.concern || undefined,
   priority: props.ticket?.priority || "low",
   contact_number: props.ticket?.contact_number || undefined,
@@ -64,12 +59,13 @@ const formState = ref<IUpdateTicketForm>({
   agency: props.ticket?.agency || undefined,
 });
 
-const originalState = ref<IUpdateTicketForm>({
-  ...cloneDeep({
+const originalState = ref<IUpdateTicketForm>(
+  cloneDeep({
     employee: props.ticket?.employee || undefined,
     inventory: props.ticket?.inventory || undefined,
-    item_type: props.ticket?.item_type?.id || undefined,
-    it_service: props.ticket?.it_service.id || undefined,
+    item_type:
+      props.ticket?.item_type_id ?? props.ticket?.item_type?.id ?? undefined,
+    it_service: props.ticket?.it_service?.id || undefined,
     concern: props.ticket?.concern || undefined,
     priority: props.ticket?.priority || "low",
     contact_number: props.ticket?.contact_number || undefined,
@@ -78,7 +74,7 @@ const originalState = ref<IUpdateTicketForm>({
     client_name: props.ticket?.client_name || undefined,
     agency: props.ticket?.agency || undefined,
   }),
-});
+);
 
 const fieldsToCompare: (keyof IUpdateTicketForm)[] = [
   "employee",
@@ -98,7 +94,6 @@ const isChangedComputed = computed(() => {
   return fieldsToCompare.some((key) => {
     const a = formState.value[key];
     const b = originalState.value[key];
-
     return !isEqual(a, b);
   });
 });
@@ -106,7 +101,7 @@ const isChangedComputed = computed(() => {
 const concernComputed = computed({
   get: () => formState.value.concern,
   set: (value) => {
-    formState.value.concern = capitalizeAll(value);
+    formState.value.concern = value ? capitalizeAll(value) : undefined;
   },
 });
 
@@ -124,12 +119,56 @@ const clientNameComputed = computed({
   },
 });
 
-const isOtherAgencyComputed = computed({
-  get: () => (formState.value.is_other_agency ? true : false),
-  set: (value: boolean) => {
-    formState.value.is_other_agency = value;
+const itemTypeComputed = computed({
+  get: () => formState.value.item_type ?? undefined,
+  set: (value) => {
+    formState.value.item_type = value ? Number(value) : undefined;
   },
 });
+
+const syncFullName = () => {
+  if (formState.value.is_other_agency) {
+    formState.value.full_name = undefined;
+    return;
+  }
+
+  const inventory = formState.value.inventory;
+  formState.value.full_name =
+    inventory?.employee?.full_name ??
+    inventory?.employee?.fullname ??
+    inventory?.full_name ??
+    null;
+};
+
+watch(
+  () => formState.value.inventory,
+  () => {
+    syncFullName();
+  },
+);
+
+watch(
+  () => formState.value.is_other_agency,
+  (isOther) => {
+    if (isOther) {
+      formState.value.inventory = undefined;
+      formState.value.full_name = undefined;
+    } else {
+      formState.value.agency = undefined;
+      syncFullName();
+    }
+  },
+);
+
+watch(
+  () => props.ticket,
+  (ticket) => {
+    if (ticket?.item_type?.id) {
+      formState.value.item_type = ticket.item_type.id;
+    }
+  },
+  { immediate: true },
+);
 
 const handleSubmit = async (
   event: IFormSubmitEvent<TUpdateTicketValidationSchema>,
@@ -147,7 +186,6 @@ const handleSubmit = async (
   }
 
   onSuccess();
-  return;
 };
 
 const inventoryOptions = ref<TInventorySelectOption[]>([]);
@@ -184,31 +222,6 @@ const searchAgencies = async (q: string) => {
   agencyOptions.value = result;
   return result;
 };
-
-watch(
-  () => formState.value.inventory,
-  (inventory: any) => {
-    if (formState.value.is_other_agency) return;
-
-    formState.value.full_name =
-      inventory?.employee?.fullname ??
-      inventory?.employee?.full_name ??
-      formState.value.full_name ??
-      null;
-  },
-);
-
-watch(
-  () => formState.value.is_other_agency,
-  (isOther) => {
-    if (isOther) {
-      formState.value.inventory = undefined;
-      formState.value.full_name = undefined;
-    } else {
-      formState.value.agency = undefined;
-    }
-  },
-);
 </script>
 
 <template>
@@ -225,7 +238,7 @@ watch(
         :ui="{ wrapper: 'flex items-center justify-end' }"
       >
         <UCheckbox
-          v-model="isOtherAgencyComputed"
+          v-model="formState.is_other_agency"
           color="primary"
           label="Other Agency"
         />
@@ -251,38 +264,13 @@ watch(
             <template #option="{ option }">
               <span class="truncate">{{ option.abbreviation }}</span>
             </template>
-
             <template #empty>
-              <span v-if="agencySearchQuery.length < 2" class="text-gray-400"
-                >Type at least 2 characters...</span
-              >
+              <span v-if="agencySearchQuery.length < 2" class="text-gray-400">
+                Type at least 2 characters...
+              </span>
               <span v-else class="text-gray-400">No Agency found</span>
             </template>
           </UInputMenu>
-        </UFormGroup>
-
-        <UFormGroup
-          label="Item Type"
-          name="item_type"
-          :error="errorBag.item_type"
-          :ui="{ wrapper: 'md:w-full' }"
-        >
-          <USelectMenu
-            v-model="formState.item_type"
-            :options="itemTypeSelect"
-            :searchable="true"
-            :search="searchItemTypes"
-            :loading="loadingItemTypes"
-            placeholder="Type to search..."
-            value-attribute="id"
-            option-attribute="type"
-          >
-            <template #option-empty="{ query }">
-              <q>{{ query }}</q> not found
-            </template>
-
-            <template #empty> No Item Type found </template>
-          </USelectMenu>
         </UFormGroup>
       </div>
 
@@ -307,7 +295,29 @@ watch(
       </UFormGroup>
 
       <UFormGroup
-        v-if="!formState.is_other_agency"
+        label="Item Type"
+        name="item_type"
+        :error="errorBag.item_type"
+        :ui="{ wrapper: 'md:w-full' }"
+      >
+        <USelectMenu
+          v-model="itemTypeComputed"
+          :options="itemTypeSelect"
+          :searchable="true"
+          :search="searchItemTypes"
+          :loading="loadingItemTypes"
+          placeholder="Type to search..."
+          value-attribute="id"
+          option-attribute="type"
+        >
+          <template #option-empty="{ query }">
+            <q>{{ query }}</q> not found
+          </template>
+          <template #empty> No Item Type found </template>
+        </USelectMenu>
+      </UFormGroup>
+
+      <UFormGroup
         label="Inventory"
         name="inventory"
         :error="errorBag.inventory"
@@ -317,31 +327,16 @@ watch(
           v-model="formState.inventory"
           :search="searchInventories"
           :loading="loadingInventories"
-          placeholder="Search by property number..."
+          placeholder="Search by property number / actual user..."
           option-attribute="inventory_option_attribute"
         >
           <template #option="{ option }">
-            <span class="truncate">{{
-              option.inventory_option_attribute
-            }}</span>
-            <!-- <span class="truncate"
-              >{{ option.property_number }} ({{
-                option.inventory_item.brand_model.brand.name
-              }}
-              {{ option.inventory_item.brand_model.name }})</span
-            > -->
-            <!-- <span class="truncate"
-              >{{ option.property_number }} ({{
-                option.brand_model.item_type.type
-              }}: {{ option.brand_model.brand.name }}
-              {{ option.brand_model.name }})</span
-            > -->
+            <span>{{ option.inventory_option_attribute }}</span>
           </template>
-
           <template #empty>
-            <span v-if="inventorySearchQuery.length < 2" class="text-gray-400"
-              >Type at least 2 characters...</span
-            >
+            <span v-if="inventorySearchQuery.length < 2" class="text-gray-400">
+              Type at least 2 characters...
+            </span>
             <span v-else class="text-gray-400">No Inventory found</span>
           </template>
         </UInputMenu>
@@ -393,9 +388,7 @@ watch(
       >
         <UButtonGroup
           orient="horizontal"
-          :ui="{
-            wrapper: { horizontal: 'w-full' },
-          }"
+          :ui="{ wrapper: { horizontal: 'w-full' } }"
         >
           <UInput v-model="contactNumberComputed" class="flex-1" />
         </UButtonGroup>

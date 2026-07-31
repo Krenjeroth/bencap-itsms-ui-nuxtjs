@@ -25,7 +25,7 @@ const columns: ITableColumns[] = [
     rowClass: "whitespace-pre-line max-w-fit",
   },
   {
-    key: "item_type",
+    key: "item_type_label",
     label: "Item Type",
     rowClass: "whitespace-pre-line max-w-fit",
   },
