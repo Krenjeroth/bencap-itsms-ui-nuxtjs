@@ -166,8 +166,19 @@ export const useTicketStore = defineStore("ticketStore", () => {
         client_meta: formatClientMeta(ticket),
         item_type_label: ticket?.item_type
           ? `${ticket.item_type.type} (${ticket.item_type.classification})`
-          : "Unknown Item Type",
-        item_type_id: ticket?.item_type?.id ?? ticket?.item_type_id ?? null,
+          : ticket?.inventory?.item_type?.type
+            ? `${ticket.inventory.item_type.type}${
+                ticket.inventory.item_type.classification
+                  ? ` (${ticket.inventory.item_type.classification})`
+                  : ""
+              }`
+            : "Unknown Item Type",
+
+        item_type_id:
+          ticket?.item_type?.id ??
+          ticket?.item_type_id ??
+          ticket?.inventory?.item_type?.id ??
+          null,
       }));
 
       totalTickets.value = Number(response.meta.total) || 0;
