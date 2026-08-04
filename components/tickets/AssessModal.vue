@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { cloneDeep, isEqual } from "lodash";
+
 const ticketStore = useTicketStore();
 const { loading, errorBag, hasError } = storeToRefs(ticketStore);
 
@@ -45,15 +47,41 @@ const PERIPHERALS = [
   "OTHERS (Peripherals)",
 ];
 
+const assessment = props.ticket?.assessment;
+
 const formState = ref<IAssessTicketForm>({
-  findings: "",
-  recommendations: "",
-  reviewed_by: "JENNY ROSE T. BORJA", // Hard coded might change later
-  reviewed_by_position: "INFORMATION SYSTEMS ANALYST III", // Hard coded might change later
-  replacement_available: false,
-  specifications: undefined,
-  components: [],
+  findings: assessment?.findings ?? "",
+  recommendations: assessment?.recommendations ?? "",
+  reviewed_by: assessment?.reviewed_by ?? "JENNY ROSE T. BORJA",
+  reviewed_by_position:
+    assessment?.reviewed_by_position ?? "INFORMATION SYSTEMS ANALYST III",
+  replacement_available: Boolean(assessment?.replacement_available),
+  specifications: assessment?.specifications ?? undefined,
+  components: Array.isArray(assessment?.components)
+    ? [...assessment.components]
+    : [],
 });
+
+const originalState = ref<IAssessTicketForm>(
+  cloneDeep({
+    findings: assessment?.findings ?? "",
+    recommendations: assessment?.recommendations ?? "",
+    reviewed_by: assessment?.reviewed_by ?? "JENNY ROSE T. BORJA",
+    reviewed_by_position:
+      assessment?.reviewed_by_position ?? "INFORMATION SYSTEMS ANALYST III",
+    replacement_available: Boolean(assessment?.replacement_available),
+    specifications: assessment?.specifications ?? undefined,
+    components: Array.isArray(assessment?.components)
+      ? [...assessment.components]
+      : [],
+  }),
+);
+
+const isChangedComputed = computed(
+  () => !isEqual(formState.value, originalState.value),
+);
+
+const hasExistingAssessment = computed(() => Boolean(props.ticket?.assessment));
 
 const reviewedByComputed = computed({
   get: () => formState.value.reviewed_by,
@@ -109,7 +137,7 @@ const handleSubmit = async () => {
 <template>
   <BaseModal
     :on-close="onClose"
-    :title="`IT Assessment — ${props.ticket?.ticket_number}`"
+    :title="`${hasExistingAssessment ? 'Update' : 'IT Assessment'} — ${props.ticket?.ticket_number}`"
     size="xl"
   >
     <div class="space-y-5">
@@ -230,7 +258,6 @@ const handleSubmit = async () => {
           placeholder="Position title of reviewer"
         />
       </UFormGroup>
-
       <UButton
         type="button"
         variant="outline"
@@ -240,11 +267,16 @@ const handleSubmit = async () => {
         :disabled="
           !formState.findings ||
           !formState.recommendations ||
-          !formState.reviewed_by
+          !formState.reviewed_by ||
+          (hasExistingAssessment && !isChangedComputed)
         "
         @click="handleSubmit"
       >
-        Submit IT Assessment
+        {{
+          hasExistingAssessment
+            ? "Update IT Assessment"
+            : "Submit IT Assessment"
+        }}
       </UButton>
     </div>
   </BaseModal>

@@ -157,6 +157,14 @@ const items: ITableActions = (row: any, handlers: IHandlers) => {
     if (row.query_status === "assessed") {
       const assessedActions: any[] = [];
 
+      if (canManageTicket) {
+        assessedActions.push({
+          label: row.assessment ? "Edit Assessment" : "Assess",
+          icon: "material-symbols:lab-research-outline",
+          click: () => handlers.assess?.(row),
+        });
+      }
+
       if (canPrintAssessment) {
         assessedActions.push({
           label: "Print Assessment",
