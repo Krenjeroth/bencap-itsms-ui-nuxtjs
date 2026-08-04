@@ -47,7 +47,7 @@ export const CreateTicketValidationSchema = z
 
     is_other_agency: z.boolean(),
 
-    full_name: z.string().optional(),
+    full_name: z.string().nullish(),
 
     client_name: z.string().optional().nullable(),
 

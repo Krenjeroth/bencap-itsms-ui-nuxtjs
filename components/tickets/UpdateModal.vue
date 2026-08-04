@@ -153,9 +153,13 @@ const syncFullName = () => {
   }
 
   const inventory = formState.value.inventory;
+
   formState.value.full_name =
+    inventory?.inventory?.employee?.full_name ??
+    inventory?.inventory?.employee?.fullname ??
     inventory?.employee?.full_name ??
     inventory?.employee?.fullname ??
+    inventory?.inventory?.full_name ??
     inventory?.full_name ??
     undefined;
 };

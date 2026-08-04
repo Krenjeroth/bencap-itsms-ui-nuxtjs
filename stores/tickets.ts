@@ -108,6 +108,17 @@ export const useTicketStore = defineStore("ticketStore", () => {
     return "";
   };
 
+  const formatInventoryOwner = (ticket: any) => {
+    return (
+      ticket?.inventory?.inventory?.employee?.full_name ??
+      ticket?.inventory?.inventory?.employee?.fullname ??
+      ticket?.inventory?.employee?.full_name ??
+      ticket?.inventory?.employee?.fullname ??
+      ticket?.full_name ??
+      ""
+    );
+  };
+
   const formatItemType = (ticket: any) => {
     if (ticket?.inventory?.brand_model) {
       return ticket.inventory.brand_model.option_attribute_description;
@@ -169,6 +180,7 @@ export const useTicketStore = defineStore("ticketStore", () => {
           ticket.released_at,
           "MM/DD/YY",
         )}`,
+        full_name: formatInventoryOwner(ticket),
         solution_formatted: `${
           ticket.solution
             ? ticket.solution?.description
