@@ -9,14 +9,28 @@ export const CreateTicketValidationSchema = z
       })
       .nullable()
       .optional(),
+
+    office: z
+      .object({
+        id: z.number(),
+        office_code: z.string().nullable().optional(),
+        office_desc: z.string().nullable().optional(),
+      })
+      .nullable()
+      .optional(),
+
     item_type: z.number(),
+
     it_service: z.string(),
+
     concern: z
       .string({
         invalid_type_error: "Concern is required",
       })
       .min(2, "Concern must be at least 2 characters long"),
+
     priority: z.string(),
+
     contact_number: z
       .string()
       .refine(
@@ -30,9 +44,13 @@ export const CreateTicketValidationSchema = z
       )
       .nullable()
       .optional(),
+
     is_other_agency: z.boolean(),
+
     full_name: z.string().optional(),
+
     client_name: z.string().optional().nullable(),
+
     agency: z
       .object({
         id: z.number(),
@@ -50,6 +68,7 @@ export const CreateTicketValidationSchema = z
           message: 'Client name is required when "Other Agency" is selected',
         });
       }
+
       if (!data.agency || data.agency.id === null) {
         ctx.addIssue({
           path: ["agency"],
@@ -57,6 +76,7 @@ export const CreateTicketValidationSchema = z
           message: 'Agency is required when "Other Agency" is selected',
         });
       }
+
       if (!data.item_type || data.item_type === null) {
         ctx.addIssue({
           path: ["item_type"],
@@ -64,5 +84,15 @@ export const CreateTicketValidationSchema = z
           message: 'Item type is required when "Other Agency" is selected',
         });
       }
+
+      return;
+    }
+
+    if (!data.inventory && !data.office) {
+      ctx.addIssue({
+        path: ["office"],
+        code: z.ZodIssueCode.custom,
+        message: "Office is required when no inventory is selected",
+      });
     }
   });

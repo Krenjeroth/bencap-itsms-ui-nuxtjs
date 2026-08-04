@@ -16,6 +16,10 @@ const itServiceStore = useItServiceStore();
 const { itServiceSelect } = storeToRefs(itServiceStore);
 itServiceStore.fetchItServicesSelect();
 
+const officeStore = useOfficeStore();
+const { loadingOfficeSearch: loadingOffices } = storeToRefs(officeStore);
+const officeSearchQuery = ref("");
+
 const agencyStore = useAgencyStore();
 const { loading: loadingAgencies } = storeToRefs(agencyStore);
 agencyStore.fetchAgencySelect();
@@ -32,6 +36,19 @@ const props = defineProps({
   pageTitle: String,
   ticket: Object,
 });
+
+const initialOffice =
+  props.ticket?.office_id != null
+    ? {
+        id: Number(props.ticket.office_id),
+        office_code: props.ticket.office_code ?? null,
+        office_desc: props.ticket.office_desc ?? null,
+        label:
+          props.ticket.office_code && props.ticket.office_desc
+            ? `${props.ticket.office_code} - ${props.ticket.office_desc}`
+            : (props.ticket.office_desc ?? props.ticket.office_code ?? ""),
+      }
+    : undefined;
 
 const { capitalizeAll } = useStringHandler();
 
@@ -53,10 +70,11 @@ const formState = ref<IUpdateTicketForm>({
   concern: props.ticket?.concern || undefined,
   priority: props.ticket?.priority || "low",
   contact_number: props.ticket?.contact_number || undefined,
-  is_other_agency: props.ticket?.is_other_agency || false,
+  is_other_agency: Boolean(props.ticket?.is_other_agency),
   full_name: props.ticket?.full_name || undefined,
   client_name: props.ticket?.client_name || undefined,
   agency: props.ticket?.agency || undefined,
+  office: initialOffice,
 });
 
 const originalState = ref<IUpdateTicketForm>(
@@ -69,10 +87,11 @@ const originalState = ref<IUpdateTicketForm>(
     concern: props.ticket?.concern || undefined,
     priority: props.ticket?.priority || "low",
     contact_number: props.ticket?.contact_number || undefined,
-    is_other_agency: props.ticket?.is_other_agency || false,
+    is_other_agency: Boolean(props.ticket?.is_other_agency),
     full_name: props.ticket?.full_name || undefined,
     client_name: props.ticket?.client_name || undefined,
     agency: props.ticket?.agency || undefined,
+    office: initialOffice,
   }),
 );
 
@@ -88,6 +107,7 @@ const fieldsToCompare: (keyof IUpdateTicketForm)[] = [
   "full_name",
   "client_name",
   "agency",
+  "office",
 ];
 
 const isChangedComputed = computed(() => {
@@ -137,13 +157,17 @@ const syncFullName = () => {
     inventory?.employee?.full_name ??
     inventory?.employee?.fullname ??
     inventory?.full_name ??
-    null;
+    undefined;
 };
 
 watch(
   () => formState.value.inventory,
-  () => {
+  (inventory) => {
     syncFullName();
+
+    if (inventory) {
+      formState.value.office = undefined;
+    }
   },
 );
 
@@ -152,6 +176,7 @@ watch(
   (isOther) => {
     if (isOther) {
       formState.value.inventory = undefined;
+      formState.value.office = undefined;
       formState.value.full_name = undefined;
     } else {
       formState.value.agency = undefined;
@@ -212,6 +237,12 @@ const searchItemTypes = async (q: string) => {
   );
 };
 
+const searchOffices = async (q: string) => {
+  officeSearchQuery.value = q;
+  if (!q || q.length < 2) return [];
+  return await officeStore.fetchOfficeSearch(q);
+};
+
 const agencyOptions = ref<TAgencySelectOption[]>([]);
 const agencySearchQuery = ref("");
 
@@ -230,6 +261,7 @@ const searchAgencies = async (q: string) => {
       :schema="UpdateTicketValidationSchema"
       :state="formState"
       @submit.prevent="handleSubmit"
+      @error="(e) => console.log('form validation error', e)"
       class="space-y-6"
     >
       <UFormGroup
@@ -318,6 +350,7 @@ const searchAgencies = async (q: string) => {
       </UFormGroup>
 
       <UFormGroup
+        v-if="!formState.is_other_agency"
         label="Inventory"
         name="inventory"
         :error="errorBag.inventory"
@@ -338,6 +371,32 @@ const searchAgencies = async (q: string) => {
               Type at least 2 characters...
             </span>
             <span v-else class="text-gray-400">No Inventory found</span>
+          </template>
+        </UInputMenu>
+      </UFormGroup>
+
+      <UFormGroup
+        v-if="!formState.is_other_agency && !formState.inventory"
+        label="Office"
+        name="office"
+        :error="errorBag.office"
+        :ui="{ wrapper: 'md:w-full' }"
+      >
+        <UInputMenu
+          v-model="formState.office"
+          :search="searchOffices"
+          :loading="loadingOffices"
+          placeholder="Type to search office..."
+          option-attribute="label"
+        >
+          <template #option="{ option }">
+            <span>{{ option.label }}</span>
+          </template>
+          <template #empty>
+            <span v-if="officeSearchQuery.length < 2" class="text-gray-400">
+              Type at least 2 characters...
+            </span>
+            <span v-else class="text-gray-400">No Office found</span>
           </template>
         </UInputMenu>
       </UFormGroup>

@@ -16,14 +16,19 @@ const columns: ITableColumns[] = [
   },
   {
     key: "full_name",
-    label: "Full Name",
+    label: "Inventory",
     rowClass: "whitespace-pre-line max-w-fit",
   },
   {
-    key: "client_name",
-    label: "Client Name",
+    key: "client",
+    label: "Client",
     rowClass: "whitespace-pre-line max-w-fit",
   },
+  // {
+  //   key: "office_label",
+  //   label: "Office",
+  //   rowClass: "whitespace-pre-line max-w-fit",
+  // },
   {
     key: "item_type_label",
     label: "Item Type",

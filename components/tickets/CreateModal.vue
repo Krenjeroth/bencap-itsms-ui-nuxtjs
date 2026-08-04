@@ -14,6 +14,10 @@ const itServiceStore = useItServiceStore();
 const { itServiceSelect } = storeToRefs(itServiceStore);
 itServiceStore.fetchItServicesSelect();
 
+const officeStore = useOfficeStore();
+const { loadingOfficeSearch: loadingOffices } = storeToRefs(officeStore);
+const officeSearchQuery = ref("");
+
 const agencyStore = useAgencyStore();
 const { loading: loadingAgencies } = storeToRefs(agencyStore);
 agencyStore.fetchAgencySelect();
@@ -33,6 +37,7 @@ const onError = () => emit("error");
 
 const formState = ref<ICreateTicketForm>({
   inventory: undefined,
+  office: undefined,
   item_type: undefined,
   it_service: undefined,
   concern: undefined,
@@ -81,8 +86,12 @@ const syncFullName = () => {
 
 watch(
   () => formState.value.inventory,
-  () => {
+  (inventory) => {
     syncFullName();
+
+    if (inventory) {
+      formState.value.office = undefined;
+    }
   },
 );
 
@@ -91,6 +100,7 @@ watch(
   (isOther) => {
     if (isOther) {
       formState.value.inventory = undefined;
+      formState.value.office = undefined;
       formState.value.full_name = undefined;
     } else {
       formState.value.agency = undefined;
@@ -121,6 +131,12 @@ const searchItemTypes = async (q: string) => {
   return itemTypeSelect.value.filter((itemType) =>
     itemType.type.toLowerCase().includes(q.toLowerCase()),
   );
+};
+
+const searchOffices = async (q: string) => {
+  officeSearchQuery.value = q;
+  if (!q || q.length < 2) return [];
+  return await officeStore.fetchOfficeSearch(q);
 };
 
 const agencySearchQuery = ref("");
@@ -225,6 +241,7 @@ const searchAgencies = async (q: string) => {
       </UFormGroup>
 
       <UFormGroup
+        v-if="!formState.is_other_agency"
         label="Inventory"
         name="inventory"
         :error="errorBag.inventory"
@@ -245,6 +262,32 @@ const searchAgencies = async (q: string) => {
               Type at least 2 characters...
             </span>
             <span v-else class="text-gray-400">No Inventory found</span>
+          </template>
+        </UInputMenu>
+      </UFormGroup>
+
+      <UFormGroup
+        v-if="!formState.is_other_agency && !formState.inventory"
+        label="Office"
+        name="office"
+        :error="errorBag.office"
+        :ui="{ wrapper: 'md:w-full' }"
+      >
+        <UInputMenu
+          v-model="formState.office"
+          :search="searchOffices"
+          :loading="loadingOffices"
+          placeholder="Type to search office..."
+          option-attribute="label"
+        >
+          <template #option="{ option }">
+            <span>{{ option.label }}</span>
+          </template>
+          <template #empty>
+            <span v-if="officeSearchQuery.length < 2" class="text-gray-400">
+              Type at least 2 characters...
+            </span>
+            <span v-else class="text-gray-400">No Office found</span>
           </template>
         </UInputMenu>
       </UFormGroup>

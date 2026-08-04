@@ -9,6 +9,17 @@ export const UpdateTicketValidationSchema = z
       })
       .nullable()
       .optional(),
+
+    office: z
+      .object({
+        id: z.number(),
+        office_code: z.string().nullable().optional(),
+        office_desc: z.string().nullable().optional(),
+        label: z.string().optional(),
+      })
+      .nullable()
+      .optional(),
+
     item_type: z.number(),
     it_service: z.union([z.string(), z.number()]),
     concern: z
@@ -31,7 +42,7 @@ export const UpdateTicketValidationSchema = z
       .nullable()
       .optional(),
     is_other_agency: z.boolean(),
-    full_name: z.string().optional(),
+    full_name: z.string().nullish(),
     client_name: z.string().optional().nullable(),
     agency: z
       .object({
@@ -58,5 +69,15 @@ export const UpdateTicketValidationSchema = z
           message: 'Agency is required when "Other Agency" is selected',
         });
       }
+
+      return;
+    }
+
+    if (!data.inventory && !data.office) {
+      ctx.addIssue({
+        path: ["office"],
+        code: z.ZodIssueCode.custom,
+        message: "Office is required when no inventory is selected",
+      });
     }
   });

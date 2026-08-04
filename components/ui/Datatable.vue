@@ -544,6 +544,24 @@ watch(localPage, (newPage) => {
         >
       </template>
 
+      <template #client-data="{ row }">
+        <!-- <div v-if="row.property_number" class="grid grid-cols-1"></div> -->
+        <div class="flex flex-wrap items-center gap-0.5">
+          <span>{{ row.client_name }}</span>
+          <div class="basis-full h-0"></div>
+          <span>{{ row.client_meta }}</span>
+          <div class="basis-full h-0"></div>
+          <UBadge
+            v-if="row.is_other_agency"
+            color="orange"
+            variant="soft"
+            size="xs"
+            label="Other Agency"
+            class="m-0.5"
+          />
+        </div>
+      </template>
+
       <template #personnel-data="{ row }">
         <div v-if="Array.isArray(row.personnel) && row.personnel.length > 0">
           <UAvatarGroup

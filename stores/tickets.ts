@@ -101,6 +101,10 @@ export const useTicketStore = defineStore("ticketStore", () => {
       return ticket.agency.name;
     }
 
+    if (ticket?.office_code || ticket?.office_desc) {
+      return ticket?.office_code ?? ticket?.office_desc;
+    }
+
     return "";
   };
 
@@ -112,6 +116,18 @@ export const useTicketStore = defineStore("ticketStore", () => {
       return ticket.inventory.item_type.type;
     }
     return ticket?.item_type?.type ?? "";
+  };
+
+  const formatOfficeLabel = (ticket: any) => {
+    if (ticket?.is_other_agency) {
+      return ticket?.agency?.name ?? ticket?.agency?.abbreviation ?? "";
+    }
+
+    if (ticket?.office_desc) {
+      return `${ticket.office_desc}${ticket.office_code ? ` (${ticket.office_code})` : ""}`;
+    }
+
+    return "";
   };
 
   const fetchTickets = async () => {
@@ -164,6 +180,7 @@ export const useTicketStore = defineStore("ticketStore", () => {
         property_number: ticket.is_other_agency ? "-" : ticket.property_number,
         client: formatClient(ticket),
         client_meta: formatClientMeta(ticket),
+        office_label: formatOfficeLabel(ticket),
         item_type_label: ticket?.item_type
           ? `${ticket.item_type.type} (${ticket.item_type.classification})`
           : ticket?.inventory?.item_type?.type
@@ -173,7 +190,6 @@ export const useTicketStore = defineStore("ticketStore", () => {
                   : ""
               }`
             : "Unknown Item Type",
-
         item_type_id:
           ticket?.item_type?.id ??
           ticket?.item_type_id ??
@@ -202,6 +218,9 @@ export const useTicketStore = defineStore("ticketStore", () => {
       ticket_number: form.ticket_number,
       full_name: form.full_name ?? null,
       client_name: form.client_name,
+      office_id: form.office?.id != null ? String(form.office.id) : null,
+      office_code: form.office?.office_code ?? null,
+      office_desc: form.office?.office_desc ?? null,
       query_status: "queued",
       request_status: "open",
       date: transformDatePickerDate(new Date(), "YYYY-MM-DD HH:mm:ss"),
@@ -229,6 +248,9 @@ export const useTicketStore = defineStore("ticketStore", () => {
       agency_id: form.is_other_agency ? form.agency?.id : null,
       full_name: form.full_name ?? null,
       client_name: form.client_name ?? null,
+      office_id: form.office?.id != null ? String(form.office.id) : null,
+      office_code: form.office?.office_code ?? null,
+      office_desc: form.office?.office_desc ?? null,
       inventory_id: form.inventory?.id ?? null,
       item_type_id: Number(form.item_type),
       it_service_id: Number(form.it_service),
