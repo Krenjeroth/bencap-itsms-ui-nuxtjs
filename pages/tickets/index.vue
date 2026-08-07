@@ -21,6 +21,7 @@ import {
   TicketsCreateModal,
   TicketsUpdateModal,
   TicketsAcceptModal,
+  TicketsUnacceptModal,
   TicketsCheckStockModal,
   TicketsAwaitPartModal,
   TicketsResolveModal,
@@ -171,6 +172,35 @@ const acceptTicketModal = (ticket: any) => {
       actionToastResult({
         icon: "i-heroicons-x-circle",
         // title: "Error !",
+        description: "Something went wrong.",
+        id: "modal-error",
+        color: "red",
+      });
+    },
+    onClose() {
+      modal.close();
+    },
+  });
+};
+
+const unacceptTicketModal = (ticket: any) => {
+  modal.open(TicketsUnacceptModal, {
+    ticket,
+    pageTitle: pageTitleSingular,
+    onReloadTable() {
+      ticketStore.fetchTickets();
+    },
+    onSuccess() {
+      actionToastResult({
+        icon: "i-heroicons-check-circle",
+        description: `${pageTitleSingular} un-accepted.`,
+        id: "modal-success",
+        color: "green",
+      });
+    },
+    onError() {
+      actionToastResult({
+        icon: "i-heroicons-x-circle",
         description: "Something went wrong.",
         id: "modal-error",
         color: "red",
@@ -511,6 +541,7 @@ watch(activeTab, () => {
         edit: editTicketModal,
         // delete: deleteItServiceModal,
         accept: acceptTicketModal,
+        unaccept: unacceptTicketModal,
         checkStock: checkStockModal,
         awaitPart: awaitPartModal,
         resolve: resolveModal,

@@ -5,6 +5,7 @@ export const useTicketStore = defineStore("ticketStore", () => {
     updateTicketApi,
     deleteTicketApi,
     acceptTicketApi,
+    unacceptTicketApi,
     checkStockApi,
     awaitPartApi,
     resolveTicketApi,
@@ -301,6 +302,26 @@ export const useTicketStore = defineStore("ticketStore", () => {
       });
   };
 
+  const unacceptTicket = async (id: number) => {
+    loading.value = true;
+    errorBag.value = {};
+    hasError.value = false;
+
+    try {
+      const response = await unacceptTicketApi(String(id));
+      return response;
+    } catch (err: any) {
+      hasError.value = true;
+      if (err?.data?.errors) {
+        errorBag.value = err.data.errors;
+      } else if (err?.data?.error) {
+        errorBag.value = { general: err.data.error };
+      }
+    } finally {
+      loading.value = false;
+    }
+  };
+
   const checkStock = async (id: string) => {
     loading.value = true;
     resetErrorBag();
@@ -447,6 +468,7 @@ export const useTicketStore = defineStore("ticketStore", () => {
     updateTicket,
     deleteTicket,
     acceptTicket,
+    unacceptTicket,
     checkStock,
     awaitPart,
     resolveTicket,

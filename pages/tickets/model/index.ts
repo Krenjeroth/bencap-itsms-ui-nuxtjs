@@ -120,6 +120,20 @@ const items: ITableActions = (row: any, handlers: IHandlers) => {
     ]);
   }
 
+  if (
+    (isAdminPersonnel || isITAdminStaff || isITTechnical) &&
+    row.can_unaccept &&
+    canUpdate
+  ) {
+    actions.push([
+      {
+        label: "Un-accept",
+        icon: "material-symbols:assignment-return-outline",
+        click: () => handlers.unaccept?.(row),
+      },
+    ]);
+  }
+
   const canManageTicket =
     canUpdate ||
     ((isAdminPersonnel || isITAdminStaff || isITTechnical) &&
