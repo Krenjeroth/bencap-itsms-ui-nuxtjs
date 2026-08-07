@@ -346,7 +346,7 @@ declare global {
   }
 
   interface ISetTicketReleaseDateForm {
-    released_at?: TDatePickerDate | null;
+    released_at?: TDatePickerDate | Date | null;
   }
 
   interface ICreateAgencyForm {

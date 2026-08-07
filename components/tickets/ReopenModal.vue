@@ -4,10 +4,10 @@ const { loading, hasError } = storeToRefs(ticketStore);
 
 const emit = defineEmits(["reloadTable", "success", "error", "close"]);
 
-const props = defineProps({
-  pageTitle: String,
-  ticket: Object,
-});
+const props = defineProps<{
+  pageTitle: string;
+  ticket: any;
+}>();
 
 const onClose = () => emit("close");
 
@@ -30,101 +30,130 @@ const handleSubmit = async () => {
   }
 
   onSuccess();
-  return;
 };
 </script>
 
 <template>
-  <BaseModal :on-close="onClose" :title="`Reopen this ${props.pageTitle}?`">
-    <!-- <p class="font-bold text-lg text-center mb-4">Ticket Details</p> -->
-    <div class="flex flex-col gap-2">
-      <p class="flex justify-between">
-        <span class="font-semibold">Ticket Number: </span>
-        <span class="italic">{{ props.ticket?.ticket_number }}</span>
-      </p>
-      <p class="flex justify-between">
-        <span class="font-semibold">Assistance Type: </span>
-        <span class="italic"
-          >{{ props.ticket?.it_service?.name }} ({{
-            props.ticket?.it_service?.code
-          }})</span
+  <BaseModal :on-close="onClose" :title="`Reopen ${props.pageTitle}`">
+    <div class="space-y-4">
+      <!-- Ticket details -->
+      <div
+        class="border border-gray-200 dark:border-gray-700 rounded-md p-3 space-y-2"
+      >
+        <p class="text-sm font-semibold text-gray-500 dark:text-gray-400">
+          Ticket details
+        </p>
+
+        <div class="flex justify-between gap-3 text-sm">
+          <span class="font-medium shrink-0">Ticket number</span>
+          <span class="italic text-right break-words">
+            {{ props.ticket?.ticket_number }}
+          </span>
+        </div>
+
+        <div class="flex justify-between gap-3 text-sm">
+          <span class="font-medium shrink-0">Assistance type</span>
+          <span class="italic text-right break-words">
+            {{ props.ticket?.it_service?.name }}
+            <span v-if="props.ticket?.it_service?.code">
+              ({{ props.ticket?.it_service?.code }})
+            </span>
+          </span>
+        </div>
+
+        <div class="flex justify-between gap-3 text-sm">
+          <span class="font-medium shrink-0">Current status</span>
+          <span class="italic text-right break-words">
+            {{ props.ticket?.query_status_formatted }}
+            · {{ props.ticket?.request_status_formatted }}
+          </span>
+        </div>
+      </div>
+
+      <!-- Client / inventory -->
+      <div
+        class="border border-gray-200 dark:border-gray-700 rounded-md p-3 space-y-2"
+      >
+        <p class="text-sm font-semibold text-gray-500 dark:text-gray-400">
+          {{
+            props.ticket?.is_other_agency
+              ? "Client information"
+              : "Inventory owner"
+          }}
+        </p>
+
+        <div class="flex justify-between gap-3 text-sm">
+          <span class="font-medium shrink-0">
+            {{ props.ticket?.is_other_agency ? "Client name" : "Name" }}
+          </span>
+          <span class="italic text-right break-words">
+            {{ props.ticket?.full_name || props.ticket?.client_name || "—" }}
+          </span>
+        </div>
+
+        <div
+          v-if="props.ticket?.is_other_agency"
+          class="flex justify-between gap-3 text-sm"
         >
-      </p>
+          <span class="font-medium shrink-0">Agency</span>
+          <span class="italic text-right break-words">
+            {{ props.ticket?.agency?.name }}
+            <span v-if="props.ticket?.agency?.abbreviation">
+              ({{ props.ticket?.agency?.abbreviation }})
+            </span>
+          </span>
+        </div>
 
-      <div v-if="!props.ticket?.is_other_agency" class="space-y-2">
-        <p class="flex justify-between">
-          <span class="font-semibold">Employee: </span>
-          <span class="italic">{{
-            props.ticket?.item?.employee?.full_name
-          }}</span>
-        </p>
-        <p class="flex justify-between">
-          <span class="font-semibold">Department: </span>
-          <span class="italic"
-            >{{ props.ticket?.item?.employee?.department?.name }} ({{
-              props.ticket?.item?.employee?.department?.abbreviation
-            }})</span
-          >
-        </p>
-        <p class="flex justify-between">
-          <span class="font-semibold">Item: </span>
-          <span class="italic"
-            >{{ props.ticket?.item?.property_number }} ({{
-              props.ticket?.item?.brand_model?.name
+        <div class="flex justify-between gap-3 text-sm">
+          <span class="font-medium shrink-0">Item type</span>
+          <span class="italic text-right break-words">
+            {{
+              props.ticket?.item_type_label ||
+              props.ticket?.item_type?.type ||
+              "—"
             }}
-            - {{ props.ticket?.item?.brand_model?.brand?.name }})</span
-          >
+          </span>
+        </div>
+
+        <div class="flex justify-between gap-3 text-sm">
+          <span class="font-medium shrink-0">Property number</span>
+          <span class="italic text-right break-words">
+            {{ props.ticket?.property_number || "—" }}
+          </span>
+        </div>
+      </div>
+
+      <!-- Concern -->
+      <div
+        class="border border-gray-200 dark:border-gray-700 rounded-md p-3 space-y-2"
+      >
+        <p class="text-sm font-semibold text-gray-500 dark:text-gray-400">
+          Concern
+        </p>
+        <p class="text-sm italic break-words text-gray-800 dark:text-gray-100">
+          {{ props.ticket?.concern }}
         </p>
       </div>
 
-      <div v-else class="space-y-2">
-        <p class="flex justify-between">
-          <span class="font-semibold">Name: </span>
-          <span class="italic">{{ props.ticket?.full_name }}</span>
-        </p>
-        <p class="flex justify-between">
-          <span class="font-semibold"
-            >Agency: <UBadge color="red">Outside Agency</UBadge></span
-          >
-          <span class="italic"
-            >{{ props.ticket?.agency?.name }} ({{
-              props.ticket?.agency?.abbreviation
-            }})</span
-          >
-        </p>
-        <p class="flex justify-between">
-          <span class="font-semibold">Item: </span>
-          <span class="italic">{{ props.ticket?.item_type?.type }}</span>
-        </p>
-      </div>
+      <!-- Explanation -->
+      <p class="text-xs text-gray-500 dark:text-gray-400">
+        Reopening will move this {{ props.pageTitle.toLowerCase() }} back into
+        an active state so further work can continue.
+        <br />
+        Use this when an issue reoccurs or needs additional follow-up after
+        being resolved, assessed, or cancelled.
+      </p>
 
-      <p class="flex justify-between">
-        <span class="font-semibold">Concern: </span>
-        <span class="italic">{{ props.ticket?.concern }}</span>
-      </p>
-      <p class="flex justify-between">
-        <span class="font-semibold">Query Status: </span>
-        <span class="italic">{{ props.ticket?.query_status_formatted }}</span>
-      </p>
-      <p class="flex justify-between">
-        <span class="font-semibold">Request Status: </span>
-        <span class="italic">{{ props.ticket?.request_status_formatted }}</span>
-      </p>
+      <UButton
+        variant="outline"
+        color="purple"
+        class="w-full justify-center mt-2"
+        :ui="{ base: 'text-center' }"
+        @click="handleSubmit"
+        :loading="loading"
+      >
+        Confirm reopen
+      </UButton>
     </div>
-
-    <!-- <p class="italic">This action cannot be undone.</p>
-    <p class="italic">
-      All data associated with this {{ props.pageTitle }} will be deleted.
-    </p> -->
-    <UButton
-      variant="outline"
-      color="purple"
-      class="w-full justify-center mt-4"
-      :ui="{ base: 'text-center' }"
-      @click="handleSubmit"
-      :loading="loading"
-    >
-      Yes! Reopen this {{ props.pageTitle }}
-    </UButton>
   </BaseModal>
 </template>

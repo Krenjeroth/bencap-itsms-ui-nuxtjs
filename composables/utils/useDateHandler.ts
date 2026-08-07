@@ -4,17 +4,16 @@ export const useDateHandler = () => {
   const transformUtcDatetime = (
     utcDate: TDatePickerDate,
     dateFormat: string = "YYYY-MM-DD HH:mm:ss",
-    timeZone: string = "Asia/Manila"
+    timeZone: string = "Asia/Manila",
   ) => {
     return utcDate ? dayjs.utc(utcDate).tz(timeZone).format(dateFormat) : "N/A";
   };
 
   const transformDatePickerDate = (
     dateParam: TDatePickerDate,
-    dateFormat: string = "YYYY-MM-DD"
+    dateFormat: string = "YYYY-MM-DD",
   ) => {
     if (dateFormat === "YYYY-MM-DD HH:mm:ss") {
-      // const currentDate = dayjs().utc();
       const currentDate = dayjs();
       return dateParam
         ? dayjs(dateParam)
@@ -27,8 +26,8 @@ export const useDateHandler = () => {
     return dateParam ? dayjs(dateParam).format(dateFormat) : "N/A";
   };
 
-  const transformDbDate = (dateParam: TDatePickerDate) => {
-    return dateParam ? dayjs(dateParam).toDate() : "N/A";
+  const transformDbDate = (dateParam: TDatePickerDate): Date | undefined => {
+    return dateParam ? dayjs(dateParam).toDate() : undefined;
   };
 
   const transformDateDurationHumanize = (dateParam: TDatePickerDate) => {
@@ -38,7 +37,7 @@ export const useDateHandler = () => {
   const calculateExpiryDate = (
     startDate: TDatePickerDate,
     planValidity: number | undefined,
-    dateFormat: string = "YYYY-MM-DD HH:mm:ss"
+    dateFormat: string = "YYYY-MM-DD HH:mm:ss",
   ) => {
     return startDate && planValidity
       ? dayjs(startDate)

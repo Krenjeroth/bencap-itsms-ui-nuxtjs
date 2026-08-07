@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { cloneDeep } from "lodash";
+import { cloneDeep, isEqual } from "lodash";
 import { format } from "date-fns";
+
 const ticketStore = useTicketStore();
-const { loading, errorBag, hasError, serviceMethodOptions } =
-  storeToRefs(ticketStore);
+const { loading, errorBag, hasError } = storeToRefs(ticketStore);
 
 const { transformDbDate } = useDateHandler();
 
@@ -15,10 +15,10 @@ const emit = defineEmits([
   "close",
 ]);
 
-const props = defineProps({
-  pageTitle: String,
-  ticket: Object,
-});
+const props = defineProps<{
+  pageTitle: string;
+  ticket: any;
+}>();
 
 const onClose = () => emit("close");
 
@@ -41,7 +41,6 @@ const formState = ref<ISetTicketReleaseDateForm>({
     ? transformDbDate(props.ticket.released_at)
     : undefined,
 });
-console.log(typeof formState.value.released_at);
 
 const originalState = ref<ISetTicketReleaseDateForm>({
   ...cloneDeep({
@@ -57,18 +56,12 @@ const isChangedComputed = computed(() => {
   return fieldsToCompare.some((key) => {
     const a = formState.value[key];
     const b = originalState.value[key];
-
     return !isEqual(a, b);
   });
 });
 
-const releasedAtComputed = computed({
-  get: () => formState.value.released_at ?? undefined,
-  set: (value) => (formState.value.released_at = value || undefined),
-});
-
 const handleSubmit = async (
-  event: IFormSubmitEvent<TSetTicketReleaseDateValidationSchema>
+  event: IFormSubmitEvent<TSetTicketReleaseDateValidationSchema>,
 ) => {
   if (!isChangedComputed.value) {
     onNoDataChange();
@@ -83,20 +76,126 @@ const handleSubmit = async (
   }
 
   onSuccess();
-  return;
 };
+
+// derived label for the current DB release date
+const currentReleaseDateLabel = computed(() => {
+  const value = transformDbDate(props.ticket?.released_at);
+  return value ? format(value, "yyyy/MM/dd") : "Not set";
+});
+
+// derived label for the picker value
+const releasedAtLabel = computed(() => {
+  const value = formState.value.released_at;
+  return value ? format(value, "yyyy/MM/dd") : "Select date";
+});
 </script>
 
 <template>
-  <BaseModal :on-close="onClose" :title="`Set Release Date`">
+  <BaseModal :on-close="onClose" :title="`Set release date`">
+    <!-- Ticket summary -->
+    <div class="space-y-4 mb-4">
+      <div
+        class="border border-gray-200 dark:border-gray-700 rounded-md p-3 space-y-2"
+      >
+        <p class="text-sm font-semibold text-gray-500 dark:text-gray-400">
+          Ticket details
+        </p>
+
+        <div class="flex justify-between gap-3 text-sm">
+          <span class="font-medium shrink-0">Ticket number</span>
+          <span class="italic text-right break-words">
+            {{ props.ticket?.ticket_number }}
+          </span>
+        </div>
+
+        <div class="flex justify-between gap-3 text-sm">
+          <span class="font-medium shrink-0">Assistance type</span>
+          <span class="italic text-right break-words">
+            {{ props.ticket?.it_service?.name }}
+            <span v-if="props.ticket?.it_service?.code">
+              ({{ props.ticket?.it_service?.code }})
+            </span>
+          </span>
+        </div>
+
+        <div class="flex justify-between gap-3 text-sm">
+          <span class="font-medium shrink-0">Current status</span>
+          <span class="italic text-right break-words">
+            {{ props.ticket?.query_status_formatted }}
+            · {{ props.ticket?.request_status_formatted }}
+          </span>
+        </div>
+
+        <div class="flex justify-between gap-3 text-sm">
+          <span class="font-medium shrink-0">Current release date</span>
+          <span class="italic text-right break-words">
+            {{ currentReleaseDateLabel }}
+          </span>
+        </div>
+      </div>
+
+      <div
+        class="border border-gray-200 dark:border-gray-700 rounded-md p-3 space-y-2"
+      >
+        <p class="text-sm font-semibold text-gray-500 dark:text-gray-400">
+          {{
+            props.ticket?.is_other_agency
+              ? "Client information"
+              : "Inventory owner"
+          }}
+        </p>
+
+        <div class="flex justify-between gap-3 text-sm">
+          <span class="font-medium shrink-0">
+            {{ props.ticket?.is_other_agency ? "Client name" : "Name" }}
+          </span>
+          <span class="italic text-right break-words">
+            {{ props.ticket?.full_name || props.ticket?.client_name || "—" }}
+          </span>
+        </div>
+
+        <div
+          v-if="props.ticket?.is_other_agency"
+          class="flex justify-between gap-3 text-sm"
+        >
+          <span class="font-medium shrink-0">Agency</span>
+          <span class="italic text-right break-words">
+            {{ props.ticket?.agency?.name }}
+            <span v-if="props.ticket?.agency?.abbreviation">
+              ({{ props.ticket?.agency?.abbreviation }})
+            </span>
+          </span>
+        </div>
+
+        <div class="flex justify-between gap-3 text-sm">
+          <span class="font-medium shrink-0">Item type</span>
+          <span class="italic text-right break-words">
+            {{
+              props.ticket?.item_type_label ||
+              props.ticket?.item_type?.type ||
+              "—"
+            }}
+          </span>
+        </div>
+
+        <div class="flex justify-between gap-3 text-sm">
+          <span class="font-medium shrink-0">Property number</span>
+          <span class="italic text-right break-words">
+            {{ props.ticket?.property_number || "—" }}
+          </span>
+        </div>
+      </div>
+    </div>
+
     <UForm
       :schema="SetTicketReleaseDateValidationSchema"
       :state="formState"
       @submit.prevent="handleSubmit"
-      class="space-y-6"
+      class="space-y-4"
     >
       <UFormGroup
-        label="Release Date"
+        label="Release date"
         name="released_at"
         :error="errorBag.released_at"
         :ui="{ wrapper: 'md:w-full' }"
@@ -104,11 +203,7 @@ const handleSubmit = async (
         <UPopover :popper="{ placement: 'bottom-start' }">
           <UButton
             icon="i-heroicons-calendar-days-20-solid"
-            :label="
-              formState.released_at
-                ? format(formState.released_at, 'yyyy/MM/dd')
-                : 'Select Date'
-            "
+            :label="releasedAtLabel"
             :ui="{ base: 'w-full md:w-full' }"
             variant="outline"
           />
@@ -123,16 +218,22 @@ const handleSubmit = async (
         </UPopover>
       </UFormGroup>
 
+      <p class="text-xs text-gray-500 dark:text-gray-400">
+        Set the date when this {{ props.pageTitle.toLowerCase() }} was released
+        back to the user or agency. This helps track turnaround time and
+        completion.
+      </p>
+
       <UButton
         type="submit"
         variant="outline"
         color="blue"
-        class="w-full justify-center mt-4"
+        class="w-full justify-center mt-2"
         :ui="{ base: 'text-center' }"
         :loading="loading"
         :disabled="!isChangedComputed"
       >
-        Set Release Date
+        Confirm release date
       </UButton>
     </UForm>
   </BaseModal>
