@@ -7,11 +7,13 @@ const columns: ITableColumns[] = [
   {
     key: "ticket_number",
     label: "Ticket Number",
+    sortable: true,
     rowClass: "whitespace-pre-line max-w-fit",
   },
   {
     key: "property_number",
     label: "Property Number",
+    sortable: true,
     rowClass: "whitespace-pre-line max-w-fit",
   },
   {
@@ -22,6 +24,7 @@ const columns: ITableColumns[] = [
   {
     key: "client",
     label: "Client",
+    sortable: true,
     rowClass: "whitespace-pre-line max-w-fit",
   },
   // {
@@ -42,11 +45,13 @@ const columns: ITableColumns[] = [
   {
     key: "query_status_formatted",
     label: "Query Status",
+    sortable: true,
     rowClass: "max-w-fit",
   },
   {
     key: "request_status_formatted",
     label: "Request Status",
+    sortable: true,
     rowClass: "max-w-fit",
   },
   {
