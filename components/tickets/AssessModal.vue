@@ -57,6 +57,9 @@ const formState = ref<IAssessTicketForm>({
     assessment?.reviewed_by_position ?? "INFORMATION SYSTEMS ANALYST III",
   replacement_available: Boolean(assessment?.replacement_available),
   specifications: assessment?.specifications ?? undefined,
+  acquisition_cost: assessment?.acquisition_cost
+    ? Number(assessment.acquisition_cost)
+    : undefined,
   components: Array.isArray(assessment?.components)
     ? [...assessment.components]
     : [],
@@ -71,6 +74,9 @@ const originalState = ref<IAssessTicketForm>(
       assessment?.reviewed_by_position ?? "INFORMATION SYSTEMS ANALYST III",
     replacement_available: Boolean(assessment?.replacement_available),
     specifications: assessment?.specifications ?? undefined,
+    acquisition_cost: assessment?.acquisition_cost
+      ? Number(assessment.acquisition_cost)
+      : undefined,
     components: Array.isArray(assessment?.components)
       ? [...assessment.components]
       : [],
@@ -234,6 +240,26 @@ const handleSubmit = async () => {
           :rows="2"
           autoresize
         />
+      </UFormGroup>
+
+      <!-- {{-- Acquisition Cost --}} -->
+      <UFormGroup
+        label="Acquisition Cost"
+        name="acquisition_cost"
+        :error="errorBag.acquisition_cost"
+        hint="Optional"
+      >
+        <UInput
+          v-model.number="formState.acquisition_cost"
+          type="number"
+          step="0.01"
+          min="0"
+          placeholder="0.00"
+        >
+          <template #leading>
+            <span class="text-gray-400 text-sm">₱</span>
+          </template>
+        </UInput>
       </UFormGroup>
 
       <!-- {{-- Reviewed By --}} -->

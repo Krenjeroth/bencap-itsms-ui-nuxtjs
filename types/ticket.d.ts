@@ -33,6 +33,7 @@ declare global {
     reviewed_by_position: string;
     replacement_available: boolean;
     specifications?: undefined | string;
+    acquisition_cost?: number;
     components?: string[];
   }
 
