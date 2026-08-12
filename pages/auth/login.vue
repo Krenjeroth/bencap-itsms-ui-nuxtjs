@@ -34,7 +34,7 @@ const onLogin = async (event: any) => {
   >
     <UCard class="flex-col justify-center px-6 py-12 lg:px-8">
       <div class="sm:mx-auto sm:w-full sm:max-w-sm text-center">
-        <SvgsLogo
+        <SvgsMisLogo
           class="w-16 h-16 lg:w-40 lg:h-40 mx-auto text-blue-800 dark:text-blue-400"
         />
         <h2
