@@ -89,33 +89,30 @@ const isChangedComputed = computed(
 
 const hasExistingAssessment = computed(() => Boolean(props.ticket?.assessment));
 
-const reviewedByComputed = computed({
-  get: () => formState.value.reviewed_by,
-  set: (value) => {
-    formState.value.reviewed_by = capitalizeAll(value);
-  },
-});
+const onFindingsBlur = () => {
+  const raw = formState.value.findings ?? "";
+  formState.value.findings = capitalizeAll(raw);
+};
 
-const findingsComputed = computed({
-  get: () => formState.value.findings,
-  set: (value) => {
-    formState.value.findings = capitalizeAll(value);
-  },
-});
+const onRecommendationsBlur = () => {
+  const raw = formState.value.recommendations ?? "";
+  formState.value.recommendations = capitalizeAll(raw);
+};
 
-const recommendationsComputed = computed({
-  get: () => formState.value.recommendations,
-  set: (value) => {
-    formState.value.recommendations = capitalizeAll(value);
-  },
-});
+const onSpecificationsBlur = () => {
+  const raw = formState.value.specifications ?? "";
+  formState.value.specifications = capitalizeAll(raw);
+};
 
-const specificationsComputed = computed({
-  get: () => formState.value.specifications,
-  set: (value) => {
-    formState.value.specifications = capitalizeAll(value);
-  },
-});
+const onReviewedByBlur = () => {
+  const raw = formState.value.reviewed_by ?? "";
+  formState.value.reviewed_by = capitalizeAll(raw);
+};
+
+const onReviewedByPositionBlur = () => {
+  const raw = formState.value.reviewed_by_position ?? "";
+  formState.value.reviewed_by_position = capitalizeAll(raw);
+};
 
 const toggleComponent = (name: string) => {
   const idx = formState.value.components!.indexOf(name);
@@ -195,7 +192,8 @@ const handleSubmit = async () => {
       <!-- {{-- Findings --}} -->
       <UFormGroup label="Findings" name="findings" :error="errorBag.findings">
         <UTextarea
-          v-model="findingsComputed"
+          v-model="formState.findings"
+          @blur="onFindingsBlur"
           placeholder="Describe what was found..."
           :rows="3"
           autoresize
@@ -209,7 +207,8 @@ const handleSubmit = async () => {
         :error="errorBag.recommendations"
       >
         <UTextarea
-          v-model="recommendationsComputed"
+          v-model="formState.recommendations"
+          @blur="onRecommendationsBlur"
           placeholder="Describe recommended action..."
           :rows="3"
           autoresize
@@ -235,7 +234,8 @@ const handleSubmit = async () => {
       <!-- {{-- Specifications --}} -->
       <UFormGroup label="Specifications" name="specifications" hint="Optional">
         <UTextarea
-          v-model="specificationsComputed"
+          v-model="formState.specifications"
+          @blur="onSpecificationsBlur"
           placeholder="Specify parts or details if needed..."
           :rows="2"
           autoresize
@@ -269,7 +269,8 @@ const handleSubmit = async () => {
         :error="errorBag.reviewed_by"
       >
         <UInput
-          v-model="reviewedByComputed"
+          v-model="formState.reviewed_by"
+          @blur="onReviewedByBlur"
           placeholder="Full name of reviewer"
         />
       </UFormGroup>
@@ -281,6 +282,7 @@ const handleSubmit = async () => {
       >
         <UInput
           v-model="formState.reviewed_by_position"
+          @blur="onReviewedByPositionBlur"
           placeholder="Position title of reviewer"
         />
       </UFormGroup>
