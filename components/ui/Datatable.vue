@@ -166,30 +166,32 @@ const columnsTable = computed(() =>
 //     })),
 // );
 
-const sortedTableData = computed(() => {
-  const data = [...props.tableData];
+// const sortedTableData = computed(() => {
+//   const data = [...props.tableData];
 
-  if (!localSort.value?.column) {
-    return data.sort((a, b) => {
-      const acceptedA = Number(!!a.is_accepted_by_me);
-      const acceptedB = Number(!!b.is_accepted_by_me);
-      if (acceptedA !== acceptedB) return acceptedB - acceptedA;
-      return (
-        new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-      );
-    });
-  }
+//   if (!localSort.value?.column) {
+//     return data.sort((a, b) => {
+//       const acceptedA = Number(!!a.is_accepted_by_me);
+//       const acceptedB = Number(!!b.is_accepted_by_me);
+//       if (acceptedA !== acceptedB) return acceptedB - acceptedA;
+//       return (
+//         new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+//       );
+//     });
+//   }
 
-  const { column, direction } = localSort.value;
-  return data.sort((a, b) => {
-    const valA = a[column];
-    const valB = b[column];
-    if (valA == null) return 1;
-    if (valB == null) return -1;
-    const cmp = valA > valB ? 1 : valA < valB ? -1 : 0;
-    return direction === "asc" ? cmp : -cmp;
-  });
-});
+//   const { column, direction } = localSort.value;
+//   return data.sort((a, b) => {
+//     const valA = a[column];
+//     const valB = b[column];
+//     if (valA == null) return 1;
+//     if (valB == null) return -1;
+//     const cmp = valA > valB ? 1 : valA < valB ? -1 : 0;
+//     return direction === "asc" ? cmp : -cmp;
+//   });
+// });
+
+const sortedTableData = computed(() => props.tableData);
 
 // const activeTab = ref(["all"]);
 const activeTab = ref(0);

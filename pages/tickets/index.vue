@@ -489,6 +489,12 @@ const printAssessment = async (ticket: any) => {
   }
 };
 
+const onUpdateSort = (value: typeof sort.value) => {
+  sort.value = value;
+  page.value = 1;
+  ticketStore.fetchTickets();
+};
+
 watch(search, () => {
   page.value = 1;
   ticketStore.fetchTickets();
@@ -559,7 +565,7 @@ watch(activeTab, () => {
       :selected-dropdown-filter="selectedStatus"
       @update:page="(value) => (page = value)"
       @update:pageCount="(value) => (pageCount = value)"
-      @update:sort="ticketStore.fetchTickets"
+      @update:sort="onUpdateSort"
       @update:search="(value) => (search = value)"
       @update:selected-dropdown-filter="(value) => (selectedStatus = value)"
       @update:active-tab="(value) => (activeTab = value)"

@@ -19,6 +19,7 @@ const columns: ITableColumns[] = [
   {
     key: "full_name",
     label: "Inventory",
+    sortable: true,
     rowClass: "whitespace-pre-line max-w-fit",
   },
   {
@@ -45,13 +46,11 @@ const columns: ITableColumns[] = [
   {
     key: "query_status_formatted",
     label: "Query Status",
-    sortable: true,
     rowClass: "max-w-fit",
   },
   {
     key: "request_status_formatted",
     label: "Request Status",
-    sortable: true,
     rowClass: "max-w-fit",
   },
   {
