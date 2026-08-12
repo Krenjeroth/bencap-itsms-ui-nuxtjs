@@ -49,26 +49,41 @@ const formState = ref<ICreateTicketForm>({
   agency: undefined,
 });
 
+const clientNameComputed = computed({
+  get: () => formState.value.client_name ?? "",
+  set: (v: string) => {
+    formState.value.client_name = v;
+  },
+});
+
 const concernComputed = computed({
-  get: () => formState.value.concern,
-  set: (value) => {
-    formState.value.concern = value ? capitalizeAll(value) : undefined;
+  get: () => formState.value.concern ?? "",
+  set: (v: string) => {
+    formState.value.concern = v;
   },
 });
 
 const contactNumberComputed = computed({
-  get: () => formState.value.contact_number ?? undefined,
-  set: (value: string | undefined) => {
-    formState.value.contact_number = value ?? undefined;
+  get: () => formState.value.contact_number ?? "",
+  set: (v: string) => {
+    formState.value.contact_number = v;
   },
 });
 
-const clientNameComputed = computed({
-  get: () => formState.value.client_name ?? undefined,
-  set: (value: string | undefined) => {
-    formState.value.client_name = value ? capitalizeAll(value) : undefined;
-  },
-});
+const onClientNameBlur = () => {
+  const raw = formState.value.client_name ?? "";
+  formState.value.client_name = capitalizeAll(raw);
+};
+
+const onConcernBlur = () => {
+  const raw = formState.value.concern ?? "";
+  formState.value.concern = capitalizeAll(raw);
+};
+
+const onContactNumberBlur = () => {
+  const raw = formState.value.contact_number ?? "";
+  formState.value.contact_number = capitalizeAll(raw);
+};
 
 const syncFullName = () => {
   if (formState.value.is_other_agency) {
@@ -214,6 +229,7 @@ const searchAgencies = async (q: string) => {
       >
         <UInput
           v-model="clientNameComputed"
+          @blur="onClientNameBlur"
           :placeholder="
             formState.is_other_agency
               ? ''
@@ -332,7 +348,7 @@ const searchAgencies = async (q: string) => {
       </div>
 
       <UFormGroup label="Concern" name="concern" :error="errorBag.concern">
-        <UInput v-model="concernComputed" />
+        <UInput v-model="concernComputed" @blur="onConcernBlur" />
       </UFormGroup>
 
       <UFormGroup
@@ -345,7 +361,11 @@ const searchAgencies = async (q: string) => {
           orient="horizontal"
           :ui="{ wrapper: { horizontal: 'w-full' } }"
         >
-          <UInput v-model="contactNumberComputed" class="flex-1" />
+          <UInput
+            v-model="contactNumberComputed"
+            @blur="onContactNumberBlur"
+            class="flex-1"
+          />
         </UButtonGroup>
       </UFormGroup>
 
