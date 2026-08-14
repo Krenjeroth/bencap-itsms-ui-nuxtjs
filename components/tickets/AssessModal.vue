@@ -63,6 +63,7 @@ const formState = ref<IAssessTicketForm>({
   components: Array.isArray(assessment?.components)
     ? [...assessment.components]
     : [],
+  is_set: assessment?.is_set ?? false,
 });
 
 const originalState = ref<IAssessTicketForm>(
@@ -80,6 +81,7 @@ const originalState = ref<IAssessTicketForm>(
     components: Array.isArray(assessment?.components)
       ? [...assessment.components]
       : [],
+    is_set: assessment?.is_set ?? false,
   }),
 );
 
@@ -243,24 +245,36 @@ const handleSubmit = async () => {
       </UFormGroup>
 
       <!-- {{-- Acquisition Cost --}} -->
-      <UFormGroup
-        label="Acquisition Cost"
-        name="acquisition_cost"
-        :error="errorBag.acquisition_cost"
-        hint="Optional"
-      >
-        <UInput
-          v-model.number="formState.acquisition_cost"
-          type="number"
-          step="0.01"
-          min="0"
-          placeholder="0.00"
+      <div class="flex flex-wrap items-center gap-2">
+        <UFormGroup
+          label="Acquisition Cost"
+          name="acquisition_cost"
+          :error="errorBag.acquisition_cost"
+          hint="Optional"
+          class="grow w-full"
         >
-          <template #leading>
-            <span class="text-gray-400 text-sm">₱</span>
-          </template>
-        </UInput>
-      </UFormGroup>
+          <UInput
+            v-model.number="formState.acquisition_cost"
+            type="number"
+            step="0.01"
+            min="0"
+            placeholder="0.00"
+          >
+            <template #leading>
+              <span class="text-gray-400 text-sm">₱</span>
+            </template>
+          </UInput>
+        </UFormGroup>
+
+        <UFormGroup name="is_set">
+          <UCheckbox
+            v-model="formState.is_set"
+            label="Acquired as a set"
+            id="is_set_checkbox"
+            name="is_set"
+          />
+        </UFormGroup>
+      </div>
 
       <!-- {{-- Reviewed By --}} -->
       <UFormGroup

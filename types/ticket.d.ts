@@ -34,6 +34,7 @@ declare global {
     replacement_available: boolean;
     specifications?: undefined | string;
     acquisition_cost?: number;
+    is_set?: boolean;
     components?: string[];
   }
 
