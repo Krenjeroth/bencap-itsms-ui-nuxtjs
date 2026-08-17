@@ -136,8 +136,9 @@ const selectedColumns = ref(props.columns);
 
 // Resolves and filters empty action groups for a given row
 const resolvedActions = (row: any) => {
-  const groups = props.actionItems(row, props.actionHandlers);
-  return groups.filter((group) => group.length > 0);
+  return props
+    .actionItems(row, props.actionHandlers)
+    .filter((group) => group.length > 0);
 };
 
 // Hide the actions column entirely if no row has any available actions
@@ -612,8 +613,8 @@ watch(localPage, (newPage) => {
 
       <template #actions-data="{ row }">
         <UDropdown
-          v-if="resolvedActions(row).some((group) => group.length > 0)"
-          :items="actionItems(row, props.actionHandlers)"
+          v-if="resolvedActions(row).length > 0"
+          :items="resolvedActions(row)"
         >
           <UButton
             color="gray"
@@ -810,8 +811,8 @@ watch(localPage, (newPage) => {
 
       <template #actions-data="{ row }">
         <UDropdown
-          v-if="resolvedActions(row).some((group) => group.length > 0)"
-          :items="actionItems(row, props.actionHandlers)"
+          v-if="resolvedActions(row).length > 0"
+          :items="resolvedActions(row)"
         >
           <UButton
             color="gray"
