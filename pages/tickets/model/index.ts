@@ -1,5 +1,5 @@
 // const authStore = useAuthStore();
-const { hasRole } = useRoleHandler();
+// const { hasRole } = useRoleHandler();
 const { can } = useCan();
 export { columns, items, expandableDetails, queryStatusOptions, tabItems };
 
@@ -82,39 +82,43 @@ const columns: ITableColumns[] = [
 
 const items: ITableActions = (row: any, handlers: IHandlers) => {
   const actions: any[] = [];
-  const adminActions: any[] = [];
 
-  const isAdminPersonnel = hasRole("admin");
-  const isITAdminStaff = hasRole("it admin staff");
-  const isITTechnical = hasRole("it technical");
   const canUpdate = can("tickets.update");
+  const canAccept = can("tickets.accept");
+  const canUnaccept = can("tickets.unaccept");
+  const canCheckStock = can("tickets.check_stock");
+  const canAwaitPart = can("tickets.await_part");
+  const canResolve = can("tickets.resolve");
+  const canCancel = can("tickets.cancel");
+  const canReopen = can("tickets.reopen");
+  const canSetServiceMethod = can("tickets.set_service_method");
+  const canSetReleaseDate = can("tickets.set_release_date");
+  const canAssess = can("tickets.assess");
   const canPrintAssessment = can("tickets.print_assessment");
 
+  const editActions: any[] = [];
+
   if (canUpdate) {
-    adminActions.unshift({
+    editActions.push({
       label: "Edit",
       icon: "i-heroicons-pencil-square-20-solid",
       click: () => handlers.edit?.(row),
     });
-
-    if (row.service_method === "pulled_out") {
-      adminActions.push({
-        label: "Set Release Date",
-        icon: "i-heroicons-calendar-20-solid",
-        click: () => handlers.setReleaseDate?.(row),
-      });
-    }
-
-    if (adminActions.length > 0) {
-      actions.unshift(adminActions);
-    }
   }
 
-  if (
-    (isAdminPersonnel || isITAdminStaff || isITTechnical) &&
-    row.can_accept &&
-    canUpdate
-  ) {
+  if (canSetReleaseDate && row.service_method === "pulled_out") {
+    editActions.push({
+      label: "Set Release Date",
+      icon: "i-heroicons-calendar-20-solid",
+      click: () => handlers.setReleaseDate?.(row),
+    });
+  }
+
+  if (editActions.length > 0) {
+    actions.push(editActions);
+  }
+
+  if (canAccept && row.can_accept) {
     actions.push([
       {
         label: "Accept",
@@ -124,11 +128,7 @@ const items: ITableActions = (row: any, handlers: IHandlers) => {
     ]);
   }
 
-  if (
-    (isAdminPersonnel || isITAdminStaff || isITTechnical) &&
-    row.can_unaccept &&
-    canUpdate
-  ) {
+  if (canUnaccept && row.can_unaccept) {
     actions.push([
       {
         label: "Un-accept",
@@ -138,118 +138,127 @@ const items: ITableActions = (row: any, handlers: IHandlers) => {
     ]);
   }
 
-  const canManageTicket =
-    canUpdate ||
-    ((isAdminPersonnel || isITAdminStaff || isITTechnical) &&
-      row.is_accepted_by_me);
+  const isTerminalStatus = ["resolved", "closed", "cancelled"].includes(
+    row.query_status,
+  );
 
-  const canAccessAssessedActions = canManageTicket || canPrintAssessment;
+  if (isTerminalStatus) {
+    const terminalActions: any[] = [];
 
-  if (canAccessAssessedActions) {
-    if (["resolved", "closed"].includes(row.query_status)) {
-      if (canManageTicket) {
-        actions.push([
-          {
-            label: "Reopen",
-            icon: "material-symbols:door-open-outline",
-            click: () => handlers.reopen?.(row),
-          },
-        ]);
-      }
-      return actions;
+    if (canReopen) {
+      terminalActions.push({
+        label: "Reopen",
+        icon: "material-symbols:door-open-outline",
+        click: () => handlers.reopen?.(row),
+      });
     }
 
-    if (row.query_status === "cancelled") {
-      if (canManageTicket) {
-        actions.push([
-          {
-            label: "Reopen",
-            icon: "material-symbols:door-open-outline",
-            click: () => handlers.reopen?.(row),
-          },
-        ]);
-      }
-      return actions;
+    if (canPrintAssessment && row.assessment) {
+      terminalActions.push({
+        label: "Print Assessment",
+        icon: "material-symbols:print-outline",
+        click: () => handlers.printAssessment?.(row),
+      });
     }
 
-    if (row.query_status === "assessed") {
-      const assessedActions: any[] = [];
-
-      if (canManageTicket) {
-        assessedActions.push({
-          label: row.assessment ? "Edit Assessment" : "Assess",
-          icon: "material-symbols:lab-research-outline",
-          click: () => handlers.assess?.(row),
-        });
-      }
-
-      if (canPrintAssessment) {
-        assessedActions.push({
-          label: "Print Assessment",
-          icon: "material-symbols:print-outline",
-          click: () => handlers.printAssessment?.(row),
-        });
-      }
-
-      if (canManageTicket) {
-        assessedActions.push({
-          label: "Reopen",
-          icon: "material-symbols:door-open-outline",
-          click: () => handlers.reopen?.(row),
-        });
-      }
-
-      if (assessedActions.length > 0) {
-        actions.push(assessedActions);
-      }
-
-      return actions;
+    if (terminalActions.length > 0) {
+      actions.push(terminalActions);
     }
 
-    if (canManageTicket) {
-      const acceptedActions: any[] = [];
+    return actions;
+  }
 
-      if (row.query_status !== "awaiting_part") {
-        acceptedActions.push({
-          label: "Await Part",
-          icon: "material-symbols:deployed-code-history-outline",
-          click: () => handlers.awaitPart?.(row),
-        });
-      }
+  if (row.query_status === "assessed") {
+    const assessedActions: any[] = [];
 
-      acceptedActions.push(
-        {
-          label: "Assess",
-          icon: "material-symbols:lab-research-outline",
-          click: () => handlers.assess?.(row),
-        },
-        {
-          label: "Resolve",
-          icon: "material-symbols:check-circle-outline",
-          click: () => handlers.resolve?.(row),
-        },
-      );
-
-      if (row.query_status !== "cancelled") {
-        acceptedActions.push({
-          label: "Cancel",
-          icon: "material-symbols:cancel-outline",
-          click: () => handlers.cancel?.(row),
-        });
-      }
-
-      if (acceptedActions.length > 0) {
-        actions.push(acceptedActions);
-      }
-
-      actions.push([
-        {
-          label: "Set Service Method",
-          icon: "material-symbols:build-circle-outline",
-          click: () => handlers.setServiceMethod?.(row),
-        },
-      ]);
+    if (canAssess && row.is_accepted_by_me) {
+      assessedActions.push({
+        label: row.assessment ? "Edit Assessment" : "Assess",
+        icon: "material-symbols:lab-research-outline",
+        click: () => handlers.assess?.(row),
+      });
     }
+
+    if (canPrintAssessment) {
+      assessedActions.push({
+        label: "Print Assessment",
+        icon: "material-symbols:print-outline",
+        click: () => handlers.printAssessment?.(row),
+      });
+    }
+
+    if (canReopen) {
+      assessedActions.push({
+        label: "Reopen",
+        icon: "material-symbols:door-open-outline",
+        click: () => handlers.reopen?.(row),
+      });
+    }
+
+    if (assessedActions.length > 0) {
+      actions.push(assessedActions);
+    }
+
+    return actions;
+  }
+
+  const lifecycleActions: any[] = [];
+
+  if (canCheckStock && row.is_accepted_by_me) {
+    lifecycleActions.push({
+      label: "Check Stock",
+      icon: "material-symbols:inventory-2-outline",
+      click: () => handlers.checkStock?.(row),
+    });
+  }
+
+  if (
+    canAwaitPart &&
+    row.is_accepted_by_me &&
+    row.query_status !== "awaiting_part"
+  ) {
+    lifecycleActions.push({
+      label: "Await Part",
+      icon: "material-symbols:deployed-code-history-outline",
+      click: () => handlers.awaitPart?.(row),
+    });
+  }
+
+  if (canAssess && row.is_accepted_by_me) {
+    lifecycleActions.push({
+      label: "Assess",
+      icon: "material-symbols:lab-research-outline",
+      click: () => handlers.assess?.(row),
+    });
+  }
+
+  if (canResolve && row.is_accepted_by_me) {
+    lifecycleActions.push({
+      label: "Resolve",
+      icon: "material-symbols:check-circle-outline",
+      click: () => handlers.resolve?.(row),
+    });
+  }
+
+  if (canCancel && row.is_accepted_by_me && row.query_status !== "cancelled") {
+    lifecycleActions.push({
+      label: "Cancel",
+      icon: "material-symbols:cancel-outline",
+      click: () => handlers.cancel?.(row),
+    });
+  }
+
+  // if (canSetServiceMethod && row.is_accepted_by_me) {
+  if (canSetServiceMethod) {
+    lifecycleActions.push({
+      label: "Set Service Method",
+      icon: "material-symbols:build-circle-outline",
+      click: () => handlers.setServiceMethod?.(row),
+    });
+  }
+
+  if (lifecycleActions.length > 0) {
+    actions.push(lifecycleActions);
   }
 
   return actions;
