@@ -5,9 +5,23 @@ declare global {
     id: string;
     username: string;
     email: string;
-    profile: any;
+    profile: IUserProfile | null;
     permissions: Record<string, true>;
-    roles: { id: number; title: string }[];
+    roles: {
+      id: number;
+      title: string;
+    }[];
+    offices_assigned: unknown[];
+    agencies_assigned: {
+      id: number;
+      abbreviation: string | null;
+    }[];
+    offices_assigned_ids: number[];
+    agencies_assigned_ids: number[];
+    offices_agencies_assigned: {
+      id: number;
+      abbreviation: string | null;
+    }[];
   }
 
   type TCreateUserValidationSchema = z.output<
