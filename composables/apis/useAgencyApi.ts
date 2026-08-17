@@ -8,13 +8,11 @@ export const useAgencyApi = () => {
   });
 
   const agencySelectUrl = computed(() => {
-    const url = apiUrl(moduleTitle + "-select");
-    return url;
+    return apiUrl(`lookups/${moduleTitle}`);
   });
 
   const agencySearchUrl = computed(() => {
-    const url = apiUrl(moduleTitle + "-search");
-    return url;
+    return apiUrl("search/agencies");
   });
 
   const fetchAgenciesApi = async (queryParams: URLSearchParams) => {
