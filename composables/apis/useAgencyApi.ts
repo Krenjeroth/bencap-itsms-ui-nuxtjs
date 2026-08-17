@@ -12,7 +12,7 @@ export const useAgencyApi = () => {
   });
 
   const agencySearchUrl = computed(() => {
-    return apiUrl("search/agencies");
+    return apiUrl(`search/${moduleTitle}`);
   });
 
   const fetchAgenciesApi = async (queryParams: URLSearchParams) => {
