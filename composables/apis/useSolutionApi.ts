@@ -8,13 +8,12 @@ export const useSolutionApi = () => {
   });
 
   const solutionsSelectUrl = computed(() => {
-    const url = apiUrl(moduleTitle + "-select");
-    return url;
+    return apiUrl(`lookups/${moduleTitle}`);
   });
 
   const fetchSolutionsApi = async (queryParams: URLSearchParams) => {
     return await sanctumFetch(
-      `${solutionsUrl.value}?${queryParams.toString()}`
+      `${solutionsUrl.value}?${queryParams.toString()}`,
     );
   };
 
@@ -41,8 +40,10 @@ export const useSolutionApi = () => {
     });
   };
 
-  const fetchSolutionSelectApi = async () => {
-    return await sanctumFetch(`${solutionsSelectUrl.value}`);
+  const fetchSolutionSelectApi = async (search?: string) => {
+    const query = search ? `?search=${encodeURIComponent(search)}` : "";
+
+    return await sanctumFetch(`${solutionsSelectUrl.value}${query}`);
   };
 
   const addSolutionSelectApi = async (form: ICreateSolutionForm) => {
