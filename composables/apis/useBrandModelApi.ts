@@ -8,8 +8,7 @@ export const useBrandModelApi = () => {
   });
 
   const brandModelSearchUrl = computed(() => {
-    const url = apiUrl(moduleTitle + "-search");
-    return url;
+    return apiUrl(`search/${moduleTitle}`);
   });
 
   const fetchBrandModelsApi = async (queryParams: URLSearchParams) => {
@@ -25,7 +24,7 @@ export const useBrandModelApi = () => {
 
   const updateBrandModelApi = async (
     id: string,
-    form: IUpdateBrandModelForm
+    form: IUpdateBrandModelForm,
   ) => {
     return await sanctumFetch(`${brandsUrl.value}/${id}`, {
       method: "PUT",
