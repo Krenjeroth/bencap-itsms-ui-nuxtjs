@@ -8,8 +8,7 @@ export const useBrandApi = () => {
   });
 
   const brandSelectUrl = computed(() => {
-    const url = apiUrl(moduleTitle + "-select");
-    return url;
+    return apiUrl(`lookups/${moduleTitle}`);
   });
 
   const fetchBrandsApi = async (queryParams: URLSearchParams) => {
