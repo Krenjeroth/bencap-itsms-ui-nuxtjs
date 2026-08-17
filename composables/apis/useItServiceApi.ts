@@ -8,13 +8,12 @@ export const useItServiceApi = () => {
   });
 
   const itServicesSelectUrl = computed(() => {
-    const url = apiUrl(moduleTitle + "-select");
-    return url;
+    return apiUrl(`lookups/${moduleTitle}`);
   });
 
   const fetchItServicesApi = async (queryParams: URLSearchParams) => {
     return await sanctumFetch(
-      `${itServicesUrl.value}?${queryParams.toString()}`
+      `${itServicesUrl.value}?${queryParams.toString()}`,
     );
   };
 
