@@ -8,13 +8,12 @@ export const useItemTypeApi = () => {
   });
 
   const itemTypesSelectUrl = computed(() => {
-    const url = apiUrl(moduleTitle + "-select");
-    return url;
+    return apiUrl(`lookups/${moduleTitle}`);
   });
 
   const fetchItemTypesApi = async (queryParams: URLSearchParams) => {
     return await sanctumFetch(
-      `${itemTypesUrl.value}?${queryParams.toString()}`
+      `${itemTypesUrl.value}?${queryParams.toString()}`,
     );
   };
 
