@@ -8,8 +8,7 @@ export const useInventoryApi = () => {
   });
 
   const inventoriesSearchUrl = computed(() => {
-    const url = apiUrl(moduleTitle + "-search");
-    return url;
+    return apiUrl(`search/${moduleTitle}`);
   });
 
   const inventoriesMainAssetSearchUrl = computed(() => {

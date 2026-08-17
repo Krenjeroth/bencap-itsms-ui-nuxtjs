@@ -8,13 +8,12 @@ export const useItSupplyApi = () => {
   });
 
   const itSuppliesSearchUrl = computed(() => {
-    const url = apiUrl(moduleTitle + "-search");
-    return url;
+    return apiUrl(`search/${moduleTitle}`);
   });
 
   const fetchItSuppliesApi = async (queryParams: URLSearchParams) => {
     return await sanctumFetch(
-      `${itSuppliesUrl.value}?${queryParams.toString()}`
+      `${itSuppliesUrl.value}?${queryParams.toString()}`,
     );
   };
 

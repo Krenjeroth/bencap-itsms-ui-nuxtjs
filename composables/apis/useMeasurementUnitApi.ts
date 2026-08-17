@@ -8,18 +8,16 @@ export const useMeasurementUnitApi = () => {
   });
 
   const measurementUnitsSelectUrl = computed(() => {
-    const url = apiUrl(moduleTitle + "-select");
-    return url;
+    return apiUrl(`lookups/${moduleTitle}`);
   });
 
   const measurementUnitsSearchUrl = computed(() => {
-    const url = apiUrl(moduleTitle + "-search");
-    return url;
+    return apiUrl(`search/${moduleTitle}`);
   });
 
   const fetchMeasurementUnitsApi = async (queryParams: URLSearchParams) => {
     return await sanctumFetch(
-      `${measurementUnitsUrl.value}?${queryParams.toString()}`
+      `${measurementUnitsUrl.value}?${queryParams.toString()}`,
     );
   };
 
@@ -32,7 +30,7 @@ export const useMeasurementUnitApi = () => {
 
   const updateMeasurementUnitApi = async (
     id: string,
-    form: IUpdateMeasurementUnitForm
+    form: IUpdateMeasurementUnitForm,
   ) => {
     return await sanctumFetch(`${measurementUnitsUrl.value}/${id}`, {
       method: "PUT",
@@ -54,11 +52,11 @@ export const useMeasurementUnitApi = () => {
   };
 
   const fetchMeasurementUnitSearchApi = async (
-    queryParams?: URLSearchParams
+    queryParams?: URLSearchParams,
   ) => {
     const queryString = queryParams?.toString() || "";
     return await sanctumFetch(
-      `${measurementUnitsSearchUrl.value}?${queryString}`
+      `${measurementUnitsSearchUrl.value}?${queryString}`,
     );
   };
 

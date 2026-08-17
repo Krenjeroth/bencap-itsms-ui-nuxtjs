@@ -8,8 +8,7 @@ export const useRoleApi = () => {
   });
 
   const roleSelectUrl = computed(() => {
-    const url = apiUrl(moduleTitle + "-select");
-    return url;
+    return apiUrl(`lookups/${moduleTitle}`);
   });
 
   const fetchRolesApi = async (queryParams: URLSearchParams) => {

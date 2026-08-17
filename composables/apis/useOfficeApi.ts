@@ -1,9 +1,10 @@
 export const useOfficeApi = () => {
   const sanctumFetch = useSanctumClient();
   const { apiUrl } = useUrlHandler();
+  const moduleTitle = "offices";
 
-  const officesUrl = computed(() => apiUrl("offices"));
-  const officesSearchUrl = computed(() => apiUrl("offices-search"));
+  const officesUrl = computed(() => apiUrl(`lookups/${moduleTitle}`));
+  const officesSearchUrl = computed(() => apiUrl(`search/${moduleTitle}`));
 
   const fetchOfficesApi = async (queryParams?: URLSearchParams) => {
     const query = queryParams?.toString();

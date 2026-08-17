@@ -8,8 +8,7 @@ export const useEmployeeApi = () => {
   });
 
   const employeeSearchUrl = computed(() => {
-    const url = apiUrl(moduleTitle + "-search");
-    return url;
+    return apiUrl(`search/${moduleTitle}`);
   });
 
   const fetchEmployeesApi = async (queryParams: URLSearchParams) => {

@@ -8,13 +8,12 @@ export const usePositionApi = () => {
   });
 
   const positionsSelectUrl = computed(() => {
-    const url = apiUrl(moduleTitle + "-select");
-    return url;
+    return apiUrl(`lookups/${moduleTitle}`);
   });
 
   const fetchPositionsApi = async (queryParams: URLSearchParams) => {
     return await sanctumFetch(
-      `${positionsUrl.value}?${queryParams.toString()}`
+      `${positionsUrl.value}?${queryParams.toString()}`,
     );
   };
 

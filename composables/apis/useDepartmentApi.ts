@@ -8,13 +8,12 @@ export const useDepartmentApi = () => {
   });
 
   const departmentSelectUrl = computed(() => {
-    const url = apiUrl(moduleTitle + "-select");
-    return url;
+    return apiUrl(`lookups/${moduleTitle}`);
   });
 
   const fetchDepartmentsApi = async (queryParams: URLSearchParams) => {
     return await sanctumFetch(
-      `${departmentsUrl.value}?${queryParams.toString()}`
+      `${departmentsUrl.value}?${queryParams.toString()}`,
     );
   };
 
@@ -27,7 +26,7 @@ export const useDepartmentApi = () => {
 
   const updateDepartmentApi = async (
     id: string,
-    form: IUpdateDepartmentForm
+    form: IUpdateDepartmentForm,
   ) => {
     return await sanctumFetch(`${departmentsUrl.value}/${id}`, {
       method: "PUT",

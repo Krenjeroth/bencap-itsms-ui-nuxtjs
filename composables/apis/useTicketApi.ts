@@ -8,8 +8,7 @@ export const useTicketApi = () => {
   });
 
   const ticketsSelectUrl = computed(() => {
-    const url = apiUrl(moduleTitle + "-select");
-    return url;
+    return apiUrl(`lookups/${moduleTitle}`);
   });
 
   const fetchTicketsApi = async (queryParams: URLSearchParams) => {
