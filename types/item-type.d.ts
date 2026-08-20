@@ -8,6 +8,7 @@ declare global {
     purpose: string;
     is_main_inventory: boolean;
     is_component: boolean;
+    supports_internal_components: boolean;
   }
 
   type TItemTypeSelectOption = {
@@ -15,6 +16,7 @@ declare global {
     type: string;
     is_main_inventory: boolean;
     is_component: boolean;
+    supports_internal_components: boolean;
   };
 
   type TCreateItemTypeValidationSchema = z.output<
