@@ -64,6 +64,8 @@ const sanitizeInternalComponents = (rows: any[] = []) =>
 const sanitizeOriginalInternalComponents = (rows: any[] = []) =>
   rows.filter((row) => row?.id);
 
+const isInitializing = ref(true);
+
 const isMeaningfulInternalComponentRow = (row: any) =>
   !!(
     row?.id ||
@@ -364,17 +366,41 @@ const selectedItemType = computed<TItemTypeSelectOption | undefined>(() =>
   itemTypeSelect.value.find((t) => t.id === itemTypeComputed.value),
 );
 
-const isMainOnly = computed(
-  () =>
-    !!selectedItemType.value?.is_main_inventory &&
-    !selectedItemType.value?.is_component,
-);
-
-const canBeComponent = computed(() => !!selectedItemType.value?.is_component);
-
-const showsBasicInformation = computed(
+const isMainInventory = computed(
   () => !!selectedItemType.value?.is_main_inventory,
 );
+
+const isComponentType = computed(() => !!selectedItemType.value?.is_component);
+
+const supportsInternalComponents = computed(
+  () => !!selectedItemType.value?.supports_internal_components,
+);
+
+const hasParentComponent = computed(() => !!formState.inventory?.id);
+
+const isStandaloneMainInventory = computed(() => {
+  if (!isMainInventory.value) {
+    return false;
+  }
+
+  if (isComponentType.value) {
+    return !hasParentComponent.value;
+  }
+
+  return true;
+});
+
+const isChildComponent = computed(
+  () => isComponentType.value && hasParentComponent.value,
+);
+
+const shouldShowInternalComponents = computed(
+  () => isStandaloneMainInventory.value && supportsInternalComponents.value,
+);
+
+const showParentComponentField = computed(() => isComponentType.value);
+
+const showsBasicInformation = computed(() => isStandaloneMainInventory.value);
 
 const handleSubmit = async (
   event: IFormSubmitEvent<TUpdateInventoryValidationSchema>,
@@ -385,38 +411,96 @@ const handleSubmit = async (
   }
 
   const payload: TUpdateInventoryPayload = {
-    employee_id: formState.employee?.id ?? null,
-    office_id: formState.office?.id ?? null,
-    office_code: formState.office?.office_code ?? null,
-    office_name: formState.office?.office_desc ?? null,
-    division_id: formState.division?.id ?? null,
-    division_name: formState.division?.division ?? null,
+    employee_id: isStandaloneMainInventory.value
+      ? (formState.employee?.id ?? null)
+      : null,
+
+    office_id: isStandaloneMainInventory.value
+      ? (formState.office?.id ?? null)
+      : null,
+
+    office_code: isStandaloneMainInventory.value
+      ? (formState.office?.office_code ?? null)
+      : null,
+
+    office_name: isStandaloneMainInventory.value
+      ? (formState.office?.office_desc ?? null)
+      : null,
+
+    division_id: isStandaloneMainInventory.value
+      ? (formState.division?.id ?? null)
+      : null,
+
+    division_name: isStandaloneMainInventory.value
+      ? (formState.division?.division ?? null)
+      : null,
+
     item_type_id: formState.item_type ?? null,
-    brand_model_id: formState.brand_model?.id ?? null,
-    parent_component_id: canBeComponent.value
+
+    brand_model_id: isChildComponent.value
+      ? (formState.brand_model?.id ?? null)
+      : null,
+
+    parent_component_id: isChildComponent.value
       ? (formState.inventory?.id ?? props.inventoryItem?.inventory?.id ?? null)
       : null,
 
-    ip_address: formState.ip_address ?? null,
-    mac_address: formState.mac_address ?? null,
-    remarks: formState.remarks ?? null,
+    ip_address: isStandaloneMainInventory.value
+      ? (formState.ip_address ?? null)
+      : null,
 
-    operating_system_name: formState.operating_system_name ?? null,
-    os_license_number: formState.os_license_number ?? null,
-    anti_virus_name: formState.anti_virus_name ?? null,
-    anti_virus_license_number: formState.anti_virus_license_number ?? null,
-    microsoft_office_name: formState.microsoft_office_name ?? null,
-    ms_office_license_number: formState.ms_office_license_number ?? null,
-    other_installed_applications:
-      formState.other_installed_applications ?? null,
+    mac_address: isStandaloneMainInventory.value
+      ? (formState.mac_address ?? null)
+      : null,
+
+    remarks: isStandaloneMainInventory.value
+      ? (formState.remarks ?? null)
+      : null,
+
+    operating_system_name: isStandaloneMainInventory.value
+      ? (formState.operating_system_name ?? null)
+      : null,
+
+    os_license_number: isStandaloneMainInventory.value
+      ? (formState.os_license_number ?? null)
+      : null,
+
+    anti_virus_name: isStandaloneMainInventory.value
+      ? (formState.anti_virus_name ?? null)
+      : null,
+
+    anti_virus_license_number: isStandaloneMainInventory.value
+      ? (formState.anti_virus_license_number ?? null)
+      : null,
+
+    microsoft_office_name: isStandaloneMainInventory.value
+      ? (formState.microsoft_office_name ?? null)
+      : null,
+
+    ms_office_license_number: isStandaloneMainInventory.value
+      ? (formState.ms_office_license_number ?? null)
+      : null,
+
+    other_installed_applications: isStandaloneMainInventory.value
+      ? (formState.other_installed_applications ?? null)
+      : null,
 
     property_number: formState.property_number ?? "",
-    date_acquired: formState.date_acquired ?? null,
-    warranty_expiration_date: formState.warranty_expiration_date ?? null,
+
+    date_acquired: isStandaloneMainInventory.value
+      ? (formState.date_acquired ?? null)
+      : null,
+
+    warranty_expiration_date: isStandaloneMainInventory.value
+      ? (formState.warranty_expiration_date ?? null)
+      : null,
+
     serial_number: formState.serial_number ?? null,
     status: formState.status ?? null,
 
-    internal_components: formState.internal_components ?? [],
+    internal_components: shouldShowInternalComponents.value
+      ? (formState.internal_components ?? [])
+      : [],
   };
 
   await inventoryStore.updateInventory(props.inventoryItem?.id, payload);
@@ -545,37 +629,101 @@ const divisionOptions = computed(() => {
   return officeComputed.value?.divisions?.map(normalizeDivisionOption) ?? [];
 });
 
+const createEmptyInternalComponent = () => ({
+  brand_model: undefined,
+  specific_serial_number: undefined,
+  slot: undefined,
+  quantity: 1,
+  notes: undefined,
+});
+
+const clearStandaloneFields = () => {
+  formState.employee = undefined;
+  formState.office = undefined;
+  formState.division = undefined;
+  formState.ip_address = undefined;
+  formState.mac_address = undefined;
+  formState.remarks = undefined;
+  formState.operating_system_name = undefined;
+  formState.os_license_number = undefined;
+  formState.anti_virus_name = undefined;
+  formState.anti_virus_license_number = undefined;
+  formState.microsoft_office_name = undefined;
+  formState.ms_office_license_number = undefined;
+  formState.other_installed_applications = undefined;
+};
+
+const syncInternalComponentRows = () => {
+  if (!shouldShowInternalComponents.value) {
+    formState.internal_components = [];
+    return;
+  }
+
+  if (formState.internal_components.length === 0) {
+    formState.internal_components.push(createEmptyInternalComponent());
+  }
+};
+
 watch(officeComputed, (newOffice, oldOffice) => {
   if (newOffice?.id !== oldOffice?.id) {
     formState.division = undefined;
   }
 });
 
-watch(itemTypeComputed, () => {
-  if (isMainOnly.value && formState.internal_components.length === 0) {
-    formState.internal_components.push({
-      brand_model: undefined,
-      specific_serial_number: undefined,
-      quantity: 1,
-      slot: undefined,
-      notes: undefined,
-    });
+watch(itemTypeComputed, async () => {
+  if (isInitializing.value) {
+    return;
   }
 
-  if (!isMainOnly.value) {
+  await nextTick();
+
+  if (isChildComponent.value) {
     formState.internal_components = [];
+    clearStandaloneFields();
+    return;
   }
 
-  if (!canBeComponent.value) {
-    formState.inventory = undefined;
+  if (isStandaloneMainInventory.value) {
+    if (supportsInternalComponents.value) {
+      syncInternalComponentRows();
+    } else {
+      formState.internal_components = [];
+    }
+
+    return;
   }
+
+  formState.internal_components = [];
 });
+
+watch(
+  () => formState.inventory?.id,
+  () => {
+    if (isInitializing.value) {
+      return;
+    }
+
+    if (isChildComponent.value) {
+      formState.internal_components = [];
+      clearStandaloneFields();
+      return;
+    }
+
+    if (isStandaloneMainInventory.value) {
+      syncInternalComponentRows();
+    }
+  },
+);
 
 watch(
   () => props.inventoryItem,
   async (item) => {
+    isInitializing.value = true;
+
     const nextState = buildFormState(item);
+
     Object.assign(formState, nextState);
+
     originalState.value = Object.freeze(
       cloneDeep(nextState),
     ) as IUpdateInventoryForm;
@@ -585,33 +733,32 @@ watch(
     await hydrateSelectedOffice();
 
     syncOfficeOption(formState.office);
+
+    await nextTick();
+
+    isInitializing.value = false;
   },
-  { immediate: true, deep: true },
+  {
+    immediate: true,
+    deep: true,
+  },
 );
 
 const addRow = () => {
-  if (!formState.internal_components) {
-    formState.internal_components = [];
+  if (!shouldShowInternalComponents.value) {
+    return;
   }
-  formState.internal_components.push({
-    brand_model: undefined,
-    specific_serial_number: undefined,
-    quantity: 1,
-  });
+
+  formState.internal_components.push(createEmptyInternalComponent());
 };
 
 const removeRow = (index: number) => {
-  if (
-    formState.internal_components &&
-    formState.internal_components.length > 1
-  ) {
+  if (formState.internal_components.length > 1) {
     formState.internal_components.splice(index, 1);
-  } else if (
-    formState.internal_components &&
-    formState.internal_components.length === 1
-  ) {
-    formState.internal_components = [];
+    return;
   }
+
+  formState.internal_components = [];
 };
 </script>
 
@@ -622,7 +769,7 @@ const removeRow = (index: number) => {
     :ui="{ width: 'md:max-w-7xl' }"
   >
     <UForm
-      :schema="UpdateInventoryValidationSchema"
+      :schema="updateInventoryValidationSchema(selectedItemType)"
       :state="formState"
       @submit.prevent="handleSubmit"
       class="space-y-6"
@@ -745,7 +892,9 @@ const removeRow = (index: number) => {
 
       <div
         :class="
-          isMainOnly ? 'grid grid-cols-2 gap-4' : 'grid grid-cols-1 gap-4'
+          shouldShowInternalComponents
+            ? 'grid grid-cols-2 gap-4'
+            : 'grid grid-cols-1 gap-4'
         "
       >
         <!-- ? Hardware -->
@@ -788,11 +937,11 @@ const removeRow = (index: number) => {
           <!-- Internal Components -->
           <!-- CHANGED: Added v-if check and removed manual error prop. UForm will now handle the errors for dynamic fields. -->
           <UFormGroup
-            v-if="isMainOnly"
+            v-if="shouldShowInternalComponents"
             label="Internal Components"
             name="internal_components"
             class="flex flex-col"
-            :required="isMainOnly"
+            :required="shouldShowInternalComponents"
           >
             <div
               class="flex space-y-6 md:space-y-4 md:flex md:space-x-4 items-end"
@@ -803,7 +952,7 @@ const removeRow = (index: number) => {
                 label="Model"
                 :name="`internal_components.${index}.brand_model`"
                 :ui="{ wrapper: 'md:w-full' }"
-                :required="isMainOnly"
+                :required="shouldShowInternalComponents"
                 :key="index"
               >
                 <UInputMenu
@@ -834,7 +983,7 @@ const removeRow = (index: number) => {
                 label="Qty"
                 :name="`internal_components.${index}.quantity`"
                 :ui="{ wrapper: 'md:w-16' }"
-                :required="isMainOnly"
+                :required="shouldShowInternalComponents"
               >
                 <UInput type="number" v-model="row.quantity" />
               </UFormGroup>
@@ -850,7 +999,7 @@ const removeRow = (index: number) => {
               </div>
             </div>
           </UFormGroup>
-          <div v-if="isMainOnly" class="text-center">
+          <div v-if="shouldShowInternalComponents" class="text-center">
             <UButton
               color="orange"
               size="sm"
@@ -860,7 +1009,10 @@ const removeRow = (index: number) => {
           </div>
         </div>
         <!-- ? Software -->
-        <div v-if="isMainOnly" class="col-span-1 gap-4 flex flex-col">
+        <div
+          v-if="isStandaloneMainInventory"
+          class="col-span-1 gap-4 flex flex-col"
+        >
           <UDivider label="Software" />
           <div class="space-y-6 md:space-y-0 md:flex md:space-x-6">
             <UFormGroup
@@ -927,13 +1079,13 @@ const removeRow = (index: number) => {
 
       <div
         class="space-y-6 md:space-y-0 md:flex md:space-x-6"
-        v-if="!isMainOnly"
+        v-if="isChildComponent"
       >
         <UFormGroup
           label="Parent Component"
           name="inventory"
           :ui="{ wrapper: 'md:w-full' }"
-          v-if="canBeComponent"
+          v-if="showParentComponentField"
         >
           <UInputMenu
             v-model="inventoryComputed"
