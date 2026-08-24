@@ -15,6 +15,10 @@ export const useTicketApi = () => {
     return await sanctumFetch(`${ticketsUrl.value}?${queryParams.toString()}`);
   };
 
+  const fetchTicketApi = async (id: string | number) => {
+    return await sanctumFetch(`${ticketsUrl.value}/${id}`);
+  };
+
   const addTicketApi = async (form: ICreateTicketForm) => {
     return await sanctumFetch(`${ticketsUrl.value}`, {
       method: "POST",
@@ -180,6 +184,7 @@ export const useTicketApi = () => {
 
   return {
     fetchTicketsApi,
+    fetchTicketApi,
     addTicketApi,
     updateTicketApi,
     deleteTicketApi,

@@ -142,6 +142,69 @@ export const useTicketStore = defineStore("ticketStore", () => {
     return "";
   };
 
+  const formatTicket = (ticket: any) => {
+    return {
+      ...ticket,
+
+      query_status_formatted: capitalizeWord(
+        strConvertUnderscoreToSpace(ticket.query_status),
+      ),
+
+      request_status_formatted: capitalizeWord(
+        strConvertUnderscoreToSpace(ticket.request_status),
+      ),
+
+      priority_formatted: capitalizeWord(
+        strConvertUnderscoreToSpace(ticket.priority),
+      ),
+
+      date_formatted: `${transformDatePickerDate(
+        ticket.date,
+        "MMM DD, YYYY",
+      )} (${transformDateDurationHumanize(ticket.date)})`,
+
+      released_at_formatted: `${transformDatePickerDate(
+        ticket.released_at,
+        "MM/DD/YY",
+      )}`,
+
+      full_name: formatInventoryOwner(ticket),
+
+      solution_formatted: `${
+        ticket.solution
+          ? ticket.solution?.description
+            ? `${ticket.solution.title} — ${ticket.solution.author.display_name} \n\r\n\r` +
+              ticket.solution?.description
+            : `${ticket.solution.title} — ${ticket.solution.author.display_name}`
+          : "None"
+      }`,
+
+      property_number: ticket.is_other_agency ? "-" : ticket.property_number,
+
+      client: formatClient(ticket),
+
+      client_meta: formatClientMeta(ticket),
+
+      office_label: formatOfficeLabel(ticket),
+
+      item_type_label: ticket?.item_type
+        ? `${ticket.item_type.type} (${ticket.item_type.classification})`
+        : ticket?.inventory?.item_type?.type
+          ? `${ticket.inventory.item_type.type}${
+              ticket.inventory.item_type.classification
+                ? ` (${ticket.inventory.item_type.classification})`
+                : ""
+            }`
+          : "Unknown Item Type",
+
+      item_type_id:
+        ticket?.item_type?.id ??
+        ticket?.item_type_id ??
+        ticket?.inventory?.item_type?.id ??
+        null,
+    };
+  };
+
   const fetchTickets = async () => {
     loading.value = true;
     try {
@@ -162,53 +225,7 @@ export const useTicketStore = defineStore("ticketStore", () => {
 
       const response = await fetchTicketsApi(queryParams);
 
-      tickets.value = response.data.map((ticket: any) => ({
-        ...ticket,
-        query_status_formatted: capitalizeWord(
-          strConvertUnderscoreToSpace(ticket.query_status),
-        ),
-        request_status_formatted: capitalizeWord(
-          strConvertUnderscoreToSpace(ticket.request_status),
-        ),
-        priority_formatted: capitalizeWord(
-          strConvertUnderscoreToSpace(ticket.priority),
-        ),
-        date_formatted: `${transformDatePickerDate(
-          ticket.date,
-          "MMM DD, YYYY",
-        )} (${transformDateDurationHumanize(ticket.date)})`,
-        released_at_formatted: `${transformDatePickerDate(
-          ticket.released_at,
-          "MM/DD/YY",
-        )}`,
-        full_name: formatInventoryOwner(ticket),
-        solution_formatted: `${
-          ticket.solution
-            ? ticket.solution?.description
-              ? `${ticket.solution.title} — ${ticket.solution.author.display_name} \n\r\n\r` +
-                ticket.solution?.description
-              : `${ticket.solution.title} — ${ticket.solution.author.display_name}`
-            : "None"
-        }`,
-        property_number: ticket.is_other_agency ? "-" : ticket.property_number,
-        client: formatClient(ticket),
-        client_meta: formatClientMeta(ticket),
-        office_label: formatOfficeLabel(ticket),
-        item_type_label: ticket?.item_type
-          ? `${ticket.item_type.type} (${ticket.item_type.classification})`
-          : ticket?.inventory?.item_type?.type
-            ? `${ticket.inventory.item_type.type}${
-                ticket.inventory.item_type.classification
-                  ? ` (${ticket.inventory.item_type.classification})`
-                  : ""
-              }`
-            : "Unknown Item Type",
-        item_type_id:
-          ticket?.item_type?.id ??
-          ticket?.item_type_id ??
-          ticket?.inventory?.item_type?.id ??
-          null,
-      }));
+      tickets.value = response.data.map(formatTicket);
 
       totalTickets.value = Number(response.meta.total) || 0;
     } catch (err: any) {
@@ -464,6 +481,7 @@ export const useTicketStore = defineStore("ticketStore", () => {
     serviceMethodOptions,
     activeTab,
     fetchTickets,
+    formatTicket,
     addTicket,
     updateTicket,
     deleteTicket,
