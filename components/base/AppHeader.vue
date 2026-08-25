@@ -213,7 +213,7 @@ const userMenuItems = [
 ];
 
 const isItTechnical = computed(() => {
-  return user.value?.roles?.some((role: any) => role.title === "It Technical");
+  return user.value?.roles?.some((role: any) => role.title === "IT Technical");
 });
 </script>
 
