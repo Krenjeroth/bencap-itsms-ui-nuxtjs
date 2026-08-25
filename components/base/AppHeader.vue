@@ -22,13 +22,31 @@ const pageTitleSingular = "Ticket";
 
 import { TicketsAcceptModal } from "#components";
 
+const unlockSoundOnInteraction = () => {
+  notificationStore.unlockNotificationSound();
+};
+
 onMounted(() => {
   colorModeIcon.value = getColorModeIcon();
+
+  if (!isItTechnical.value) {
+    console.warn(
+      "Notification polling was not started: user is not IT Technical.",
+    );
+    return;
+  }
+
   notificationStore.startPolling();
+
+  window.addEventListener("pointerdown", unlockSoundOnInteraction, {
+    once: true,
+  });
 });
 
 onUnmounted(() => {
   notificationStore.stopPolling();
+
+  window.removeEventListener("pointerdown", unlockSoundOnInteraction);
 });
 
 const acceptTicketModal = (ticket: any) => {
@@ -136,7 +154,14 @@ const toggleColorMode = () => {
 const notificationItems = computed(() => {
   if (!notifications.value.length) {
     return [
-      [{ label: "No notifications yet", disabled: true, isAction: true }],
+      [
+        {
+          isEmpty: true,
+          label: "No notifications yet",
+          icon: "i-heroicons-bell-slash",
+          disabled: true,
+        },
+      ],
     ];
   }
 
@@ -160,17 +185,21 @@ const notificationItems = computed(() => {
     click: () => handleNotificationClick(n),
   }));
 
-  return [
-    items,
-    [
-      {
-        isAction: true,
-        label: "Mark all as read",
-        icon: "i-heroicons-check-circle",
-        click: () => notificationStore.markAllNotificationsAsRead(),
-      },
-    ],
-  ];
+  const actionItems =
+    unreadCount.value > 0
+      ? [
+          [
+            {
+              isAction: true,
+              label: "Mark all as read",
+              icon: "i-heroicons-check-circle",
+              click: () => notificationStore.markAllNotificationsAsRead(),
+            },
+          ],
+        ]
+      : [];
+
+  return [items, ...actionItems];
 });
 
 const userMenuItems = [
@@ -182,6 +211,10 @@ const userMenuItems = [
     },
   ],
 ];
+
+const isItTechnical = computed(() => {
+  return user.value?.roles?.some((role: any) => role.title === "It Technical");
+});
 </script>
 
 <template>
@@ -280,6 +313,7 @@ const userMenuItems = [
           </UChip>
 
           <template #item="{ item }">
+            <!-- Actual notification -->
             <div
               v-if="item.isNotification"
               class="flex w-full items-start gap-2 py-1 text-left"
@@ -290,18 +324,31 @@ const userMenuItems = [
                 class="mt-0.5 shrink-0"
                 :class="item.iconColor"
               />
-              <div class="flex-1 min-w-0">
+
+              <div class="min-w-0 flex-1">
                 <p class="text-sm line-clamp-2">{{ item.label }}</p>
+
                 <p class="text-xs text-gray-400">
                   {{ $dayjs(item.createdAt).fromNow() }}
                 </p>
               </div>
+
               <span
                 v-if="!item.readAt"
-                class="w-2 h-2 rounded-full bg-red-500 mt-1.5 shrink-0"
+                class="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-red-500"
               />
             </div>
 
+            <!-- Empty state -->
+            <div
+              v-else-if="item.isEmpty"
+              class="flex w-full items-center gap-2 py-2 text-left text-gray-400"
+            >
+              <UIcon :name="item.icon" class="shrink-0" />
+              <p class="text-sm">{{ item.label }}</p>
+            </div>
+
+            <!-- Action: Mark all as read -->
             <div v-else class="flex w-full items-center gap-2 py-1 text-left">
               <UIcon :name="item.icon" class="shrink-0" />
               <p class="text-sm">{{ item.label }}</p>
