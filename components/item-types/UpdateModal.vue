@@ -39,6 +39,9 @@ const formState = ref<IUpdateItemTypeForm>({
   purpose: props.itemType?.purpose || undefined,
   is_main_inventory: props.itemType?.is_main_inventory ? true : false,
   is_component: props.itemType?.is_component ? true : false,
+  supports_internal_components: props.itemType?.supports_internal_components
+    ? true
+    : false,
 });
 
 const originalState = ref<IUpdateItemTypeForm>({
@@ -48,6 +51,9 @@ const originalState = ref<IUpdateItemTypeForm>({
     purpose: props.itemType?.purpose || undefined,
     is_main_inventory: props.itemType?.is_main_inventory ? true : false,
     is_component: props.itemType?.is_component ? true : false,
+    supports_internal_components: props.itemType?.supports_internal_components
+      ? true
+      : false,
   }),
 });
 
@@ -57,6 +63,7 @@ const fieldsToCompare: (keyof IUpdateItemTypeForm)[] = [
   "purpose",
   "is_main_inventory",
   "is_component",
+  "supports_internal_components",
 ];
 
 const isChangedComputed = computed(() => {
@@ -90,7 +97,7 @@ const purposeComputed = computed({
 });
 
 const handleSubmit = async (
-  event: IFormSubmitEvent<TUpdateItemTypeValidationSchema>
+  event: IFormSubmitEvent<TUpdateItemTypeValidationSchema>,
 ) => {
   if (!isChangedComputed.value) {
     onNoDataChange();
@@ -107,8 +114,6 @@ const handleSubmit = async (
   onSuccess();
   return;
 };
-
-console.log(props.itemType);
 </script>
 
 <template>
@@ -152,6 +157,17 @@ console.log(props.itemType);
             color="primary"
             label="Component"
             v-model="formState.is_component"
+          />
+        </UFormGroup>
+
+        <UFormGroup
+          name="supports_internal_components"
+          :error="errorBag.supports_internal_components"
+        >
+          <UCheckbox
+            color="primary"
+            label="Supports Internal Components"
+            v-model="formState.supports_internal_components"
           />
         </UFormGroup>
       </div>

@@ -137,6 +137,7 @@ declare global {
     purpose?: string;
     is_main_inventory?: boolean;
     is_component?: boolean;
+    supports_internal_components?: boolean;
   }
 
   interface IUpdateItemTypeForm {
@@ -145,6 +146,7 @@ declare global {
     purpose?: string;
     is_main_inventory?: boolean;
     is_component?: boolean;
+    supports_internal_components?: boolean;
   }
 
   interface ICreateCommonProblemForm {

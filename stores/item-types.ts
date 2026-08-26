@@ -49,7 +49,10 @@ export const useItemTypeStore = defineStore("itemTypeStore", () => {
 
         main_component: `Main Inventory: ${
           itemType.is_main_inventory ? "Yes" : "No"
-        }\r\nComponent: ${itemType.is_component ? "Yes" : "No"}`,
+        }\r\nComponent: ${itemType.is_component ? "Yes" : "No"}
+        Supports Internal Components: ${
+          itemType.supports_internal_components ? "Yes" : "No"
+        }`,
 
         // query_status_formatted: capitalizeWord(
         //   strConvertUnderscoreToSpace(itemType.query_status)

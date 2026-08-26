@@ -27,6 +27,7 @@ const formState = ref<ICreateItemTypeForm>({
   purpose: undefined,
   is_main_inventory: false,
   is_component: false,
+  supports_internal_components: false,
 });
 
 const typeComputed = computed({
@@ -51,7 +52,7 @@ const purposeComputed = computed({
 });
 
 const handleSubmit = async (
-  event: IFormSubmitEvent<TCreateItemTypeValidationSchema>
+  event: IFormSubmitEvent<TCreateItemTypeValidationSchema>,
 ) => {
   await itemTypeStore.addItemType(event.data);
 
@@ -101,6 +102,13 @@ const handleSubmit = async (
           />
         </UFormGroup>
 
+        <UFormGroup name="is_component" :error="errorBag.is_component">
+          <UCheckbox
+            color="primary"
+            label="Component"
+            v-model="formState.is_component"
+          />
+        </UFormGroup>
         <UFormGroup name="is_component" :error="errorBag.is_component">
           <UCheckbox
             color="primary"
