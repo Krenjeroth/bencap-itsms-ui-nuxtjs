@@ -90,8 +90,8 @@ export const useInventoryStore = defineStore("inventoryStore", () => {
           is_parent: inventoryResponse.inventory ? false : true,
           brand_model_formatted: inventoryResponse.brand_model
             ? inventoryResponse.brand_model?.name
-              ? `${inventoryResponse.brand_model.item_type?.type} ${inventoryResponse.brand_model?.specification}, ${inventoryResponse.brand_model?.name}`
-              : `${inventoryResponse.brand_model?.item_type?.type}, ${inventoryResponse.brand_model?.specification}`
+              ? `${inventoryResponse.brand_model?.brand?.name}, ${inventoryResponse.brand_model.item_type?.type}, ${inventoryResponse.brand_model?.specification}, ${inventoryResponse.brand_model?.name}`
+              : `${inventoryResponse.brand_model?.brand?.name}, ${inventoryResponse.brand_model?.item_type?.type}, ${inventoryResponse.brand_model?.specification}`
             : inventoryResponse.item_type?.type,
           option_attribute: `${inventoryResponse.property_number} (${inventoryResponse.description})`,
           office_code:

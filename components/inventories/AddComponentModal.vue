@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { format } from "date-fns";
+const toast = useToast();
 const inventoryStore = useInventoryStore();
 const {
   loading: loadingInventories,
@@ -44,7 +45,18 @@ const onSuccess = () => {
 };
 
 const onError = () => {
-  emit("error");
+  const message =
+    errorBag.value?.property_number ??
+    errorBag.value?.general ??
+    "Something went wrong. Please check the form and try again.";
+
+  toast.add({
+    title: "Unable to add component",
+    description: message,
+    color: "red",
+  });
+
+  // emit("error");
 };
 
 const onNoDataChange = () => {
@@ -217,6 +229,15 @@ const searchItemTypes = async (q: string) => {
     itemType.type.toLowerCase().includes(q.toLowerCase()),
   );
 };
+
+watch(
+  () => formState.property_number,
+  () => {
+    if (errorBag.value?.property_number) {
+      delete errorBag.value.property_number;
+    }
+  },
+);
 </script>
 
 <template>
@@ -259,6 +280,7 @@ const searchItemTypes = async (q: string) => {
         <UFormGroup
           label="Property Number"
           name="property_number"
+          :error="errorBag?.property_number"
           :ui="{ wrapper: 'md:w-full' }"
         >
           <UInput v-model="propertyNumberComputed" />

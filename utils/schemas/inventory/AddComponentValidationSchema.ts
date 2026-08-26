@@ -1,7 +1,13 @@
 import { z } from "zod";
 
 export const AddComponentValidationSchema = z.object({
-  item_type: z.number(),
+  item_type: z
+    .number({
+      required_error: "Item type is required.",
+      invalid_type_error: "Item type is required.",
+    })
+    .int()
+    .positive("Item type is required."),
   brand_model: z.object({
     id: z.number(),
     name: z.string().nullable().optional(),

@@ -2,6 +2,8 @@
 import { format } from "date-fns";
 import { cloneDeep, isEqual } from "lodash";
 
+const toast = useToast();
+
 const inventoryStore = useInventoryStore();
 const {
   loading: loadingInventories,
@@ -51,6 +53,17 @@ const onSuccess = () => {
 };
 
 const onError = () => {
+  const message =
+    errorBag.value?.property_number ??
+    errorBag.value?.general ??
+    "Something went wrong. Please check the form and try again.";
+
+  toast.add({
+    title: "Unable to update inventory",
+    description: message,
+    color: "red",
+  });
+
   emit("error");
 };
 
@@ -664,6 +677,15 @@ const syncInternalComponentRows = () => {
   }
 };
 
+watch(
+  () => formState.property_number,
+  () => {
+    if (errorBag.value?.property_number) {
+      delete errorBag.value.property_number;
+    }
+  },
+);
+
 watch(officeComputed, (newOffice, oldOffice) => {
   if (newOffice?.id !== oldOffice?.id) {
     formState.division = undefined;
@@ -904,6 +926,7 @@ const removeRow = (index: number) => {
             <UFormGroup
               label="Property Number"
               name="property_number"
+              :error="errorBag?.property_number"
               :ui="{ wrapper: 'md:w-full' }"
             >
               <UInput v-model="formState.property_number" />
