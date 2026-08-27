@@ -1,5 +1,13 @@
 export const useUserApi = () => {
   const sanctumFetch = useSanctumClient();
+
+  interface PaginatedUsersResponse {
+    data: any[];
+    meta: {
+      total: number;
+    };
+  }
+
   const { apiUrl } = useUrlHandler();
   const moduleTitle = "users";
   const usersUrl = computed(() => {
@@ -17,8 +25,12 @@ export const useUserApi = () => {
     return url;
   });
 
-  const fetchUsersApi = async (queryParams: URLSearchParams) => {
-    return await sanctumFetch(`${usersUrl.value}?${queryParams.toString()}`);
+  const fetchUsersApi = async (
+    queryParams: URLSearchParams,
+  ): Promise<PaginatedUsersResponse> => {
+    return (await sanctumFetch(
+      `${usersUrl.value}?${queryParams.toString()}`,
+    )) as PaginatedUsersResponse;
   };
 
   const addUserApi = async (
@@ -133,9 +145,10 @@ export const useUserApi = () => {
     });
   };
 
-  const startHeartbeatApi = async () => {
+  const startHeartbeatApi = async (signal?: AbortSignal) => {
     return await sanctumFetch(`${heartbeatUrl.value}`, {
       method: "PUT",
+      signal,
       headers: {
         Accept: "application/json",
       },
@@ -151,6 +164,12 @@ export const useUserApi = () => {
     });
   };
 
+  const fetchOnlineUsersListApi = async (): Promise<OnlineUser[]> => {
+    return (await sanctumFetch(
+      `${usersUrl.value}/online-list`,
+    )) as OnlineUser[];
+  };
+
   return {
     fetchUsersApi,
     addUserApi,
@@ -158,5 +177,6 @@ export const useUserApi = () => {
     deleteUserApi,
     startHeartbeatApi,
     stopHeartbeatApi,
+    fetchOnlineUsersListApi,
   };
 };

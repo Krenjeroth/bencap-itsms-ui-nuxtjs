@@ -1,7 +1,13 @@
 <script setup lang="ts">
-const { user, logout: logoutAction } = useSanctumAuth<IUser>();
+const { user } = useSanctumAuth<IUser>();
+const authStore = useAuthStore();
+const { loggedInUser } = storeToRefs(authStore);
 const logout = async () => {
-  await logoutAction();
+  try {
+    await authStore.authLogout();
+  } catch (error) {
+    console.error("Logout failed:", error);
+  }
 };
 const toast = useToast();
 const stringHandler = useStringHandler();
@@ -374,6 +380,12 @@ const isItTechnical = computed(() => {
             <span class="text-sm text-gray-700 dark:text-gray-300">{{
               user?.profile?.display_name
             }}</span>
+
+            <!-- <UAvatar :src="loggedInUser?.profile?.img_path" size="sm" />
+
+            <span class="text-sm text-gray-700 dark:text-gray-300">
+              {{ loggedInUser?.profile?.display_name }}
+            </span> -->
           </UButton>
         </UDropdown>
       </div>

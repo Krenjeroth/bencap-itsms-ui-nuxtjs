@@ -4,23 +4,18 @@ export const useAuthStore = defineStore("authStore", () => {
   const { hasError, errorBag, transformValidationErrors, resetErrorBag } =
     useErrorHandler();
 
+  const { stopHeartbeatApi } = useUserApi();
+
   const loggedInUser = ref<any>(null);
   const loading = ref(false);
 
   const authLogin = async (form: ILoginForm) => {
     loading.value = true;
     resetErrorBag();
-    // await authLoginApi(form)
-    //   .catch((err) => {
-    //     transformValidationErrors(err);
-    //   })
-    //   .finally(() => {
-    //     loading.value = false;
-    //   });
+
     await authLoginApi(form)
       .then(async () => {
-        await fetchLoggedInUser(); // load user data
-        startHeartbeat(); // 🔹 start sending heartbeat
+        await fetchLoggedInUser();
       })
       .catch((err) => {
         transformValidationErrors(err);
@@ -33,14 +28,21 @@ export const useAuthStore = defineStore("authStore", () => {
   const fetchLoggedInUser = async () => {
     loading.value = true;
     resetErrorBag();
+
     try {
       const response = await fetchLoggedInUserApi();
-      loggedInUser.value = response;
 
       if (response) {
-        startHeartbeat(); // ensure heartbeat runs on refresh
+        loggedInUser.value = response;
+
+        startHeartbeat();
       }
-    } catch (err: any) {
+
+      return response;
+    } catch (err) {
+      loggedInUser.value = null;
+      stopHeartbeat();
+
       throw err;
     } finally {
       loading.value = false;
@@ -48,9 +50,30 @@ export const useAuthStore = defineStore("authStore", () => {
   };
 
   const authLogout = async () => {
-    stopHeartbeat(); // 🔹 stop before logging out
-    await authLogoutApi(); // sanctum logout
-    loggedInUser.value = null;
+    loading.value = true;
+
+    try {
+      // Stop the local timer so it cannot send another heartbeat.
+      stopHeartbeat();
+
+      // Session is still valid here, so Laravel can identify the user
+      // and set profiles.status to offline.
+      await stopHeartbeatApi();
+
+      // Only invalidate the Sanctum session after the status update.
+      await authLogoutApi();
+
+      loggedInUser.value = null;
+    } catch (err) {
+      console.error("Logout failed:", err);
+
+      // Clear local user state even if the request fails.
+      loggedInUser.value = null;
+
+      throw err;
+    } finally {
+      loading.value = false;
+    }
   };
 
   return {

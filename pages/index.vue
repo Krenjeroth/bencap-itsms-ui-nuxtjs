@@ -12,7 +12,7 @@ useHead({
 </script>
 
 <template>
-  <div class="orbit-container">
+  <!-- <div class="orbit-container">
     <div class="center-point"></div>
 
     <div class="orbit-path">
@@ -22,6 +22,15 @@ useHead({
         class="orbiting-image"
       />
     </div>
+  </div> -->
+
+  <div>
+    <h1>Dashboard</h1>
+
+    <!-- Other dashboard content -->
+
+    <!-- Online Users Section -->
+    <UsersOnlineUsersDashboard />
   </div>
 </template>
 

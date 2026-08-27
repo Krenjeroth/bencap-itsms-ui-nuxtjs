@@ -44,7 +44,19 @@ export const useUserStore = defineStore("userStore", () => {
   ];
   const WITH_DOT_SUFFIX = ["jr", "sr"];
 
+  const HEARTBEAT_INTERVAL = 30_000;
+  const MAX_RETRIES = 3;
+  const BASE_RETRY_DELAY = 5_000;
+
   const heartbeatInterval = ref<number | null>(null);
+  const heartbeatRunning = ref(false);
+  const heartbeatRetryTimeout = ref<number | null>(null);
+
+  // Cancels a heartbeat HTTP request that is still in progress during logout.
+  const heartbeatAbortController = ref<AbortController | null>(null);
+
+  // Invalidates callbacks, retries, and interval ticks created by an older session.
+  const heartbeatGeneration = ref(0);
 
   const fetchUsers = async () => {
     loading.value = true;
@@ -58,7 +70,7 @@ export const useUserStore = defineStore("userStore", () => {
         ...(selectedStatus.value ? { status: selectedStatus.value } : {}),
       });
 
-      const response = await fetchUsersApi(queryParams);
+      const response: any = await fetchUsersApi(queryParams);
 
       users.value = response.data.map((user: any) => ({
         ...user,
@@ -183,25 +195,98 @@ export const useUserStore = defineStore("userStore", () => {
   };
 
   const startHeartbeat = () => {
+    if (heartbeatRunning.value) {
+      return;
+    }
+
     console.log("Start Heartbeat()");
-    stopHeartbeat(); // prevent duplicates
+
+    heartbeatRunning.value = true;
+
+    const generation = ++heartbeatGeneration.value;
+
     const sendHeartbeat = async () => {
-      try {
-        await startHeartbeatApi();
-      } catch (error) {
-        console.error("Heartbeat failed", error);
+      let retryCount = 0;
+
+      while (
+        heartbeatRunning.value &&
+        generation === heartbeatGeneration.value &&
+        retryCount <= MAX_RETRIES
+      ) {
+        const controller = new AbortController();
+
+        try {
+          heartbeatAbortController.value = controller;
+
+          await startHeartbeatApi(controller.signal);
+
+          if (heartbeatAbortController.value === controller) {
+            heartbeatAbortController.value = null;
+          }
+
+          return;
+        } catch (error: any) {
+          // Clear this request's controller after a failed or aborted request.
+          if (heartbeatAbortController.value === controller) {
+            heartbeatAbortController.value = null;
+          }
+
+          // Expected when stopHeartbeat() aborts an in-flight request during logout.
+          if (error?.name === "AbortError") {
+            return;
+          }
+
+          // Never retry after logout or after an older heartbeat generation is invalid.
+          if (
+            !heartbeatRunning.value ||
+            generation !== heartbeatGeneration.value
+          ) {
+            return;
+          }
+
+          retryCount++;
+
+          if (retryCount > MAX_RETRIES) {
+            console.error("Heartbeat failed after maximum retries", error);
+            return;
+          }
+
+          const delay = BASE_RETRY_DELAY * Math.pow(2, retryCount - 1);
+
+          await new Promise<void>((resolve) => {
+            heartbeatRetryTimeout.value = window.setTimeout(() => {
+              heartbeatRetryTimeout.value = null;
+              resolve();
+            }, delay);
+          });
+        }
       }
     };
 
-    sendHeartbeat(); // 🔹 send immediately
-    heartbeatInterval.value = window.setInterval(sendHeartbeat, 60000);
+    void sendHeartbeat();
+
+    heartbeatInterval.value = window.setInterval(() => {
+      void sendHeartbeat();
+    }, HEARTBEAT_INTERVAL);
   };
 
   const stopHeartbeat = () => {
-    if (heartbeatInterval.value) {
-      clearInterval(heartbeatInterval.value);
+    // Invalidate all existing heartbeat callbacks.
+    heartbeatGeneration.value++;
+    heartbeatRunning.value = false;
+
+    if (heartbeatInterval.value !== null) {
+      window.clearInterval(heartbeatInterval.value);
       heartbeatInterval.value = null;
     }
+
+    if (heartbeatRetryTimeout.value !== null) {
+      window.clearTimeout(heartbeatRetryTimeout.value);
+      heartbeatRetryTimeout.value = null;
+    }
+
+    heartbeatAbortController.value?.abort();
+    heartbeatAbortController.value = null;
   };
 
   return {
