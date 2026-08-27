@@ -49,11 +49,22 @@ const statusDotClass = computed(() => {
 
   return classes[props.user.status] || classes.offline;
 });
+
+const statusTextClass = computed(() => {
+  const classes = {
+    online: "text-emerald-600 dark:text-emerald-400",
+    busy: "text-amber-600 dark:text-amber-400",
+    offline: "text-stone-400 dark:text-stone-500",
+  };
+
+  return classes[props.user.status] || classes.offline;
+});
 </script>
 
 <template>
   <div
-    class="group flex min-w-20 flex-col items-center gap-2 rounded-xl px-2 py-2 text-center transition-colors hover:bg-stone-100 dark:hover:bg-stone-800"
+    class="group flex w-24 shrink-0 flex-col items-center gap-2 rounded-xl px-2 py-2 text-center transition-colors hover:bg-stone-100 dark:hover:bg-stone-700/60"
+    :class="{ 'opacity-60': user.status === 'offline' }"
     :title="tooltipText"
   >
     <div class="relative">
@@ -71,17 +82,20 @@ const statusDotClass = computed(() => {
         {{ initials }}
       </div>
 
-      <!-- Presence indicator -->
       <span
-        class="absolute bottom-0 right-0 h-3.5 w-3.5 rounded-full border-2 border-stone-50 dark:border-stone-900"
+        class="absolute bottom-0 right-0 h-3.5 w-3.5 rounded-full border-2 border-stone-50 dark:border-stone-800"
         :class="statusDotClass"
       />
     </div>
 
     <p
-      class="max-w-20 truncate text-xs font-semibold text-stone-700 dark:text-stone-200"
+      class="w-full truncate text-xs font-semibold text-stone-700 dark:text-stone-200"
     >
       {{ displayName }}
     </p>
+
+    <span class="text-[10px] font-medium" :class="statusTextClass">
+      {{ statusLabel }}
+    </span>
   </div>
 </template>

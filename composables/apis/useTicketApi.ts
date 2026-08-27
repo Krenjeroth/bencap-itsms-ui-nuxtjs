@@ -7,6 +7,10 @@ export const useTicketApi = () => {
     return url;
   });
 
+  const dashboardSummaryUrl = computed(() => {
+    return apiUrl("tickets/dashboard-summary");
+  });
+
   const ticketsSelectUrl = computed(() => {
     return apiUrl(`lookups/${moduleTitle}`);
   });
@@ -182,6 +186,10 @@ export const useTicketApi = () => {
     setTimeout(() => URL.revokeObjectURL(blobUrl), 1500);
   };
 
+  const fetchDashboardSummaryApi = async () => {
+    return await sanctumFetch(`${dashboardSummaryUrl.value}`);
+  };
+
   return {
     fetchTicketsApi,
     fetchTicketApi,
@@ -199,5 +207,6 @@ export const useTicketApi = () => {
     setTicketReleasedDateApi,
     assessTicketApi,
     downloadAssessmentReportApi,
+    fetchDashboardSummaryApi,
   };
 };

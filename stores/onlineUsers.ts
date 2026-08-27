@@ -54,6 +54,10 @@ export const useOnlineUsersStore = defineStore("onlineUsers", () => {
     return users.value.filter((user) => user.status === "offline");
   });
 
+  const onlineCount = computed(() => getOnlineOnly.value.length);
+  const busyCount = computed(() => getBusyOnly.value.length);
+  const offlineCount = computed(() => getOfflineOnly.value.length);
+
   return {
     users,
     loading,
@@ -64,5 +68,8 @@ export const useOnlineUsersStore = defineStore("onlineUsers", () => {
     getOnlineOnly,
     getBusyOnly,
     getOfflineOnly,
+    onlineCount,
+    busyCount,
+    offlineCount,
   };
 });
