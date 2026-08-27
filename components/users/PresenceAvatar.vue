@@ -5,6 +5,7 @@ interface PresenceUser {
   username: string;
   display_name: string | null;
   status: "online" | "offline" | "busy";
+  last_seen_at_humanized: string | null;
   img_path: string | null;
 }
 
@@ -34,6 +35,20 @@ const statusLabel = computed(() => {
   };
 
   return labels[props.user.status] || "Offline";
+});
+
+const lastSeenText = computed(() => {
+  if (props.user.status === "online") {
+    return "Active now";
+  }
+
+  if (props.user.status === "busy") {
+    return "Busy now";
+  }
+
+  return props.user.last_seen_at_humanized
+    ? `Seen ${props.user.last_seen_at_humanized}`
+    : "No activity";
 });
 
 const tooltipText = computed(() => {
@@ -96,6 +111,13 @@ const statusTextClass = computed(() => {
 
     <span class="text-[10px] font-medium" :class="statusTextClass">
       {{ statusLabel }}
+    </span>
+
+    <span
+      class="w-full truncate text-[10px] text-stone-400 dark:text-stone-500"
+      :title="lastSeenText"
+    >
+      {{ lastSeenText }}
     </span>
   </div>
 </template>
