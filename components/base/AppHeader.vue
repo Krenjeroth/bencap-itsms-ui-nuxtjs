@@ -296,10 +296,12 @@ const isItTechnical = computed(() => {
 
         <!-- Notifications -->
         <UDropdown
+          v-if="isItTechnical"
           :items="notificationItems"
           :popper="{ placement: 'bottom-end' }"
           :ui="{
-            width: 'w-96',
+            width: 'w-[calc(100vw-2rem)] sm:w-96',
+            container: 'max-h-[calc(100vh-5rem)] overflow-y-auto',
             item: {
               base: 'text-left',
             },
